@@ -10,39 +10,32 @@ RESOLUCION EN PSEUDOCODIGO
 ACCION ejercicio_5 ES 
     AMBIENTE 
         digito: Caracter
-        Funcion es_caracter(s:Caracter): Booleano
-            SI s='0' o S='1' o S='2' o S='3' o S='4' o S='5' o S='6' o S='7' o S='8' o S='9' entonces
-                es_caracter:=verdadero
+        Funcion es_caracter(s:Caracter): Alfanumerico es
+            SI s='0' o s='1' o s='2' o s='3' o s='4' o s='5' o s='6' o s='7' o s='8' o s='9' entonces
+                es_caracter:=" es un digito"
             SINO
-                es_caracter:=falso
+                es_caracter:=" NO es un digito"
             Fin_si
         Fin_Funcion
     PROCESO
         Escribir("Este algoritmo verifica si un caracter introducido es un dígito o no.")
         Escribir("Ingrese un Caracter")
         Leer(digito)
-        SI es_caracter(digito) entonces
-            Escribir("El caracter ",digito," es un digito")
-        SINO
-            Escribir("El caracter ",digito," NO es un digito")
-        FIn_Si
+        Escribir("El caracter ",digito,es_caracter(digito))
 FIN_ACCION
 
 """
 
 def es_caracter(s):
     if s in ("0","1","2","3","4","5","6","7","8","9"):
-        return True
+        return " es un digito"
     else: 
-        return False
+        return " NO es un digito"
             
 if __name__ == "__main__":
     print("Este algoritmo verifica si un caracter introducido es un dígito o no.")
     digito=str(input("Ingrese un Caracter: "))
     if len(digito)==1:
-        if es_caracter(digito):
-            print("El caracter ",digito," es un digito")
-        else:
-            print("El caracter ",digito," NO es un digito")
+        print("El caracter ",digito,es_caracter(digito))
     else:
         print("El valor ingresado no es un caracter")
