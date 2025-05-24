@@ -8,7 +8,7 @@ de la misma forma que se indica en el ejercicio 9.
 
 RESOLUCION EN PSEUDOCODIGO
 
-ACCION ejercicio_0 ES 
+ACCION ejercicio_32.10 ES 
     AMBIENTE 
         num: Entero
         Procedimiento mostrar_0() es
@@ -201,6 +201,7 @@ def mostrar_9():
         "* * * *"
     ]
     return "\n".join(numero_9)
+
 def numero_gigante(n):
     match n:
         case 0:
@@ -222,7 +223,8 @@ def numero_gigante(n):
         case 8:
             return mostrar_8()
         case 9:
-            return mostrar_9()             
+            return mostrar_9() 
+                    
 if __name__ == "__main__":
     print("Este algoritmo muestra un número elegido en tamaño gigante")
     num=int(input("Ingrese un número: "))
