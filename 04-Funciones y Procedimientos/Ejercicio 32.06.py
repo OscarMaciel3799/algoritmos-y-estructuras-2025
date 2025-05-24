@@ -11,7 +11,7 @@ La función debe devolver como resultado el valor del descuento o cero, en caso 
 
 RESOLUCION EN PSEUDOCODIGO
 
-ACCION ejercicio_6 ES 
+ACCION ejercicio_32.06 ES 
     AMBIENTE 
         desc_6=0,04
         desc_12=0,1
@@ -58,5 +58,6 @@ if __name__ == "__main__":
     print("Este algoritmo calcula el descuento de compras de productos")
     cant_prod=int(input("Ingrese la cantidad de productos: "))
     for i in range (0,cant_prod+1):
-        unidad_prod,precio_prod=map(int,input("Ingrese las unidades del producto y el precio separadas por un espacio: ").split())
+        unidad_prod=int(input("Ingrese las unidades del producto: "))
+        precio_prod=float(input("Ingrese el precio del producto: "))
         print("Su descuento por este producto es: ",descuento(unidad_prod,precio_prod))
