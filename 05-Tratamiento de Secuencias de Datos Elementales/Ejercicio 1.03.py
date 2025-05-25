@@ -16,6 +16,7 @@ ACCION ejercicio_1.03 ES
         Escribir("Este algoritmo devuelve una secuencia descartando el '$' de la secuencia de entrada.")
         Arrancar(s)
         Avanzar(s,v)
+        Crear(sal)
         Mientras NFDS(s) hacer
             SI v <> '$' entonces
                 Escribir(sal,v)
