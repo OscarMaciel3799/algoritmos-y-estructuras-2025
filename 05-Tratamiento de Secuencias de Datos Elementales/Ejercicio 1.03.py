@@ -32,7 +32,7 @@ FIN_ACCION
 #Y usaremos bucles para recorrer las secuencias
 def main():
     print("Este algoritmo devuelve una secuencia descartando el '$' de la secuencia de entrada.")
-    sec=str(input("Este algoritmo devuelve una secuencia descartando el '$' de la secuencia de entrada: "))
+    sec=str(input("Ingrese una secuencia de entrada: "))
     pos=0
     salida=None
     while pos<len(sec): 
