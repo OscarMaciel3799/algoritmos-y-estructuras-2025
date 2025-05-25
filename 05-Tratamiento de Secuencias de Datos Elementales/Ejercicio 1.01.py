@@ -22,7 +22,7 @@ ACCION ejercicio_1.01 ES
             SI v:='A' entonces
                 cont:=cont+1
             Fin_Si
-            Avanzar(s)
+            Avanzar(s,v)
         Fin_Mientras
         Cerrar(s)
         Escribir("Hay ",cont," letras A en la secuencia")
