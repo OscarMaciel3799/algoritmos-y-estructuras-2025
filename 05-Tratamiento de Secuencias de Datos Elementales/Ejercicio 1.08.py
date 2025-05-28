@@ -53,7 +53,9 @@ ACCION ejercicio_1.08 ES
 FIN_ACCION
 
 """
-
+#A fines practicos en python las secuencias de Enteros las consideraremos Listas
+#A fines practicos en python las secuencias de Caracteres las consideraremos Strings
+#Y usaremos bucles para recorrer las secuencias
 def main():
     print("Este algoritmo ....")
     sec=input("Ingrese la secuencia de cuits separados por coma: ").split(',')
