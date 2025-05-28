@@ -47,7 +47,8 @@ FIN_ACCION
 #Y usaremos bucles para recorrer las secuencias
 def main():
     print("Este algoritmo ....")
-    sec=input("Ingrese la secuencia de habitantes separados por coma: ").split(',')#1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4
+    sec=input("Ingrese la secuencia de habitantes separados por coma: ").split(',')
+    #1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4
     
     for i in range(0,92):
             opcion=int(i % 4)
