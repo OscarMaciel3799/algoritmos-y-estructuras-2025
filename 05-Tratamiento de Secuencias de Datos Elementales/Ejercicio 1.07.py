@@ -30,7 +30,8 @@ ACCION ejercicio_1.07 ES
 FIN_ACCION
 
 """
-#A fines practicos en python las secuencias las consideraremos Listas
+#A fines practicos en python las secuencias de Enteros las consideraremos Listas
+#A fines practicos en python las secuencias de Caracteres las consideraremos Strings
 #Y usaremos bucles para recorrer las secuencias
 def main():
     print("Este algoritmo ....")
