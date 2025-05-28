@@ -27,6 +27,7 @@ ACCION ejercicio_1.08 ES
                     vacio:=FALSO
                 SINO
                     Escribir(sal,'-')
+                FIN_SI
                 divisor:=10
                 Para i:=1 hasta 11 hacer
                     num:= v DIV (10**(divisor))
