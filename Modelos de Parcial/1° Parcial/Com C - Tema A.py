@@ -25,7 +25,7 @@ Informe, para cada sucursal, cuál fue el ticket de mayor importe (y el importe)
 
 RESOLUCION EN PSEUDOCODIGO
 
-ACCION ejercicio_1.13 ES 
+ACCION Ejercicio_1 ES 
     AMBIENTE 
         informacion: Secuencia de Caracter
         i: Caracter
@@ -91,7 +91,6 @@ def ejercicio_1():
     print("Este algoritmo ....")
     informacion="Resistencia&004Barranqueras&005Fontana&002"
     tickets=[1,101,3,23141,2,102,5,67981,3,103,2,10200,4,104,1,5678,5,105,5,54784,6,106,2,12334,7,107,4,23456,8,108,3,23690,9,109,9,89754,10,110,7,109121,11,111,11,213456]
-    print(tickets)
     posI=0
     posT=0
     salida=[]
