@@ -75,6 +75,8 @@ ACCION Ejercicio_1 ES
 FIN_ACCION
 
 """
+#A fines practicos en python las secuencias de Enteros las consideraremos Listas
+#A fines practicos en python las secuencias de Caracteres las consideraremos Strings
 def ConvertiraNumero(i):
     match i :
         case '0': return 0
