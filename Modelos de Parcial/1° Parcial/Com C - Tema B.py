@@ -98,7 +98,7 @@ ACCION Ejercicio_1 ES
             Escribir(salida,ConvertirACaracter(3,cant_vent_efectivo))
         FIn_Mientras
         Escribir("El porcentaje de ventas en efectivos de todas las sucursales es: ", (total_ventas_efectivo*100/total_tickets)," %")
-        
+        Cerrar(salida)
 FIN_ACCION
 
 """
