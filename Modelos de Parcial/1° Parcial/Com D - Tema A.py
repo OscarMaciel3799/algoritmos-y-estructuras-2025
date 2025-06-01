@@ -25,7 +25,7 @@ Se pide escribir un algoritmo que permita:
     cuando el importe sea menor a 90.000.
 2) Informe, para cada hotel, cuál fue la reserva (NroReserva) con mayor cantidad de noches (y la cantidad de noches).
 
-RERESOLUCION EN PSEUDOCODIGO
+RESOLUCION EN PSEUDOCODIGO
 
 ACCION ejercicio_1 ES 
     AMBIENTE 
@@ -77,6 +77,9 @@ ACCION ejercicio_1 ES
 FIN_ACCION
 
 """
+#A fines practicos en python las secuencias de Enteros las consideraremos Listas
+#A fines practicos en python las secuencias de Caracteres las consideraremos Strings
+
 def convertirANum(i):
     match i :
         case '0': return 0
