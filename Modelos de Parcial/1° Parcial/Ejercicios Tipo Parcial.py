@@ -368,7 +368,7 @@ ACCION Ejercicio_2.1.15 ES
         Arrancar(oraciones);Avanzar(oraciones,o)
         cant_palabras:=0
         cant_oraciones:=0
-        Mientras NFDS(informacion) hacer
+        Mientras NFDS(oraciones) hacer
             Mientras o<>'.' hacer
                 Mientras o =' ' hacer
                     Avanzar(oraciones,o)
