@@ -19,7 +19,7 @@ ACCION ejercicio_1.16 ES
         Crear(dni_multiplos)
         
         Mientras NFDS(dni_asignados) hacer
-            SI a % 3=0 entonces
+            SI a MOD 3=0 entonces
                 Escribir(dni_multiplos,a)
             Fin_SI
             Avanzar(dni_asignados,a)
