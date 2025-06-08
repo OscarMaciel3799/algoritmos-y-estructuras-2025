@@ -31,6 +31,7 @@ ACCION ejercicio_1.15 ES
             Avanzar(oraciones,o)
             cant_oraciones:=cant_oraciones + 1
         Fin_Mientras
+        Escribir("La cantidad promedio de palabras que contienen las oraciones es: ", cant_oraciones/cant_palabras)
 FIN_ACCION
 
 """
