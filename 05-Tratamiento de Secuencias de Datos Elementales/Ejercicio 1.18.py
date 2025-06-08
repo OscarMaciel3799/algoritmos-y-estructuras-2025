@@ -41,9 +41,3 @@ ACCION ejercicio_1.18 ES
 FIN_ACCION
 
 """
-
-def main():
-    pass
-            
-if __name__ == "__main__":
-    main()
