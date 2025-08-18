@@ -1,0 +1,103 @@
+EJERCICIO EXTRA SUBSECUENCIA - Clase de repaso 02/07/2025
+
+EJERCICIO CON SUBSECUENCIAS PALABRAS
+
+Dada una secuencia de caracteres con información de mensajes enviados por los usuarios de una 
+aplicación de mensajería, con la siguiente estructura:
+
+ID_USUARIO (3 caracteres) HORA_ENVÍO (4 caracteres, en formato 24hs: HHMM) TEXTO_DEL_MENSAJE (#)
+
+Ejemplo de secuencia:
+	A120930Hola estas en casa#B452245Increible dia hoy#C781015Es momento de estudiar#
+
+Se pide:
+
+a) Generar una secuencia de salida que contenga solo las palabras que comienzan con 
+vocal (mayúscula o minúscula), extraídas de los mensajes enviados entre las 08:00 y las 12:00 horas inclusive.
+
+- Separar las palabras válidas con el carácter ' ' (1 espacio en blanco).
+
+Ejemplo: Para el mensaje A12 0930 Hola estas en casa (agrego espacios solo para visualizar mejor la estructura), 
+las palabras que comienzan con vocal son: estas, en.
+Si el mensaje está dentro del rango horario indicado, la salida sería:
+																		estas en
+
+DESAFÍO: Qué deberia modificar en el algoritmo si en este punto se pide que a la salida se copie el id_usuario: A12estas en
+
+b) Determinar cuántos mensajes fueron enviados durante la noche, 
+definida como el rango horario entre las 20:00 y las 06:00 hs 
+(es decir, desde las 20:00 hasta las 23:59 y desde las 00:00 hasta las 05:59).
+
+c) [Opcional] Contar cuántas palabras que comienzan con cada vocal (A, E, I, O, U) f
+ueron incluidas en la salida del inciso (a), y mostrar un resumen como el siguiente:
+
+A: 2
+E: 5
+I: 1
+O: 0
+U: 0
+
+
+Accion Extra es
+	Ambiente
+		mensajes,salida: Secuencia de caracteres
+		m: Caracter
+		id_usuario_1, id_usuario_2, id_usuario_3: Caracter
+		vocales=("a","e","i","o","u")
+		hora: Entero
+		comienzan_A, comienzan_E, comienzan_i, comienzan_O, comienzan_U: Entero
+
+		Procedimiento ConvAEntero(car: caracter):Entero es
+			Segun car hacer
+				'0' : ConvAEntero:=0
+				'1' : ConvAEntero:=1
+				'2' : ConvAEntero:=2
+				'3' : ConvAEntero:=3
+				'4' : ConvAEntero:=4
+				'5' : ConvAEntero:=5
+				'6' : ConvAEntero:=6
+				'7' : ConvAEntero:=7
+				'8' : ConvAEntero:=8
+				'9' : ConvAEntero:=9
+			Fin_Segun
+		Fin_Procedimiento
+	Proceso
+		Arrancar(mensajes); Avanzar(mensajes,m)
+		Crear(salida)
+		comienzan_A:=0
+		comienzan_E:=0
+		comienzan_i:=0
+		comienzan_O:=0
+		comienzan_U:=0
+		Mientras NFDS(mensajes) hacer
+			id_usuario_1:=m
+			Avanzar(mensajes,m)
+			id_usuario_2:=m
+			Avanzar(mensajes,m)
+			id_usuario_3:=m
+			
+			Avanzar(mensajes,m) // primer elemento de la hora
+			hora:=ConvAEntero(m)
+			Avanzar(mensajes,m) 
+			hora:= hora*10 + ConvAEntero(m)
+			Avanzar(mensajes,m) 
+			hora:= hora*10 + ConvAEntero(m)
+			Avanzar(mensajes,m) 
+			hora:= hora*10 + ConvAEntero(m)
+
+			Avanzar(mensajes,m) // primer caracter del msj
+			Si hora>=800 Y hora <= 1200 entonces
+				Mientras m <> '#' hacer
+					Mientras m=" " hacer
+						Avanzar(mensajes,m)
+					Fin_Mientras
+					SI m EN vocales entonces
+						Segun m hacer
+							'a': comienzan_A:=comienzan_A + 1
+							'e': comienzan_E:=comienzan_E + 1
+							'i': comienzan_I:=comienzan_I + 1
+							'o': comienzan_O:=comienzan_O + 1
+							'u': comienzan_U:=comienzan_U + 1
+						Fin_Segun
+				Fin_Mientras
+Fin_Accion

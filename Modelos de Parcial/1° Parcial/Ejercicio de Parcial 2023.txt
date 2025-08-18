@@ -1,0 +1,133 @@
+EJERCICIO DE PARCIAL 2023:
+La misma cadena de supermercados, además cuenta con un archivo secuencial con el stock de todos sus artículos 
+on el siguiente formato:
+
+STOCK, ordenado por Código sucursal, Rubro y Código Artículo.
+
+Cod Suc N(2) | Rubro AN(20) | Cod Articulo N(5) | FechaUltRep | Stock de seguridad | Stock actual
+
+FechaUltRep: fecha última reposición
+El stock de seguridad es el nivel mínimo de existencias que se debe mantener en almacén. 
+
+Se le pide escribir un algoritmo en pseudocódigo que permita:
+1.Generar un informe que muestre todos los artículos (sucursal, rubro y código de articulo) 
+    cuyo stock actual esté por debajo del stock de seguridad, indicando 
+    cantidad total por sucursal, por rubro y total general.
+2.Generar un archivo de salida que contenga la cantidad total de artículos que requieren 
+    reposición (stock actual menor a stock de seguridad) por Rubro, por cada sucursal. 
+    Debe contener: 
+    código sucursal, rubro y cantidad de artículos.
+
+
+Accion 2023 es
+    Ambiente
+        fecha = Registro
+            año: 1900 ... 2099
+            mes: 1..12
+            dia: 1..31
+        Fin Registro
+        stock: Registro
+            cod_suc: N(2)
+            rubro: AN(20)
+            cod_art: N(5)
+            fecha_ult_rep: fecha
+            stock_seg: Entero
+            stock_act: Entero
+        Fin Registro
+        arch_stock: Archivo de stock ordenado por cod_suc, rubro y cod_art.
+        reg_stock: stock
+        salida= Registro
+            cod_suc:N(2)
+            rubro:AN(20)
+            cant_art: Entero
+        FinRegistro
+        arch_salida: Archivo de salida ordenado por cod_suc, rubro
+        reg_salida: salida
+
+        cont_suc, cont_rub, cont_total: Entero
+        resg_suc: N(2)
+        resg_rubro: AN(20)
+        Procedimiento corte_rubro es
+        
+        Fin_Procedimiento
+    Proceso
+        Abrir E/ (arch_stock); Leer(arch_stock,reg_stock)
+        Abrir S/ (arch_salida)
+
+        cont_total:=0
+        cont_suc:=0
+        cont_rub:=0
+
+        resg_suc:=reg_stock.cod_suc
+        resg_rubro:=reg_stock.rubro
+
+        Mientras NFDA(arch_stock) hacer
+            SI resg_suc <> reg_stock.cod_suc entonces
+                corte_sucursal
+            SINO
+                SI resg_rubro <> reg_stock.rubro entonces
+                    corte_rubro
+                FinSI
+            FinSI
+
+            // tratar registros- conteo o acumulacion
+            SI registro_sup.
+            cant_articulos:=cant_articulos + 1
+
+            Leer(arch_stock,reg_stock)
+        FinMientras
+        cont_suc
+        Escribir("La cantidad total de articulos que requieren reposicion es ",cont_total)
+        Cerrar(arch_stock)
+        Cerrar(arch_salida)
+Fin Accion
+
+
+
+
+
+subaccion corte_n es
+  llamada al corte_n-1
+  Emitir resultados del nivel
+  Acumular totales al nivel superior
+  Reiniciar totales de este nivel
+  Resguardar la nueva clave
+fin subaccion
+
+
+
+
+
+Dada una secuencia de caracteres con datos de personas con el siguiente formato:
+
+Nombre | Domicilio | DNI(8 caracteres)Región (1-2-3) Nombre | Domicilio | DNI (8 caracteres) Región (1-2-3)..\*(marca de fin)
+
+DNI, Región y Nombre de la siguiente persona no están separados por ningún carácter, Región tiene un solo carácter.
+Generar una secuencia de caracteres de salida que contenga todos los DNI que comiencen con dígito par y pertenezcan a la Región 1.
+Al final informar cantidad de personas de cada región y porcentaje de las mismas sobre el total de personas
+
+
+
+
+
+
+2.15. El organismo del cual dependen las escuelas de un distrito lleva un archivo con los registros para todos los
+alumnos de nivel secundario de ese distrito:
+
+Escuela Año División Nombre Cant. Inasist.
+Se introduce como dato el número de distrito y la cantidad de días de clase dictados en el año.
+El archivo está ordenado por número de escuela, año y división.
+Los alumnos que superan el 20% de las inasistencias están en situación de LIBRES, de lo contrario son
+REGULARES.
+Se desea conocer:
+Para cada división: Cantidad de alumnos
+Para cada año: Cantidad total de alumnos libres
+Cantidad de alumnos regulares
+Cantidad total de alumnos
+Todas las escuelas: Cantidad total de alumnos
+Porcentaje de alumnos libres.
+Promedio de inasistencias por alumnos.
+
+
+
+

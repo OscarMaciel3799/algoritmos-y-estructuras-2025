@@ -1,0 +1,251 @@
+Ejercicio N°1
+Durante la Feria del Libro se relevó informacion sobre las editoriales participantes y los libros que representan. 
+Los datos fueron almacenados en dos secuencias de caracteres, las cuales deben ser procesadas para obtener 
+distintos informes.
+
+Datos de Entrada
+
+A. Secuencia de Editoriales:
+Cada editorial está representada de la siguiente manera:
+- Nombre de la editorial (cantidad indeterminada de caracteres, finaliza con '&')
+- Provincia (2 caracteres que representan un número del '01' al '23')
+Ejemplo: Planeta&01Sudamericana&03...
+
+B. Secuencia de Libros:
+Por cada editorial hay una cantidad indeterminada de libros, separados por el caracter '@'. Cada libro contiene 
+los siguientes campos:
+- Tema (1 caracter): L=Literatura / C= Ciencia / A= Autoayuda y desarrollo personal / I=Infantiles
+- Cantidad de página: (3 caracteres, por ejemplos 245)
+- Nombre del libre: (cantidad indeterminada de caracteres, finaliza con '&')
+- Resumen: texto libre (finaliza con el caracter '#')
+Las palabras están separadas por una cantidad variable de espacios en blanco
+
+Ejemplo:
+L245Elprincipito&Una    vida a   vivir  y   aprender#I072El   principe   del bosque&Una  historia sobre la 
+amistad#@C120FisicaParaTodos&Conceptos   basicos para jovenes#....
+
+Se solicita escribir un algoritmo en pseudocodigo que permita:
+
+a) Generar una secuencia de salida con los nombres de los libros de tema "Infantiles" (Tema='I') con menos 
+de 150 paginas. Deben estar separados por un  '$'.
+b) Para cada editorial, informar la cantidad total de palabras utilizadas en todos los resumenes.
+c) Indicar cuantas editoriales tienen al menos un libro del tema 'Autoayuda'
+Nota: En caso de ser necesario debe escribir una funcion para convertir caracteres a números.
+
+Accion E1 Es
+    Ambiente
+        editoriales, libros, salida: Secuencia de Caracter
+        e, l: Caracter
+        cant_paginas: Entero
+        cant_palabras: Entero
+        cant_edit_a: Entero
+        tiene_a: Boolean
+        Funcion caracterANumero(car: Caracter):Entero es
+            Segun car hacer
+                '0': caracterANumero:=0
+                '1': caracterANumero:=1
+                '2': caracterANumero:=2
+                '3': caracterANumero:=3
+                '4': caracterANumero:=4
+                '5': caracterANumero:=5
+                '6': caracterANumero:=6
+                '7': caracterANumero:=7
+                '8': caracterANumero:=8
+                '9': caracterANumero:=9
+            Fin_Segun
+        Fin_Funcion
+    Proceso
+        Arrancar(editoriales); Avanzar(editoriales,e)
+        Arrancar(libros); Avanzar(libros,l)
+        Crear(salida)
+        cant_edit_a:=0
+        
+        Mientras NFDS(libros) hacer
+            cant_palabras:=0
+            tiene_a:=FALSO
+
+            Mientras l<> '@' hacer              // Secuencia de Editoriales
+                Si l ='I' entonces
+                    Avanzar(libros,l)
+                    cant_paginas:=caracterANumero(l)
+                    Avanzar(libros,l)
+                    cant_paginas:=cant_paginas*10 + caracterANumero(l)
+                    Avanzar(libros,l)
+                    cant_paginas:=cant_paginas*10 + caracterANumero(l)
+                    Avanzar(libros,l)           // Primer Caracter del Nombre del libro
+
+                    SI cant_paginas< 150 entonces
+                        Mientras l<>'&' hacer
+                            Escribir(salida,l)
+                            Avanzar(libros,l)
+                        Fin_Mientras
+                        Escribir(salida,'$')
+                    SINO
+                        Mientras l<>'&' hacer
+                            Avanzar(libros,l)
+                        Fin_Mientras
+                    Fin_Si
+                SINO
+                    Si l ='A' y tiene_a=FALSO entonces
+                        cant_edit_a:=cant_edit_a+1
+                        tiene_a:=VERDADERO
+                    FIN_SI
+                    Mientras l<>'&' hacer
+                            Avanzar(libros,l)
+                    Fin_Mientras
+                Fin_Si
+                Avanzar(libros,l)               // Primer Caracter del resumen
+                
+                Mientras l <> '#' hacer
+                    Mientras l <> ' ' hacer
+                        Avanzar(libros,l)
+                    Fin_Mientras
+                    Si l <> '#' entonces
+                        cant_palabras:=cant_palabras+1
+                        Mientras l <> ' ' Y l <> '#' hacer
+                            Avanzar(libros,l)
+                        Fin_Mientras
+                    Fin_SI
+                Fin_Mientras
+                Avanzar(libros,l)               // Tema del siguiente libro o @
+            Fin_Mientras
+
+            Escribir("Para la editorial")
+            Mientras e<> '&' hacer
+                Escribir(e)
+                Avanzar(editoriales,e)
+            Fin_Mientras
+            Avanzar(editoriales,e)              // Primer Caracter del nombre de la sig Editorial
+            Escribir("La cantidad de palabras usadas en todos los resumenes es: ",cant_palabras)
+        Fin_Mientras
+        Escribir("Hay ",cant_edit_a," editoriales con al menos un libro de Autoayuda")
+        Cerrar(libros,l)
+        Cerrar(editoriales,e)
+Fin_Accion
+
+------------------------------------------------------------------------------------------------------------------
+
+Ejercicio N°2
+La red de estaciones de carga urbana para vehículos eléctricos (VE) dispone de un sistema de monitoreo que 
+registra las sesiones de carga realizadas durante el mes de junio. 
+La informacion se encuentra ordenada por Numero de Estacion, Tipo de Vehiculo y Número de Carga, 
+y para cada sesion de carga se registra.
+
+| Nro de Estacion | Tipo de Vehiculo | Nro Carga | Fecha de carga | Duracion carga | Costo carga |
+|                 |    (SD,SV,UT)    |           |                |    (minutos)   |             |
+Nota:SD: Sedan. SV:SUV. y UT: Utilitario
+
+Se pide escribir un algoritmo para:
+a) Listar todas las cargas de una fecha ingresada por el usuario
+b) Mostrar el total recaudado por estacion y por tipo de vehiculo
+c) Crear un archivo de salida que contenga, por cada estación:
+    - Numero de Estacion
+    - Total recaudado en vehiculos tipo Sedan
+d) Informar cuales son las estaciones que tuvieron mayor recaudacion en vehiculos tipo SUV que en vehiculos 
+tipo UTILITARIO.
+
+
+
+Accion E2 Es
+    Ambiente
+        fecha= Registro
+            año: 1900...2099
+            mes: 1...12
+            dia: 1...31
+        Fin_Registro
+        sesiones=Registro
+            nro_estacion: Entero
+            tipo_vehiculo: ('SD','SV','UT')
+            nro_carga: Entero
+            fecha_carga: fecha
+            duracion: Entero
+            Costo: Real
+        Fin_Registro
+        salidas=Registro
+            nro_estacion: Entero
+            recaudado: Real
+        Fin_Registro
+
+        arch_sesiones: Archivo de sesiones ordenado por nro_estacion, tipo_vehiculo, nro_carga
+        reg_sesion: sesiones
+
+        arch_salidas: Archivo de salidas ordenado por nro_estacion
+        reg_salida: salidas
+
+        resg_estacion: Entero
+        resg_vehiculo: ('SD','SV','UT')
+        recaudacion_vehiculo, recaudacion_estacion: Real
+        recaudacion_sd, recaudacion_sv, recaudacion_ut: Real
+        fecha_usuario: fecha
+
+        Procedimiento corte_vehiculo es
+            Escribir("En la estacion ",resg_estacion)
+            Escribir("El total recaudado en el tipo ",resg_vehiculo," es ",recaudacion_vehiculo)
+
+            recaudacion_estacion:=recaudacion_estacion+recaudacion_vehiculo
+
+            Segun reg_sesion.tipo_vehiculo hacer
+                'SD':
+                    recaudacion_sd:= recaudacion_vehiculo
+                'SV':
+                    recaudacion_sv:= recaudacion_vehiculo
+                'UT':
+                    recaudacion_ut:= recaudacion_vehiculo
+            Fin_Segun
+
+            recaudacion_vehiculo:=0
+            resg_vehiculo:=reg_sesion.tipo_vehiculo
+        Fin_Procedimiento
+        
+        Procedimiento corte_estacion es
+            corte_vehiculo
+            Escribir("El total recaudado en la estacion es: ",recaudacion_estacion)
+            
+            reg_salida.nro_estacion:=resg_estacion
+            reg_salida.recaudado:=recaudacion_sd
+            Escribir(arch_salidas,reg_salida)
+
+            Si recaudacion_sv > recaudacion_ut entonces
+                Escribir("En esta estacion se recaudo más con SUV que con UTILITARIO)
+            Fin_Si
+
+            recaudacion_estacion:=0
+
+            resg_estacion:=reg_sesion.nro_estacion
+        Fin_Registro
+    Procedimiento
+        Abrir E/(arch_sesiones); Leer(arch_sesiones,reg_sesion)
+        Abrir S/(arch_salidas)
+
+        resg_estacion:= reg_sesion.nro_estacion
+        resg_vehiculo:= reg_sesion.tipo_vehiculo
+
+        recaudacion_vehiculo:=0
+        recaudacion_estacion:=0
+
+        Escribir("Ingrese la fecha que le interese ver con el formato DD/MM/AAAA")
+        Leer(fecha_usuario.dia, fecha_usuario.mes, fecha_usuario.año)
+        
+        Mientras NFDA(arch_sesiones) hacer
+            SI resg_estacion <> reg_sesion.nro_estacion entonces
+                corte_estacion
+            SINO
+                Si resg_vehiculo <> reg_sesion.tipo_vehiculo entonces
+                    corte_vehiculo
+                Fin_Si
+            Fin_SI
+
+            recaudacion_vehiculo:=recaudacion_vehiculo + reg_sesion.costo
+
+            SI reg_sesion.fecha_carga.dia = fecha_usuario.dia Y 
+            reg_sesion.fecha_carga.mes = fecha_usuario.mes Y 
+            reg_sesion.fecha_carga.año = fecha_usuario.año entonces    // Se puede preguntar directamente SI reg_sesion.fecha_carga = fecha_usuario entonces
+                Escribir("La carga: ",reg_sesion.nro_carga," es del dia ingresado por el usuario")
+            Fin_Si
+
+            Leer(arch_sesiones,reg_sesion)
+        Fin_Mientras
+        corte_estacion
+        Cerrar(arch_sesiones)
+        Cerrar(arch_salidas)
+Fin_Accion

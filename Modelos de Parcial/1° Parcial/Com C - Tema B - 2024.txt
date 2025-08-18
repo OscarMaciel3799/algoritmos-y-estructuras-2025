@@ -1,0 +1,222 @@
+Ejercicio N° 1 
+
+Un supermercado mayorista necesita un informe de ventas, para lo cual cuenta con una secuencia 
+de caracteres y una secuencia de enteros, ambas contienen información del mes de JUNIO, para 
+las distintas sucursales. La estructura de dichas secuencias es la siguiente: 
+
+Secuencia de caracteres: 
+Sucursal (cantidad indeterminada de caracteres) & cantidad de tickets (3 caracteres), sucursal & 
+cantidad de tickets....FDS 
+
+Ejemplo: 
+Resistencia&025Barranqueras&123…FDS 
+
+Secuencia de enteros 
+Para cada ticket: Forma de pago (1: efectivo, 2: tarjeta débito y 3: tarjeta crédito) | Nro ticket | 
+cantidad de artículos | importe 
+
+Ejemplo: 
+1 | 2345 | 9 | 12500 | 3 | 2950 | 4 | 9864 |...FDS 
+
+Si considera necesario, puede utilizar una función ConvertiraNumero(caracter), que recibe como 
+parámetro un carácter y devuelve un dato entero. No es necesario desarrollar la función. 
+
+Se solicita diseñar un algoritmo que: 
+
+1) Genere una secuencia de salida de caracteres que contenga el nombre de la sucursal y la 
+cantidad de ventas en efectivo. 
+2) Informe el porcentaje de ventas en efectivo sobre el total de tickets. 
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION Ejercicio_1 ES 
+    AMBIENTE 
+        informacion,salida: Secuencia de Caracter
+        i,aux: Caracter
+        tickets: Secuencia de Entero
+        t,cont,cant_tickets,cant_vent_efectivo ,total_ventas_efectivo,total_tickets: Entero
+        Funcion ConvertirACaracter(num:Entero): Caracter
+                Segun num hacer
+                    0: ConvertirACaracter:='0'
+                    1: ConvertirACaracter:='1'
+                    2: ConvertirACaracter:='2'
+                    3: ConvertirACaracter:='3'
+                    4: ConvertirACaracter:='4'
+                    5: ConvertirACaracter:='5'
+                    6: ConvertirACaracter:='6'
+                    7: ConvertirACaracter:='7'
+                    8: ConvertirACaracter:='8'
+                    9: ConvertirACaracter:='9'
+                FIn_Segun
+        Fin_Funcion
+    PROCESO
+        Escribir("Este algoritmo ....")
+        Arrancar(informacion);Avanzar(informacion,i) // Primer caracter de la secuencia  'R'
+        Arrancar(tickets);Avanzar(tickets,t) // Primer Entero de la secuencia 1 
+        Crear(salida)
+        
+        total_ventas_efectivo:=0
+        total_tickets:=0
+        
+        Mientras NFDS(informacion) hacer
+            Mientras i<>'&' hacer
+                Escribir(salida,i)
+                Avanzar(informacion,i)
+            FIn_Mientras
+            Avanzar(informacion,i)
+            
+            cant_cant_tickets:= ConvertiraNumero(i) * 100
+            Avanzar(informacion,i)
+            cant_tickets:=cant_tickets + ConvertiraNumero(i) * 10
+            Avanzar(informacion,i)
+            cant_tickets:=cant_tickets + ConvertiraNumero(i) 
+            Avanzar(informacion,i)
+            
+            cant_vent_efectivo:=0
+            Para cont:=1 hasta cant_tickets hacer
+                SI t=1 entonces
+                    cant_vent_efectivo:=cant_vent_efectivo+1
+                FIN_SI
+                Avanzar(tickets,t)
+                Avanzar(tickets,t)
+                Avanzar(tickets,t)
+                Avanzar(tickets,t)
+            Fin_Para
+            
+            total_ventas_efectivo+=total_ventas_efectivo+cant_vent_efectivo
+            total_tickets:=total_tickets + cant_tickets
+
+            aux:= ConvertirACaracter(cant_vent_efectivo DIV 100)
+            Escribir(salida,aux)
+            cant_vent_efectivo:=cant_vent_efectivo MOD 100
+            
+            aux:= ConvertirACaracter(cant_vent_efectivo DIV 10)
+            Escribir(salida,aux)
+            cant_vent_efectivo:=cant_vent_efectivo MOD 10
+            
+            aux:= ConvertirACaracter(cant_vent_efectivo)
+            Escribir(salida,aux)
+
+        FIn_Mientras
+        Escribir("El porcentaje de ventas en efectivos de todas las sucursales es: ", (total_ventas_efectivo*100/total_tickets)," %")
+        Cerrar(salida)
+FIN_ACCION
+
+
+Ejercicio N° 2 
+
+Un supermercado mayorista que cuenta con un sistema de atención en cajas necesita un informe de ventas, 
+para lo cual cuenta con el archivo secuencial VENTAS que contiene información de todos los tickets emitidos 
+durante el mes de JUNIO. Para cada venta se registra:
+
+VENTAS, Ordenado por Nro de Caja, Forma de pago, Nro de ticket
+
+| Nro de | Forma de pago | Nro de | Fecha de | Cantidad de | Importe de |
+| Caja   | (EF, TD y TC) | ticket |   venta  |  artículos  |  la venta  |
+
+Nota: EF: efectivo, TD: tarjeta débito y TC: tarjeta crédito.
+
+Se pide escribir un algoritmo que permita:
+
+1. Imprimir un informe que muestre por pantalla el total de dinero recaudado por caja y por forma de pago. 
+2. Crear un fichero de salida que contenga :
+Nro de caja, total pago (importes) en efectivo y total pago (importes) con tarjetas (TD o TC). (1 registro por caja)
+
+Nro de Caja | Total Efectivo | Total Tarjetas
+
+3. Informar cuáles son las cajas que tuvieron mayor recaudación (importes) en efectivo que con tarjetas.
+
+Accion Ejercicio2 es
+    AMBIENTE
+        fecha = Registro
+            año: 1900 ... 2099
+            mes: 1 ... 12
+            dia: 1 ... 31
+        Fin_Registro
+        ventas = Registro
+            nro_caja: Entero
+            forma_pago: ("EF", "TD" , "TC")
+            nro_ticket: Entero
+            fecha_venta: fecha
+            cant_art: Entero
+            imp_venta: Real
+        Fin_Registro
+        salidas = Registro
+            nro_caja: Entero
+            imp_efectivo: Real
+            imp_tarjetas: Real
+        Fin_Registro
+
+        arch_ventas: Archivo de ventas ordenado por nro_caja, forma_pago y nro_ticket
+        reg_venta: ventas
+        arch_salidas: Archivo de salidas ordenado por nro_caja
+        reg_salida: salidas
+
+        resg_nro_caja: Entero
+        importe: Real
+        importe_efectivo: Real
+        importe_debito: Real
+        importe_credito: Real
+        Procedimiento corte_forma_pago es
+            Escribir("Para la caja ",resg_nro_caja)
+            Escribir("La cantidad de dinero recaudado en ",resg_forma_pago," es: ",importe)
+
+            Segun reg_venta.forma_pago hacer
+                "EF":
+                    importe_efectivo:=importe_efectivo + importe
+                "TC":
+                    importe_credito:=importe_credito + importe
+                "TD":
+                    importe_debito:=importe_debito + importe
+            FIn_Segun
+
+            importe:= 0
+            resg_forma_pago:=reg_venta.forma_pago
+        Fin_Procedimiento
+
+        Procedimiento corte_nro_caja es
+            corte_forma_pago
+            Escribir("Para la caja ",resg_nro_caja)
+            Escribir("La cantidad de dinero recaudado en total es: ",(importe_efectivo+importe_credito+importe_debito))
+
+            reg_salida.nro_caja:=resg_nro_caja
+            reg_salida.imp_efectivo:=importe_efectivo
+            reg_salida.imp_tarjetas:=(importe_credito+importe_debito)
+            Escribir(arch_salidas,reg_salida)
+
+            Si importe_efectivo > (importe_credito+importe_debito) entonces
+                Escribir("Se obtuvo mayor recaudación en efectivo que con tarjetas")
+            FIN_SI
+
+            resg_nro_caja: reg_venta.nro_caja
+            importe_efectivo:=0
+            importe_debito:=0
+            importe_credito:=0
+        Fin_Procedimiento
+    PROCESO
+        Abrir E/(arch_ventas); Leer(arch_ventas,reg_venta)
+        Abrir S/(arch_salidas)
+
+        resg_nro_caja: reg_venta.nro_caja
+        resg_forma_pago:=reg_venta.forma_pago
+        importe_efectivo:=0
+        importe_debito:=0
+        importe_credito:=0
+
+        Mientras NFDA(arch_ventas) hacer
+            SI resg_nro_caja <> reg_venta.nro_caja entonces
+                corte_nro_caja
+            SINO
+                SI resg_forma_pago <> reg_venta. entonces
+                    corte_forma_pago
+                Fin_SI
+            FIN_SI
+
+            importe:=importe + reg_venta.imp_venta
+            
+            Leer(arch_ventas,reg_venta)
+        Fin_Mientras
+        corte_nro_caja
+        Cerrar(arch_ventas)
+        Cerrar(arch_salidas)
+FIN_ACCION

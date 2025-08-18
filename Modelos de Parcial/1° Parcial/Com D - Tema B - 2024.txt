@@ -1,0 +1,239 @@
+EJERCICIO № 1:
+Una cadena de hoteles necesita un informe de ocupación y pagos para el mes de JUNIO. 
+Para esto, se cuenta con dos secuencias de datos:
+
+Secuencia de caracteres:
+Estructura: 
+Hotel (cantidad indeterminada de caracteres) & cantidad de reservas (3 caracteres) hotel &cantidad de reservas....FDS
+
+Ejemplo: HotelAlas&340Hotel Bahia&999... FDS
+
+Secuencia de enteros:
+Estructura para cada reserva:
+Nro de reserva, tipo de habitación (1: single, 2: doble, 3: suite), cantidad de noches, importe.
+
+Ejemplo 1234 | 1 | 3 | 120.000 2345 | 3 | 2 | 65.000 | ...FDS
+
+Nota: La función ConvertiraNumero(caracter) puede ser utilizada si se considera necesario para 
+convertir un carácter a un dato entero.
+
+Se pide escribir un algoritmo que permita:
+1) Generar una secuencia de salida de caracteres que contenga el 
+    nombre de cada hotel y su cantidad de reservas de habitaciones dobles.
+2) Promedio de reservas de habitaciones dobles por hotel
+
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION ejercicio_1 ES 
+    AMBIENTE 
+        hoteles,salida: Secuencia de Caracter
+        h,aux: Caracter
+        reservas: Secuencia de Entero
+        r: Entero
+        cont,cant_reservas,cant_hab2,total_hab2, total_hoteles: Entero
+
+        Funcion ConvertirACaracter(n:Entero):caracter es
+            Segun n hacer
+                0: ConvertirACaracter:='0'
+                1: ConvertirACaracter:='1'
+                2: ConvertirACaracter:='2'
+                3: ConvertirACaracter:='3'
+                4: ConvertirACaracter:='4'
+                5: ConvertirACaracter:='5'
+                6: ConvertirACaracter:='6'
+                7: ConvertirACaracter:='7'
+                8: ConvertirACaracter:='8'
+                9: ConvertirACaracter:='9'
+            FIn_Segun
+        Fin_Funcion
+    PROCESO
+        Escribir("Este algoritmo ....")
+        Arrancar(hoteles);Avanzar(hoteles,h)
+        Arrancar(reservas);Avanzar(reservas,r)
+        Crear(salida)
+        total_hoteles:=0
+        total_hab2:=0
+        
+        Mientras NFDS(hoteles) hacer
+            Mientras h<> '&' hacer
+                Escribir(salida,h)
+                Avanzar(hoteles,h)
+            Fin_Mientras
+            Avanzar(hoteles,h)
+            
+            cant_reservas:=ConvertiraNumero(h)*100
+            Avanzar(hoteles,h)
+            cant_reservas:=cant_reservas + ConvertiraNumero(h)*10
+            Avanzar(hoteles,h)
+            cant_reservas:=cant_reservas + ConvertiraNumero(h)
+            Avanzar(hoteles,h)
+
+            cant_hab2:=0
+            total_hoteles:=total_hoteles + 1
+            Para cont:=1 hasta cant_reservas hacer
+                Avanzar(reservas,r)
+                SI r = 2 entonces
+                    cant_hab2:=cant_hab2 + 1
+                FIN_SI
+                Avanzar(reservas,r)
+                Avanzar(reservas,r)
+                Avanzar(reservas,r)
+            Fin_Para
+            total_hab2:=total_hab2 + cant_hab2
+
+            aux:=ConvertirACaracter(cant_hab2 DIV 100)
+            Escribir(salida,aux)
+            cant_hab2:=cant_hab2 MOD 100
+            aux:=ConvertirACaracter(cant_hab2 DIV 10)
+            Escribir(salida,aux)
+            aux:=ConvertirACaracter(cant_hab2 MOD 10)
+            Escribir(salida,aux)
+
+        Fin_Mientras
+        Escribir("El promedio de reserva de habitaciones dobles fue de: ",total_hab2/total_hoteles)
+        Cerrar(reservas)
+        Cerrar(hoteles)
+        Cerrar(salida)
+FIN_ACCION
+
+
+Ejercicio N° 2 
+
+La cadena de hoteles del ejercicio anterior cuenta con un sistema de gestión de reservas y ahora le solicita a Ud. 
+un informe de ocupación y facturación para el mes de JUNIO. Para cada reserva se registra:
+
+RESERVAS, Ordenado por Número de Hotel, Tipo de Habitación, Número de Reserva
+
+| Nro. de |  Tipo de Habitación | Nro de  | Fecha de | Cantidad  | Importe de |
+|  Hotel  | (IND, DOB, SUITE)   | Reserva | ingreso  | de noches | la reserva |
+
+Tipo de Habitación: (IND: Individual, DOB: Doble, SUITE: Suite)
+
+Se pide escribir un algoritmo que permita:
+1. Imprimir un informe que muestre el total de dinero recaudado por hotel y por tipo de habitación.
+2. Crear un fichero de salida que contenga Número de Hotel y total de dinero recaudado en 
+habitaciones dobles y suites.
+
+| Nro de Hotel | Total hab. dobles | Total hab. suites |
+
+3. Informar cuáles son los hoteles que tuvieron mayor recaudación en 
+habitaciones dobles (DOB) que en suites (SUITE).
+
+Accion Ejercicio2 es
+    AMBIENTE
+        // Definir estructura de registros, lo usamos para definir las estructuras de los registros con los que vamos a trabajar
+        fecha = registro
+            año: 1900 ... 2099
+            mes: 1...12
+            dia:1 ...31
+        Fin_Registro
+        reservas= Registro
+            nro_hotel: Entero
+            tipo_hab: ("IND", "DOB", "SUITE") 
+            nro_reserva: Entero
+            fecha_ingreso: fecha
+            cant_noches: Entero
+            imp_reserva: Real
+        Fin_Registro
+        salidas= Registro
+            nro_hotel: Entero
+            importe_dob: Real
+            importe_suite: Real
+        Fin_Registro
+
+        // Definir estructura de archivos, creamos las variables archivos, con sus tipos de dato, y las variables registros que usaremos de "ventana"
+        arch_reservas: Archivo de reservas ordenado por nro_hotel, tipo_hab, nro_reserva
+        reg_reserva: reservas
+        arch_salidas: Archivo de salidas ordenado por nro_hotel
+        reg_salida: salidas
+
+        // Definir contadores y totalizadores según requisitos; Son las variables que se van a usar para contabilizar la informacion solicitada por el ejercicio
+        cant_recaudacion, cant_ind, cant_dob, cant_suite : Real
+        
+        // Definir resguardos; son las variables "testigo" que van a guardar los valores de los campos del registro usados para el corte, ya que cuando el corte se produce, el valor anterior, que es el que tenemos acumulados, se perdería en caso de no tener los resguardos
+        resg_nro_hotel: Entero
+        resg_tipo_hab: ("IND", "DOB", "SUITE") 
+
+        // Definir subacciones requeridas; los cortes van a ser definidas como subacciones del tipo Procedimiento, la cantidad de cortes posibles va a estar dado por la cantidad de campos por los que esta ordenado el archivo menos uno,para nuestro caso, el archivo esta ordenado por 3 campos por lo que podemos hacer hasta 2 cortes 
+        Procedimiento corte_forma_pago es
+            Escribir("Para el hotel: ",resg_nro_hotel)
+            Escribir("La cantidad de dinero recaudado por habitaciones ",resg_tipo_hab," es: ",cant_recaudacion)
+
+            Segun reg_reserva.tipo_hab hacer
+                "IND":
+                    cant_ind:=cant_ind +cant_recaudacion
+                "DOB":
+                    cant_dob:=cant_dob + cant_recaudacion
+                "SUITE":
+                    cant_suite:=cant_suite + cant_recaudacion
+            FIn_Segun
+
+            cant_recaudacion:=0
+            resg_tipo_hab:=reg_reserva.tipo_hab
+
+        Fin_Procedimiento
+
+        Procedimiento corte_nro_hotel es
+            corte_forma_pago
+            Escribir("Para el hotel: ",resg_nro_hotel)
+            Escribir("La cantidad de total de dinero recaudado es: ",(cant_ind+cant_dob+cant_suite))
+
+            reg_salida.nro_hotel:=resg_nro_hotel
+            reg_salida.importe_dob:=cant_dob
+            reg_salida.importe_suite:=cant_suite
+            Escribir(arch_salidas,reg_salida)
+
+            SI cant_dob > cant_suite entonces
+                Escribir("Hubo más recaudación en habitaciones dobles que en suites")
+            Fin_SI
+            
+            cant_ind:=0
+            cant_dob:=0
+            cant_suite:=0
+            resg_nro_hotel:=reg_reserva.nro_hotel
+        Fin_Procedimiento
+
+    PROCESO
+        // Abrir archivos; para poder recorrer o escribir en los archivos primero hay que abrirlo
+        Abrir E/(arch_reservas)
+        Abrir S/(arch_salidas)
+        
+        // Avanzar a la primera posición en archivos de lectura
+        Leer(arch_reservas, reg_reserva)
+
+        // Inicializar resguardos; guardamos los primeros valores que toman nuestras variables usadas para gestionar el corte
+        resg_nro_hotel:=reg_reserva.nro_hotel
+        resg_tipo_hab:=reg_reserva.tipo_hab
+        
+        // Inicializar contadores y totalizadores
+        cant_ind:=0
+        cant_dob:=0
+        cant_suite:=0
+        cant_recaudacion:=0
+
+
+        Mientras NFDA(arch_reservas) hacer
+            // Verificar Cortes
+            SI resg_nro_hotel <> reg_reserva.nro_hotel entonces
+                corte_nro_hotel
+            SINO
+                SI resg_tipo_hab <> reg_reserva.tipo_hab entonces
+                    corte_tipo_hab
+                FIN_SI
+            Fin_SI
+
+            // Tratar registros segun requerimientos del ejercicio
+            cant_recaudacion:=cant_recaudacion + reg_reserva.imp_reserva
+
+            // Leer Registro
+            Leer(arch_reservas, reg_reserva)
+        Fin_Mientras
+        // Llamar al corte de mayor nivel; para tratar el ultimo bloque del corte, que se ejecuto al salir del bucle
+        corte_nro_hotel
+
+        // Emitir totales (No aplica a este ejercicio)
+        // Cerrar Archivos; para liberar memoria en caso de los archivos de entrada, y para guardar los cambios en los archivos de salida
+        Cerrar(arch_reservas)
+        Cerrar(arch_salidas)
+FIN_ACCION
