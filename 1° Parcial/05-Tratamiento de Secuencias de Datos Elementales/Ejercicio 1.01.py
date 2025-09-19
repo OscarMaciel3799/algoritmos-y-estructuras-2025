@@ -3,8 +3,8 @@
 Ejercicio 1.01: Contar cantidad de A
 -----------------------------------------------------
 Enunciado:  
-Dada una secuencia de letras del alfabeto que finaliza con una marca '*', contar cuantas letras "A" hay en la 
-secuencia.
+Dada una secuencia de letras del alfabeto que finaliza con una marca '*', 
+contar cuantas letras "A" hay en la secuencia.
 
 RESOLUCION EN PSEUDOCODIGO
 
