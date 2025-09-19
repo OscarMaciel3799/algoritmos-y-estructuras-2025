@@ -1,0 +1,80 @@
+La Secretaria Academica de la Facultad lanza un proyecto para incentivar a aquellos alumnos que 
+realizaron el Cursillo de Ingreso a la Universidad y no lograron aprobarlo en los turnos de 
+Agosto y Febrero, de manera de brindarles apoyo Academico con el fin de que, 
+en el Cursillo del año siguiente puedan aprobar los examenes necesarios e ingresar a la Universidad.
+
+Para esto, dicha Secretaria­necesita crear un archivo donde se encuentren todos los aspirantes que 
+realizaron el Cursillo de Ingreso en ambos turnos, y no lograron aprobarlo.
+
+Los datos correspondientes a cada uno de los turnos del Cursillo dictado están almacenados en 
+dos archivos (uno para cada turno), los cuales presentan el siguiente formato:
+
+ASPIRANTES Ordenado por DNI
+
+| DNI | ApeyNom | Carrera | F_Nac | Email | ColegioSec | FechaInscripcion | Aprobado (Si/No) |
+
+UD debe realizar un algoritmo que permita mezclar los archivos Aspirantes (de Agosto y Febrero) 
+y generar un archivo SEGUIMIENTO con el siguiente formato:
+
+SEGUIMIENTO Ordenado por DNI
+
+| DNI | ApeyNom | Email | ColegioSec |
+Al finalizar el proceso informar la cantidad de aspirantes que se grabaron en el archivo SEGUIMIENTO.
+
+ACCION E.2.17 ES
+    AMBIENTE
+        fecha = REGISTRO
+            año: 1900..2100
+            mes: 1..12
+            dia: 1..31
+        FIN_REGISTRO
+
+        aspirante = REGISTRO
+            dni: N(8)
+            ApeyNom: AN(40)
+            Carrera: AN(40)
+            F_Nac: fecha
+            Email: AN(40)
+            ColegioSec: AN(40)
+            F_insc: fecha
+            Aprob: ("Si","No")
+        FIN_REGISTRO
+
+        seguimiento = REGISTRO
+            dni: N(8)
+            ApeyNom: AN(40)
+            Email: AN(40)
+            ColegioSec: AN(40)
+        FIN_REGISTRO
+
+        Arch_asp: Archivo de aspirante ordenado por dni
+        reg_asp: aspirante
+        Arch_seg: Archivo de seguimiento ordenado por dni
+        reg_seg: seguimiento
+
+        cant_seg: Entero
+        
+        PROCEDIMIENTO LEER_ASPIRANTE ES
+            LEER(Arch_asp, reg_asp)
+            SI FDA(Arch_asp) ENTONCES
+                reg_asp.dni:= HV
+            FIN_SI
+        FIN_PROCEDIMIENTO
+    PROCESO
+        ABRIR E/(Arch_asp); LEER_ASPIRANTE
+        ABRIR S/(Arch_seg)
+        cant_seg:=0
+
+        MIENTRAS NFDA(Arch_asp) HACER
+            SI reg_asp.F_insc= 2 O reg_asp.F_insc=8 ENTONCES
+                cant_seg=cant_seg+1
+                reg_seg.dni:=reg_asp.dni
+                reg_seg.ApeyNom:=reg_asp.ApeyNom
+                reg_seg.Email:=reg_asp.Email
+                reg_seg.ColegioSec:=reg_asp.ColegioSec
+                ESCRIBIR(Arch_seg, reg_seg)
+            FIN_SI
+        FIN_MIENTRAS
+        CERRAR(Arch_asp); CERRAR(Arch_seg)
+        ESCRIBIR("La cantidad de alumnos grabados en el archivo de seguimiento es de: ",cant_seg)
+FIN_ACCION
