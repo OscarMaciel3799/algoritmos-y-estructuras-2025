@@ -1,0 +1,64 @@
+Construir un algoritmo que a partir de un fichero de películas nuevas conteniendo:
+
+PELICULAS_NUEVAS Ordenado por Nro_Pelicula
+    | Nro_Pelicula | Titulo | Genero | Cant_Copias | Fecha_Estreno |
+y otro fichero de peliculas existentes, ambos ordenados por película,
+
+PELICULAS Ordenado por Nro_Pelicula
+
+    | Nro_Pelicula | Titulo | Genero | Cant_Copias | Fecha_Estreno |
+
+Genere un único archivo (con el mismo formato de los ficheros de entrada) 
+que contenga todas las peliculas. Considerar que hay un solo registro por película y 
+no se repiten entre ficheros.
+
+ACCION E.2.16 ES
+    AMBIENTE
+        fecha = REGISTRO
+            año: 1900..2100
+            mes: 1..12
+            dia: 1..31
+        FIN_REGISTRO
+        
+        pelicula = REGISTRO
+            nro_pelicula: N(4)
+            titulo: AN (20)
+            genero: AN (20)
+            cant_copias: N(4)
+            fecha_estreno : fecha
+        FIN_REGISTRO
+        
+        Arch_or, Arch_nw, Arch_sal: Archivo de pelicula Ordenado por nro_pelicula
+        reg_or, reg_nw, reg_sal: pelicula
+
+        PROCEDIMIENTO LEER_ORIGINIAL ES
+            LEER(Arch_or, reg_or)
+            SI FDA(Arch_or) ENTONCES
+                reg_or.nro_pelicula:= HV
+            FIN_SI
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO LEER_NUEVO ES
+            LEER(Arch_nw, reg_nw)
+            SI FDA(Arch_nw) ENTONCES
+                reg_nw.nro_pelicula:= HV
+            FIN_SI
+        FIN_PROCEDIMIENTO
+
+    PROCESO
+        ABRIR E/(Arch_or); LEER_ORIGINIAL
+        ABRIR E/(Arch_nw); LEER_NUEVO
+        ABRIR S/(Arch_sal)
+        MIENTRAS (reg_or.nro_pelicula<> HV) o (reg_nw.nro_pelicula<> HV) HACER
+            //"Considerar que hay un solo registro por película y no se repiten entre ficheros"
+            SI reg_or.nro_pelicula < reg_nw.nro_pelicula ENTONCES
+                ESCRIBIR(Arch_sal, reg_or)
+                LEER_ORIGINIAL
+            SINO
+                ESCRIBIR(Arch_sal, reg_nw)
+                LEER_NUEVO
+            FIN_SI
+        FIN_MIENTRAS
+        CERRAR(Arch_nw); CERRAR(Arch_or); CERRAR(Arch_sal)
+FIN_ACCION
+
