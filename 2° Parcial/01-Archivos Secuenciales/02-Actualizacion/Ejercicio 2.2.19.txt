@@ -1,0 +1,133 @@
+Enunciado:  
+En una Empresa Farmacéutica se posee un archivo MAE_REMEDIOS (ordenado por Clave: Farmacia + Medicamento)
+, el que se actualiza semanalmente, a traves de la información que se encuentra cargada en un 
+archivo de MOVIMIENTOS (ordenado por Clavem: Farmacia + Medicamento, y Cod_Mov), de la siguiente forma:
+    -Si Clave (MAE_REMEDIOS) es menor que Clavem (MOVIMIENTOS), 
+    simplemente se transfieren los datos del Maestro a la salida y se graban.
+
+    -Si Clave (MAE_REMEDIOS) es igual a Clavem (MOVIMIENTOS) y 
+    el Codmov es 1, se considera error y se lista un mensaje indicando el tipo de error; pero 
+    si el Codmov es 2, entonces es un remedio que deja de fabricarse y 
+    se transfiere el registro al archivo de Remedios vencidos (REM_VENC) ; pero 
+    si el Cod_Mov es 3, se modifica la cantidad actual con la cantidad recibida.
+
+    -Si Clave (MAE_REMEDIOS) es mayor que Clavem (MOVIMIENTOS) y 
+    el Codmov es 1, se incorpora el remedio a nuestro Vademecum, 
+    considerando que la cantidad recibida configura la cantidad actual y 
+    la Fecha_Vencimiento es 30 días posterior a la fecha actual; pero 
+    si el Codmov es 2 o 3 se considera error y se deben producir los correspondientes mensajes de error.
+
+Se considera que solo existe un registro de movimiento para cada registro del maestro.
+
+MAE_REMEDIOS Ordenado por Farmacia y Medicamento
+    | Farmacia | Medicamento | Cant_Actual | Fecha_Vencimiento |
+
+MOVIMIENTOS Ordenado por Farmacia, Medicamento y Cod_Mov
+    | Farmacia | Medicamento | Cod_Mov | Cant_Recibida |
+
+REM_VENC Ordenado por Medicamento
+    | Medicamento | Cant_Vencida |
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.2.19 ES 
+    AMBIENTE 
+        fecha = REGISTRO
+            año: 1900..2100
+            mes: 1..12
+            dia: 1..31
+        FIN_REGISTRO
+        
+        remedio = REGISTRO
+            clave = REGISTRO
+                Farmacia: AN(20)
+                Medicamento: AN(20)
+            FIN_REGISTRO
+            cant_Act: N(4)
+            fecha_ven: fecha
+        FIN_REGISTRO
+
+        movimiento = REGISTRO
+            clave = REGISTRO
+                Farmacia: AN(20)
+                Medicamento: AN(20)
+            FIN_REGISTRO
+            Cod_Mov: 1..3
+            Cant_Recibida: N(4)
+        FIN_REGISTRO
+
+        vencidos = REGISTRO
+            Medicamento: AN(20)
+            cant_venc: N(4)
+        FIN_REGISTRO
+
+        arch_rem, arch_act: Archivo de remedio ordenado por clave
+        reg_rem, reg_act: remedio
+        Arch_mov: Archivo de movimiento ordenado por clave
+        reg_mov: movimiento
+        arch_venc: Archivo de vencidos ordenado por Medicamento
+        reg_venc: vencidos
+
+        PROCEDIMIENTO LEER_REMEDIOS ES
+            Leer(arch_rem,reg_rem)
+            SI FDA(arch_rem) ENTONCES
+                reg_rem.clave := HV
+            FIN_SI
+        FIN_PROCEDIMIENTO
+        
+        PROCEDIMIENTO LEER_MOVIMIENTOS ES
+            Leer(arch_mov,reg_mov)
+            SI FDA(arch_mov) ENTONCES
+                reg_mov.clave := HV
+            FIN_SI
+        FIN_PROCEDIMIENTO
+        
+    PROCESO
+        ABRIR E/(arch_rem); LEER_REMEDIOS
+        ABRIR E/(arch_mov); LEER_MOVIMIENTOS
+        ABRIR S/(arch_venc);
+        ABRIR S/(arch_act)
+        
+        MIENTRAS (reg_rem.clave <> HV) o (reg_mov.clave <> HV) HACER
+            SI reg_rem.clave = reg_mov.clave ENTONCES
+                SEGUN reg_mov.Cod_Mov HACER
+                    1:
+                        Escribir("El código de movimiento  1 es erroneo")
+                    2:
+                        reg_venc.Medicamento := reg_rem.clave.Medicamento
+                        reg_venc.cant_venc := reg_rem.cant_Act
+                        
+                        ESCRIBIR(arch_venc,reg_venc)
+                    3:
+                        reg_act=reg_rem
+                        reg_act.cant_Act = reg_Act.cant_Act + reg_mov.Cant_Recibida
+                        ESCRIBIR(arch_act,reg_act)
+                FIN_SEGUN
+                LEER_MOVIMIENTOS
+                LEER_REMEDIOS
+            SINO
+                SI reg_rem.clave < reg_mov.clave ENTONCES
+                    ESCRIBIR(arch_act,reg_rem)
+                    LEER_REMEDIOS
+                SINO
+                    SEGUN reg_mov.Cod_Mov HACER
+                    1:
+                        reg_act.clave := reg_mov.clave
+                        reg_act.cant_Act := reg_mov.Cant_Recibida
+                        reg_act.fecha_ven := FECHAACTUAL + 30
+                        ESCRIBIR(arch_act,reg_act)
+                    2:
+                        Escribir("El código de movimiento 2 es erroneo")
+                    3:
+                        Escribir("El código de movimiento 3 es erroneo")
+                FIN_SEGUN
+                LEER_MOVIMIENTOS
+                FIN_SI
+            FIN_SI
+        FIN_MIENTRAS
+        CERRAR(arch_act)
+        CERRAR(arch_mov)
+        CERRAR(arch_venc)
+FIN_ACCION
+
+
