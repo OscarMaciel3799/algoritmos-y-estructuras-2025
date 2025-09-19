@@ -1,0 +1,99 @@
+Un supermercado desea conocer la totalidad de unidades existentes de cada artículo a fin de hacer un
+control de stock y decidir si se deben comprar nuevas unidades o redistribuir la mercadería existente.
+
+El supermercado posee dos sucursales, cada una de las cuales envió su información en un fichero con el 
+siguiente formato:
+
+ARTICULOS
+
+| Cod_Prod | Tipo | Marca | Descripción | Cant_Unidades |
+
+Escribir un algortimo que permita obtener un único fichero de salida, con el mismo formato, 
+que contenga la información solicitada y además, emita un listado con los siguientes datos:
+
+| Cod_Prod | Tipo | Marca | Descripción | Cant_Suc_1 | Cant_Suc_2 | Total_Unidades |
+
+ACCION E.2.18 ES
+    AMBIENTE
+        artículos = REGISTRO
+            Cod_Prod: AN(6)
+            tipo: AN(20)
+            marca: AN(20)
+            Descripción: AN(40)
+            Cant_Unidades: N(4)
+        FIN_REGISTRO
+        
+        informacion = REGISTRO
+            Cod_Prod: AN(6)
+            tipo: AN(20)
+            marca: AN(20)
+            Descripción: AN(40)
+            Cant_U_Suc1: N(4)
+            Cant_U_Suc2: N(4)
+            total_Unidades: N(4)
+        FIN_REGISTRO
+        
+        Arch_suc1, Arch_suc2: archivo de articulos ordenado por Cod_Prod
+        reg_suc1,reg_suc2: articulos
+
+        arch_info: Archivo de informacion ordenado por Cod_Prod
+        reg_info: informacion
+
+        PROCEDIMIENTO LEER_SUC1 ES
+            Leer(Arch_suc1, reg_suc1)
+            SI FDA(Arch_suc1) ENTONCES
+                reg_suc1.Cod_Prod := HV
+            FIN_SI
+        FIN_PROCEDIMIENTO
+        PROCEDIMIENTO LEER_SUC2 ES
+        Leer(Arch_suc2, reg_suc2)
+            SI FDA(Arch_suc2) ENTONCES
+                reg_suc2.Cod_Prod := HV
+            FIN_SI
+        FIN_PROCEDIMIENTO
+    PROCESO
+        ABRIR E/(Arch_suc1); LEER_SUC1 
+        ABRIR E/(Arch_suc2); LEER_SUC2
+        ABRIR S/(arch_info)
+
+        MIENTRAS (reg_suc1.Cod_Prod <> HV) o (reg_suc2.Cod_Prod <> HV) HACER
+            SI reg_suc1.Cod_Prod < reg_suc2.Cod_Prod ENTONCES
+                reg_info.Cod_Prod := reg_suc1.Cod_Prod
+                reg_info.tipo := reg_suc1.tipo
+                reg_info.marca := reg_suc1.marca
+                reg_info.Descripción := reg_suc1.Descripción
+                reg_info.Cant_U_Suc1 := reg_suc1.Cant_Unidades
+                reg_info.Cant_U_Suc2 := 0
+                reg_info.total_Unidades := reg_suc1.Cant_Unidades
+                ESCRIBIR(arch_info,reg_info)
+
+                LEER_SUC1
+            SINO
+                SI reg_suc2.Cod_Prod < reg_suc1.Cod_Prod ENTONCES
+                    reg_info.Cod_Prod := reg_suc2.Cod_Prod
+                    reg_info.tipo := reg_suc2.tipo
+                    reg_info.marca := reg_suc2.marca
+                    reg_info.Descripción := reg_suc2.Descripción
+                    reg_info.Cant_U_Suc1 := 0
+                    reg_info.Cant_U_Suc2 := reg_suc2.Cant_Unidades
+                    reg_info.total_Unidades := reg_suc2.Cant_Unidades
+                    ESCRIBIR(arch_info,reg_info)
+
+                    LEER_SUC2
+                SINO
+                    reg_info.Cod_Prod := reg_suc2.Cod_Prod
+                    reg_info.tipo := reg_suc2.tipo
+                    reg_info.marca := reg_suc2.marca
+                    reg_info.Descripción := reg_suc2.Descripción
+                    reg_info.Cant_U_Suc1 := reg_suc1.Cant_Unidades
+                    reg_info.Cant_U_Suc2 := reg_suc2.Cant_Unidades
+                    reg_info.total_Unidades := reg_suc2.Cant_Unidades + reg_suc1.Cant_Unidades
+                    ESCRIBIR(arch_info,reg_info)
+
+                    LEER_SUC1
+                    LEER_SUC2
+                FIN_SI
+            FIN_SI
+        FIN_MIENTRAS
+        CERRAR(Arch_suc1); CERRAR(Arch_suc2); CERRAR(arch_info)
+FIN_ACCION
