@@ -126,6 +126,7 @@ ACCION E.2.19 ES
             FIN_SI
         FIN_MIENTRAS
         CERRAR(arch_act)
+        CERRAR(arch_rem)
         CERRAR(arch_mov)
         CERRAR(arch_venc)
 FIN_ACCION
