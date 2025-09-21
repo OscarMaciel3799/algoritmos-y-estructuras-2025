@@ -1,0 +1,99 @@
+Enunciado:  
+Se desea generar una secuencia, a partir de la secuencia del problema 2.01, 
+donde se actualice la fecha de aprobación del último exámen, 
+para ello se cuenta con información del último turno de exámen, según el siguiente detalle:
+
+EXAMENES Ordenado por Nro_Legajo
+    | Nro_Legajo | Carrera | Cod_Materia | Fecha_Examen | Nota |
+
+
+ALUMNOS Ordenado por Nro_Legajo
+| ApyNom | Carrera | Nro_Legajo | F_Nac | F_Ingreso | D.N.I. | Sexo | F_ultEx_ap | Nota |
+Carrera(ISI - IEM - IQ)
+Sexo (M o F)
+
+Se debe considerar que no necesariamente todos los alumnos se presentan en cada turno de exámen, 
+y que un alumno puede presentarse a rendir más de una materia en un mismo turno. 
+Supónganse ambas secuencias ordenadas por Número de Legajo.
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.2.20 ES 
+    AMBIENTE 
+        fecha = REGISTRO
+            año: 1900..2100
+            mes: 1..31
+            dia: 1..12
+        FIN_REGISTRO
+        
+        examen = REGISTRO
+            Nro_Legajo: AN(8)
+            Carrera: AN(40)
+            Cod_Materia: AN(8)
+            Fecha_Examen: fecha
+            Nota: 1..10
+        FIN_REGISTRO
+
+        alumno = REGISTRO
+            ApyNom: AN(20)
+            Carrera: AN("ISI", "IEM", "IQ")
+            Nro_Legajo: AN(40)
+            F_Nac: fecha
+            F_Ingreso: fecha
+            dni: N(8)
+            Sexo: ("M","F")
+            F_ultEx_ap: fecha
+            Nota: 1..10
+        FIN_REGISTRO
+
+        arch_ex: Archivo de examen ordenado por Nro_Legajo
+        reg_ex: examen
+
+        arch_alu, arch_alu_act: Archivo de alumno ordenado por Nro_Legajo
+        reg_alu, reg_alu_act: alumno
+        
+        PROCEDIMIENTO LEER_ALUMNO ES
+            Leer(arch_alu,reg_alu)
+            SI FDA(arch_alu) ENTONCES
+                reg_alu.Nro_Legajo:= HV
+            FIN_SI
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO LEER_EXAMENES ES
+            Leer(arch_ex,reg_ex)
+            SI FDA(arch_ex) ENTONCES
+                reg_ex.Nro_Legajo:= HV
+            FIN_SI
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO LOTE ES
+            MIENTRAS (reg_alu_act.Nro_Legajo = reg_ex.Nro_Legajo) HACER
+                reg_alu_act.F_ultEx_ap: = reg_ex.Fecha_Examen
+                reg_alu_act.Nota: =reg_ex.Nota
+                LEER_EXAMENES
+            FIN_MIENTRAS
+
+            Escribir(arch_alu_act, reg_alu_act)
+        FIN_PROCEDIMIENTO
+
+    PROCESO
+        ABRIR E/(arch_alu); LEER_ALUMNO
+        ABRIR E/(arch_ex); LEER_EXAMENES
+        ABRIR S/(arch_alu_act)
+        
+        MIENTRAS (reg_alu.Nro_Legajo <> HV) o (reg_ex.Nro_Legajo <> HV) HACER
+            SI reg_alu.Nro_Legajo < reg_ex.Nro_Legajo ENTONCES
+                Escribir(arch_alu_act, reg_alu)
+                LEER_ALUMNO
+            SINO
+                SI reg_alu.Nro_Legajo = reg_ex.Nro_Legajo ENTONCES
+                    reg_alu_act:=reg_alu
+                    LOTE
+                    LEER_ALUMNO
+                FIN_SI
+            FIN_SI
+        FIN_MIENTRAS
+        CERRAR(arch_alu); CERRAR(arch_alu_act); CERRAR(arch_ex);
+FIN_ACCION
+
+
