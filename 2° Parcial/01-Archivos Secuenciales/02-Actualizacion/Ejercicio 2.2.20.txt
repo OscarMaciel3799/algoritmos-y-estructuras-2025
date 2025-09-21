@@ -6,7 +6,6 @@ para ello se cuenta con información del último turno de exámen, según el sig
 EXAMENES Ordenado por Nro_Legajo
     | Nro_Legajo | Carrera | Cod_Materia | Fecha_Examen | Nota |
 
-
 ALUMNOS Ordenado por Nro_Legajo
 | ApyNom | Carrera | Nro_Legajo | F_Nac | F_Ingreso | D.N.I. | Sexo | F_ultEx_ap | Nota |
 Carrera(ISI - IEM - IQ)
