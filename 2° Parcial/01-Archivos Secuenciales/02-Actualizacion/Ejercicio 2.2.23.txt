@@ -1,0 +1,96 @@
+|-------------------------------------------------------------------------------|
+|                           NO SE ENTIENDE LA CONSIGNA                          |
+|                                                                               |
+|-------------------------------------------------------------------------------|
+Enunciado:  
+Una empresa de distribución de energía eléctrica posee un archivo maestro con los siguientes 
+datos de sus clientes (la fecha de última lectura son las mediciones realizadas hasta el mes 
+de mayo del 2014):
+
+CLIENTE Ordenado por Id_Casa
+    | Id_Casa | Fecha_Ult_Lectura | Cant_Lecturas | Prom_Lecturas | Tipo_Consumidor | 
+
+El campo tipo de consumidor puede ser:
+    A (cuando el promedio de lectura es menor a 20K)
+    B (cuando el promedio de lectura es menor a 40K)
+    C (cuando el promedio de lectura es igual o supera los 40K)
+
+Cuenta además con el siguiente archivo con datos de las mediciones realizadas en los 
+dos últimos años (desde junio del 2014 hasta junio del 2016)
+
+Mediciones Ordenado por Id_Casa
+    | Id_Casa | Fecha_Medicion | Consumo | 
+
+Se pide actualizar el archivo maestro con la información de las lecturas hasta 
+el mes de enero del año 2015 inclusive. Los campos que se deben actualizar son: 
+la fecha de ultima lectura, cantidad de lecturas, el promedio y 
+modificar (en caso de ser necesario) el tipo de consumidor. 
+En caso en que no exista el ID casa (una conexión nueva) se tiene que crear en el maestro y 
+actualizar los otros campos.
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.2.23 ES 
+    AMBIENTE 
+        fecha = REGISTRO
+            año: 1900..2100
+            mes: 1..12
+            dia: 1..31
+        FIN_REGISTRO
+
+        cliente = REGISTRO
+            Id_Casa: AN(6)
+            Fecha_Ult_Lectura: fecha
+            Cant_Lecturas: N(4)
+            Prom_Lecturas: N(8)
+            Tipo_Consumidor: ('A','B','C')
+        FIN_REGISTRO
+
+        mediciones = REGISTRO
+            Id_Casa: AN(6)
+            Fecha_Medicion: fecha
+            Consumo: N(8)
+        FIN_REGISTRO
+
+        arch_cliente, arch_act: Archivo de cliente ordenado por Id_Casa
+        reg_cliente, reg_act: cliente
+
+        arch_med: Archivo de mediciones ordenado por Id_Casa
+        reg_med: mediciones
+
+        PROCEDIMIENTO LEER_CLIENTE ES
+            Leer(arch_cliente, reg_cliente)
+            SI ENTONCES
+                reg_cliente.Id_Casa:= HV
+            FIN_SI
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO LEER_MEDICIONES ES
+            Leer(arch_med, reg_med)
+            SI ENTONCES
+                reg_med.Id_Casa:= HV
+            FIN_SI
+        FIN_PROCEDIMIENTO
+    PROCESO
+        ABRIR E/(arch_cliente); LEER_CLIENTE
+        ABRIR E/(arch_med); LEER_MEDICIONES
+        ABRIR S/(arch_act)
+
+        MIENTRAS (reg_cliente.Id_Casa <> HV) o (reg_med.Id_Casa <> HV) HACER
+            SI reg_cliente.Id_Casa < reg_med.Id_Casa ENTONCES
+                Escribir(arch_act,reg_cliente)
+            SINO
+                SI ENTONCES
+                
+                SINO
+                
+                FIN_SI
+            FIN_SI
+        FIN_MIENTRAS
+        CERRAR(arch_cliente)
+        CERRAR(arch_med)
+        CERRAR(arch_act) 
+        
+FIN_ACCION
+
+

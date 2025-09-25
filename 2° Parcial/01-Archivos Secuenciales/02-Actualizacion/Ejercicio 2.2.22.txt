@@ -1,0 +1,108 @@
+Enunciado:  
+IDEM ejercicio 2.21 pero agregando al enunciado: 
+“Al finalizar el proceso se desea conocer: el usuario que posee más amigos.”
+|-------------------------------------------------------------------------------|
+|               INCOMPLETO CONTROLAR EL CONTEO SIN CORTE                        |
+|                           (O HACER CORTE D:)                                  |
+|-------------------------------------------------------------------------------|
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.2.22 ES 
+    AMBIENTE 
+        fecha = REGISTRO
+            año: 1900..2100
+            mes: 1..12
+            dia: 1..31
+        FIN_REGISTRO
+
+        amigo = REGISTRO
+            cod_us: AN(6)
+            cod_am: AN(6)
+            fecha_amistad: fecha
+            msj_muro: AN(40)
+        FIN_REGISTRO
+        
+        notificacion = REGISTRO
+            cod_us: AN(6)
+            cod_am: AN(6)
+            cod_mov: ('A','B','M')
+            fecha_amistad: fecha
+            msj_muro: AN(40)
+        FIN_REGISTRO
+
+        arch_am, arch_act: Archivo de amigo ordenado por clave
+        reg_am, reg_act: amigo
+        
+        resg_cod_us, max_us: AN(6)
+        cant_am, max_amigos: Entero
+        
+        arch_not: Archivo de notificacion ordenado por clave
+        reg_not: notificacion
+
+        PROCEDIMIENTO LEER_AMIGO ES
+            Leer(arch_am, reg_am)
+            SI FDA(arch_am) ENTONCES
+                reg_am.clave := HV
+            FIN_SI
+        FIN_PROCEDIMIENTO
+        
+        PROCEDIMIENTO LEER_NOTIFICACION ES
+            Leer(arch_not, reg_not)
+            SI FDA(arch_not) ENTONCES
+                reg_not.clave := HV
+            FIN_SI
+        FIN_PROCEDIMIENTO
+    PROCESO
+        ABRIR E/(arch_am); LEER_AMIGO
+        ABRIR E/(arch_not); LEER_NOTIFICACION
+        ABRIR S/(arch_act)
+
+        resg_us:=reg_am.cod_us ; max_us:=reg_am.cod_us
+        cant_am:= 0 ; max_amigos:= 0
+        
+        MIENTRAS (reg_am.clave <> HV) o (reg_not.clave <> HV) HACER 
+            SI resg_us <> reg_am.cod_us ENTONCES
+                SI cant_am > max_amigos ENTONCES
+                    max_us:=resg_us
+                    max_amigos:= cant_am
+                FIN_SI
+                resg_us:=reg_am.cod_us
+                cant_am:= 0
+            FIN_SI
+            cant_am = cant_am + 1
+            SI reg_am.clave < reg_not.clave ENTONCES // maestro sin movimiento
+                Escribir(arch_act, reg_am)
+                LEER_AMIGO
+            SINO
+                SI reg_am.clave = reg_not ENTONCES // alta, baja, modificacion
+                    SI reg_not.cod_mov = 'A' ENTONCES
+                        Escribir("Error de ALTA. Este registro ya se encuentra en el archivo maestro.")
+                    SINO
+                        SI reg_not.cod_mov = 'M' ENTONCES
+                            reg_act := reg_am
+                            reg_act.msj_muro := reg_not.msj_muro
+                            Escribir(arch_act, reg_act)
+                        FIN_SI
+                    FIN_SI
+                    LEER_AMIGO
+                    LEER_NOTIFICACION
+                SINO    // solo alta, baja y modificacion da ERROR
+                    SEGUN reg_not.cod_mov HACER
+                        'A':
+                            reg_act.clave := reg_not.clave
+                            reg_act.fecha_amistad := reg_not.fecha_amistad
+                            reg_act.msj_muro := reg_not.msj_muro
+                            Escribir(arch_act, reg_act)
+                        'B':
+                            Escribir("Error de BAJA. Este registro NO se encuentra en el archivo maestro.")
+                        'M':
+                            Escribir("Error de MODIFICACION. Este registro NO se encuentra en el archivo maestro.")
+                    FIN_SEGUN
+                FIN_SI
+            FIN_SI
+        FIN_MIENTRAS
+        CERRAR(arch_am); CERRAR(arch_not); CERRAR(arch_act)
+FIN_ACCION
+
+

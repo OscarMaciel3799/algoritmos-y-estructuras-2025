@@ -1,0 +1,12 @@
+Enunciado:  
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.2.25 ES 
+    AMBIENTE 
+        
+    PROCESO
+        
+FIN_ACCION
+
+
