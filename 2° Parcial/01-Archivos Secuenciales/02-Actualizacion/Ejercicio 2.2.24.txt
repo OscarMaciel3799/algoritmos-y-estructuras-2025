@@ -1,17 +1,17 @@
 Enunciado:  
 Una obra social lleva el control de los costos que le insume cada afiliado. 
-Considerando como costos, los pagos que la misma debe 
-realizar (en conceptos de honorarios, pagos a farmacias, etc) por los distintos 
-servicios que el afiliado utiliza. Para esto la empresa cuenta con 
-un archivo COSTOS_POR_AFILIADO, en el cual se registran la cantidad de atenciones y/o 
-servicios que solicita el empleado y el costo total (en pesos) que la empresa debe pagar por estos. 
+Considerando como costos, los pagos que la misma debe realizar (en conceptos de 
+honorarios, pagos a farmacias, etc) por los distintos servicios que el afiliado utiliza. 
+Para esto la empresa cuenta con un archivo COSTOS_POR_AFILIADO, en el cual se registran 
+la cantidad de atenciones y/o servicios que solicita el empleado y el costo total (en pesos) 
+que la empresa debe pagar por estos. 
 Este archivo está conformado por registros con el siguiente formato, y está ordenado Cod_Afiliado
 
 COSTOS_POR_AFILIADO Ordenado por Cod_Afiliado
     | Cod_Afiliado | Fecha_Alta | Fecha_Baja | Cant_Servicios | Costo |
 
-Cada viernes en la organización, se lleva a cabo un proceso de actualización del 
-archivo COSTOS_POR_AFILIADO. Para poder realizarlo se cuenta con un archivo 
+Cada viernes en la organización, se lleva a cabo un proceso de actualización del archivo 
+COSTOS_POR_AFILIADO. Para poder realizarlo se cuenta con un archivo 
 SERVICIOS_SEMANALES, ordenado por cod_afiliado y fecha_at, 
 en el cual se registran los servicios que solicitaron los afiliados durante cada semana. 
 Cada registro de este archivo presenta el siguiente formato,
@@ -21,22 +21,22 @@ SERVICIOS_SEMANALES Ordenado por Cod_Afiliado
 
 En el archivo SERVICIOS_SEMANALES puede existir más de un registro por cada afiliado.
 Para realizar el proceso de actualización se deben tener en cuenta las siguientes consideraciones.
-    Si algún Cod_Afiliado de serviciosSemanales, no se encuentra en ningún registro del 
+    -Si algún Cod_Afiliado de serviciosSemanales, no se encuentra en ningún registro del 
     archivo COSTOS_POR_AFILIADO, y el primer Cod_Servicio asociado al mismo 
     es igual a 001 entonces se trata de un nuevo afiliado que fue dado de alta.
     
-    Si Cod_Afiliado de serviciosSemanales es igual al de COSTOS_POR_AFILIADO y 
+    -Si Cod_Afiliado de serviciosSemanales es igual al de COSTOS_POR_AFILIADO y 
     el Cod_Servicio es igual a 000 se trata de un afiliado que fue dado de baja y 
     se considera como fecha de baja el valor que reside en Fecha_At. 
     Si en cambio, el Cod_Servicio tiene algún otro valor este representa 
     un servicio o atención que solicitó el afiliado; por lo tanto deben contabilizarse 
     la cantidad de servicios que solicitó; como así también los costos que estos insumen.
 
-    Si algún Cod_Afiliado de COSTOS_POR_AFILIADO no se encuentra en el archivo SERVICIOS_SEMANALES, 
+    -Si algún Cod_Afiliado de COSTOS_POR_AFILIADO no se encuentra en el archivo SERVICIOS_SEMANALES, 
     se trata de un afiliado que no utilizó los servicios en la semana que se realiza la actualización.
-
-Cualquier otro caso distinto a los considerados anteriormente se toma como un error, y 
-deben ser informados por pantalla; indicando claramente el motivo del error.
+    
+    -Cualquier otro caso distinto a los considerados anteriormente se toma como un error, y 
+    deben ser informados por pantalla; indicando claramente el motivo del error.
 
 
 RESOLUCION EN PSEUDOCODIGO
@@ -50,7 +50,7 @@ ACCION E.2.24 ES
         FIN_REGISTRO
 
         costo_afiliado = REGISTRO
-            Cod_Afiliado: AN(6)
+            cod_afiliado: AN(6)
             Fecha_Alta: fecha
             Fecha_Baja: fecha
             Cant_Servicios: N(4) 
@@ -58,13 +58,78 @@ ACCION E.2.24 ES
         FIN_REGISTRO
 
         servicios_semanales = REGISTRO
-            Cod_Afiliado: AN(6)
+            cod_afiliado: AN(6)
             Fecha_At: fecha
             Cod_Servicio: AN(3)
             Costo: Real (8,2)
         FIN_REGISTRO
-    PROCESO
+
+        arch_af, arch_act: Archivo de costo_afiliado ordenado por cod_afiliado
+        reg_af,reg_act: costo_afiliado
+        arch_serv: Archivo de servicios_semanales ordenado por cod_afiliado
+        reg_serv: servicios_semanales
+
+        PROCEDIMIENTO LEER_AFILIADOS ES
+            Leer(arch_af, reg_af)
+            SI FDA(arch_af) ENTONCES
+                reg_af.cod_afiliado:=HV
+            FIN_SI
+        FIN_PROCEDIMIENTO
         
+        PROCEDIMIENTO LEER_SERVICIOS ES
+            Leer(arch_serv, reg_serv)
+            SI FDA(arch_serv) ENTONCES
+                reg_serv.cod_afiliado:=HV
+            FIN_SI
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO IGUALES ES
+            SI reg_serv.Cod_Servicio="000" ENTONCES
+                reg_act.Fecha_Baja:= reg_serv.fecha_at
+            SINO
+                reg_act.Cant_Servicios:=reg_act.Cant_Servicios+1
+                reg_act.costo:=reg_act.costo + reg_serv.costo
+            FIN_SI
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO LOTE ES
+            MIENTRAS (reg_act.cod_afiliado = reg_serv.cod_afiliado) HACER
+                IGUALES
+                LEER_SERVICIOS
+            FIN_MIENTRAS
+            
+            Escribir(arch_act, reg_act)
+        FIN_PROCEDIMIENTO
+    PROCESO
+        ABRIR E/(arch_af); LEER_AFILIADOS
+        ABRIR E/(arch_serv); LEER_SERVICIOS
+        ABRIR S/(arch_act)
+
+        MIENTRAS (reg_af <> HV) o (reg_serv <> HV) HACER
+            SI reg_af.cod_afiliado = reg_serv.cod_afiliado ENTONCES
+                reg_act:=reg_af
+                IGUALES
+                LEER_AFILIADOS
+            SINO
+                SI reg_af.cod_afiliado > reg_serv.cod_afiliado ENTONCES
+                    SI reg_serv.Cod_Servicio="001" ENTONCES
+                        reg_act.cod_afiliado:= reg_serv.cod_afiliado
+                        reg_act.Fecha_Alta:= reg_serv.fecha_at
+                        reg_act.Cant_Servicios:=1 
+                        reg_act.Costo:=0
+
+                        Escribir(arch_act,reg_act)
+                    SINO
+                        Escribir("El afiliado no se encuentra registrado, 
+                        no se puede realizar un servicio distinto a 001")
+                    FIN_SI
+                    LEER_SERVICIOS
+                SINO
+                    Escribir(arch_act,reg_af)
+                    LEER_AFILIADOS
+                FIN_SI
+            FIN_SI
+        FIN_MIENTRAS
 FIN_ACCION
 
 
