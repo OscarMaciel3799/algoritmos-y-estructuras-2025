@@ -130,6 +130,9 @@ ACCION E.2.24 ES
                 FIN_SI
             FIN_SI
         FIN_MIENTRAS
+        CERRAR(arch_af)
+        CERRAR(arch_serv)
+        CERRAR(arch_act)
 FIN_ACCION
 
 
