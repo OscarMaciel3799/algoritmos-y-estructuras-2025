@@ -108,7 +108,7 @@ ACCION E.2.24 ES
         MIENTRAS (reg_af <> HV) o (reg_serv <> HV) HACER
             SI reg_af.cod_afiliado = reg_serv.cod_afiliado ENTONCES
                 reg_act:=reg_af
-                IGUALES
+                LOTE
                 LEER_AFILIADOS
             SINO
                 SI reg_af.cod_afiliado > reg_serv.cod_afiliado ENTONCES
@@ -118,7 +118,7 @@ ACCION E.2.24 ES
                         reg_act.Cant_Servicios:=1 
                         reg_act.Costo:=0
 
-                        Escribir(arch_act,reg_act)
+                        LOTE
                     SINO
                         Escribir("El afiliado no se encuentra registrado, 
                         no se puede realizar un servicio distinto a 001")
