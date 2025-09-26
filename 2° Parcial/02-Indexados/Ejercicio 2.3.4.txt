@@ -1,0 +1,129 @@
+Enunciado:  
+Crear un algoritmo que simule el trabajo de una caja de supermercado. 
+El algoritmo debe permitir imprimir el ticket de compra y realizar el descuento de stock del producto. 
+Al generar el comprobante del ticket debe guardar los datos en los archivos TICKET y 
+DETALLE_TICKET (el cliente es: "consumidor final" y el NroTicket se genera automáticamente, 
+mediante la función OBTENER_TICKET). Archivos:
+
+PRODUCTOS Indexado por Cod_Prod
+    | Cod_Prod | Nombre | Stock | Precio | 
+
+TICKET Indexado por Nro_Ticket
+    | Nro_Ticket | Fecha | Cliente |
+
+DETALLE_TICKET Indexado por Nro_Ticket
+    | Nro_Ticket | Nro_Linea | Cod_Prod | Cantidad |
+
+Comprobante:
+
+Empresa:	.....................	CUIT:	.... - .......... - ...	Fecha:	... / ... / ...
+Cliente	.....................................................................................
+            Producto                       Cantidad	                    Subtotal
+..............................	..............................	..............................
+..............................	..............................	..............................
+..............................	..............................	..............................
+Total	..............................
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.2.3.4 ES 
+    AMBIENTE 
+        producto = REGISTRO
+            Cod_Prod: AN(6)
+            Nombre: AN(20)
+            Stock: N(3)
+            Precio: Real(6,2) // XXXX,XX
+        FIN_REGISTRO
+
+        ticket = REGISTRO
+            Nro_Ticket: N(6)
+            fecha = REGISTRO
+                año: 1900..2100
+                mes: 1..12
+                dia: 1..31
+            FIN_REGISTRO
+            Cliente: AN(20)
+        FIN_REGISTRO
+
+        detalle_ticket = REGISTRO
+            Nro_Ticket: N(6)
+            Nro_Linea: N(6)
+            Cod_Prod: AN(6)
+            Cantidad: N(3)
+        FIN_REGISTRO
+
+        arch_prod: Archivo de producto Indexado por Cod_Prod
+        reg_prod: producto
+
+        arch_ticket: Archivo de ticket Indexado por Nro_Ticket
+        reg_ticket: ticket
+
+        arch_detalle: Archivo de detalle_ticket Indexado por Nro_Ticket
+        reg_detalle: detalle_ticket
+
+        salida = "0000"
+        nueva_venta: ("S","N")
+        cantidad: N(3)
+        Subtotal: Real(6,2) // XXXX,XX
+        Total: Real(6,2) // XXXX,XX
+        bajo_stock: ("S","N")
+        venta: Logico
+    PROCESO
+        ABRIR E/(arch_prod)
+        ABRIR E/(arch_ticket)
+        ABRIR E/S(arch_detalle)
+
+        Escribir("Desea generar una nueva venta? S/N")
+        Leer(nueva_venta)
+        MIENTRAS nueva_venta="S" HACER
+            Escribir("Ingrese el nombre del cliente y la fecha actual DD,MM,AAAA")
+            Leer(reg_ticket.Cliente, reg_ticket.fecha.dia,reg_ticket.fecha.mes,reg_ticket.fecha.año)
+            Escribir("Empresa:	MANOLITO	CUIT:	12 - 12345678 - 9	Fecha:	",reg_ticket.fecha.dia,"/",reg_ticket.fecha.mes,"/",reg_ticket.fecha.año)
+            Escribir("Cliente: ",reg_ticket.Cliente)
+            Escribir("Producto | Cantidad | Subtotal")
+            Total:=0
+            bajo_stock:="N"
+            REPETIR 
+                Escribir("Ingrese el Cod_Prod (0000 si no desea ingresar mas productos) y la Cantidad a vender")
+                Leer(reg_prod.Cod_Prod,cantidad)
+                venta:= VERDADERO
+                SI EXISTE ENTONCES
+                    SI cantidad > reg_prod.Stock ENTONCES
+                        Escribir("Solo hay ", reg_prod.Stock," del producto, desea llevarlos? S/N")
+                        Leer(bajo_stock)
+                        SI bajo_stock="S" ENTONCES
+                            cantidad:=reg_prod.Stock
+                        SINO
+                            venta:=FALSO
+                        FIN_SI
+                    FIN_SI
+
+                    SI venta ENTONCES
+                        Subtotal:=reg_prod.Precio * cantidad
+                        Escribir(reg_prod.Nombre," | ",cantidad," | ",Subtotal")
+                        Total:= Total + Subtotal
+                        reg_ticket.Nro_Ticket:=OBTENER_TICKET
+                        Escribir(arch_ticket, reg_ticket)
+
+                        reg_detalle.Nro_Ticket:=reg_ticket.Nro_Ticket
+                        reg_detalle.Nro_Linea:= OBTENER_LINEA
+                        reg_detalle.Cod_Prod:= reg_prod.Cod_Prod
+                        reg_detalle.Cantidad:= cantidad
+
+                        Re-Escribir(arch_detalle,reg_detalle)
+
+                        reg_prod.Stock:=reg_prod.Stock-cantidad
+                        Re-Escribir(arch_prod,reg_prod)
+                    FIN_SI
+                SINO
+                    Escribir("No se encontro el Producto: ",reg_prod.Cod_Prod)
+                FIN_SI
+            HASTA reg_prod.Cod_Prod = salida
+            Escribir("Total: ",Total)
+            Escribir("Desea generar una nueva venta? S/N")
+            Leer(nueva_venta)
+        FIN_MIENTRAS
+        CERRAR(arch_prod); CERRAR(arch_ticket); CERRAR(arch_detalle)
+FIN_ACCION
+
+
