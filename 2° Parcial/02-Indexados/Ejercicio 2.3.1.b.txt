@@ -1,0 +1,79 @@
+Enunciado:  
+Dado un fichero secuencial de Facturas, ordenado por Nro. de Cliente y Nro. de Factura, 
+con la siguiente estructura:
+
+FACTURAS Ordenado por Nro_Cliente, Nro_Factura
+    | Nro_Cliente | Nro_Factura | Fecha | Importe |
+
+Se desea un listado con el siguiente detalle:
+    | Nro. Cliente | Nombre Cliente | Total Facturado | Cantidad de Facturas |
+
+Los datos del cliente se encuentran en un fichero indexado por Nro. de Cliente, 
+que tiene la siguiente estructura:
+
+CLIENTES Indexado por Nro_Cliente
+    | Nro_Cliente | Nombre | DNI | CUIT | Domicilio |
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.2.3.1.b ES 
+    AMBIENTE 
+        fecha = REGISTRO
+            año:1900..2100
+            mes:1..12
+            dia:1..31
+        FIN_REGISTRO
+
+        factura = REGISTRO
+            Nro_Cliente: N(6)
+            Nro_Factura: N(6)
+            f: fecha
+            importe: Real
+        FIN_REGISTRO
+
+        cliente = REGISTRO
+            Nro_Cliente: N(6)
+            Nombre: AN(20)
+            dni: N(8)
+            cuit: N(11)
+            Domicilio: AN(40)
+        FIN_REGISTRO
+
+        arch_fac: Archivo de factura Ordenado por Nro_Cliente, Nro_Factura
+        reg_fac: factura
+
+        arch_cli: Archivo de cliente Ordenado por Nro_Cliente
+        reg_cli: cliente
+
+        cant_Fact: Entero
+        total_importe: Real
+    PROCESO
+        ABRIR E/(arch_fac); Leer(arch_fac,reg_fac)
+        ABRIR E/(arch_cli)
+        
+        Escribir("| Nro. Cliente | Nombre Cliente | Total Facturado | Cantidad de Facturas |")
+        
+        MIENTRAS NFDA(arch_fac) HACER
+            reg_cli.Nro_Cliente:=reg_fac.Nro_Cliente
+            Leer(arch_cli,reg_cli)
+            
+            SI EXISTE ENTONCES
+                cant_Fact:=0
+                total_importe:= 0
+                
+                MIENTRAS (reg_cli.Nro_Cliente = reg_fac.Nro_Cliente) y NFDA(arch_fac) HACER
+                    total_importe:=total_importe+reg_fac.importe
+                    cant_Fact:=cant_Fact+1
+                    Leer(arch_fac,reg_fac)
+                FIN_MIENTRAS
+                
+                Escribir("| reg_cli.Nro_Cliente | reg_cli.Nombre | Total Facturado | Cantidad de Facturas |")
+            SINO
+                Escribir("No se encontro el Nro. Cliente ",reg_fac.Nro_Cliente," en el archivo de clientes")
+                Leer(arch_fac,reg_fac)
+            FIN_SI
+            
+        FIN_MIENTRAS
+        CERRAR(arch_fac); CERRAR(arch_cli)
+FIN_ACCION
+
+
