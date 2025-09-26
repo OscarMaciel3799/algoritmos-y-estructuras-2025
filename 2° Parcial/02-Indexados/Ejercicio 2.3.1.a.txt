@@ -1,0 +1,64 @@
+Enunciado:  
+Dado un fichero secuencial de Facturas, ordenado por Nro. de Cliente y Nro. de Factura, 
+con la siguiente estructura:
+
+FACTURAS Ordenado por Nro_Cliente, Nro_Factura
+    | Nro_Cliente | Nro_Factura | Fecha | Importe |
+
+Se desea un listado con el siguiente detalle:
+    | Nro. Cliente | Nombre Cliente | Numero Factura |
+
+Los datos del cliente se encuentran en un fichero indexado por Nro. de Cliente, 
+que tiene la siguiente estructura:
+
+CLIENTES Indexado por Nro_Cliente
+    | Nro_Cliente | Nombre | DNI | CUIT | Domicilio |
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.2.3.1.a ES 
+    AMBIENTE
+        f = REGISTRO
+            año: 1900..2100
+            mes: 1..12
+            dia: 1..31
+        FIN_REGISTRO 
+
+        factura = REGISTRO
+            Nro_Cliente: N(6)
+            Nro_Factura: N(6)
+            fecha: f
+            Importe: Real
+        FIN_REGISTRO
+        
+        cliente = REGISTRO
+            Nro_Cliente: N(6)
+            nombre: AN(20)
+            dni: N(8)
+            cuit: N(11)
+            Domicilio: AN(40)
+        FIN_REGISTRO
+
+        arch_fac: Archivo de factura ordenado por Nro_Cliente, Nro_Factura
+        reg_fac: factura
+
+        arch_cli: Archivo de cliente ordenado por Nro_Cliente
+        reg_cli: cliente
+
+    PROCESO
+        ABRIR E/(arch_fac); Leer(arch_fac,reg_fac)
+        ABRIR E/(arch_cli)
+        Escribir("| Nro. Cliente | Nombre Cliente | Numero Factura |")
+        MIENTRAS NFDA(arch_fac) HACER
+            reg_cli.Nro_Cliente:=reg_fac.Nro_Cliente
+            Leer(arch_cli,reg_cli)
+            SI EXISTE ENTONCES
+                Escribir("| reg_cli.Nro_Cliente | reg_cli.nombre | reg_fac.Nro_Factura |")
+            SINO
+                Escribir("No se encontro el Nro. Cliente ",reg_fac.Nro_Cliente," en el archivo de clientes")
+            FIN_SI
+            Leer(arch_fac,reg_fac)
+        FIN_MIENTRAS
+        CERRAR(arch_fac); CERRAR(arch_cli)
+FIN_ACCION
+
+
