@@ -1,0 +1,126 @@
+Enunciado:  
+Una empresa dispone de un fichero secuencial con datos de sus empleados, ordenado por 
+número de sucursal, y categoría, con los siguientes datos:
+
+EMPLEADOS Ordenado por Nro_Sucursal, Categoria
+    | Nro_Sucursal | Categoria ("A","B","C") | Nombre_Empleado | Cod_Curso | Tecnico ("si","no") |
+Y un fichero con datos de cursos, indexado por código de curso:
+
+CURSO Indexado por Cod_Curso
+    | Cod_Curso | Nombre | Fecha | Cant_Horas |
+
+Emitir un listado informando:
+
+1. Para cada empleado: sucursal, categoría, nombre del empleado y nombre del curso que debe realizar.
+2. Por sucursal, categoría y toda la empresa:
+    a. Total empleados técnicos
+    b. Total empleados no técnicos
+    c. Total empleados
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.2.3.2 ES 
+    AMBIENTE 
+        fecha = REGISTRO
+            año: 1900.2100
+            mes: 1..12
+            dia: 1..31
+        FIN_REGISTRO
+
+        empleado = REGISTRO
+            Nro_Sucursal: N(6)
+            Categoria: ("A","B","C")
+            Nombre_Empleado: AN(20)
+            Cod_Curso: AN(6)
+            Tecnico: ("si","no")
+        FIN_REGISTRO
+
+        curso = REGISTRO
+            Cod_Curso: AN(6)
+            Nombre: AN(20)
+            Fecha: f
+            Cant_Horas: N(4)
+        FIN_REGISTRO
+
+        arch_emp: Archivo de empleado Ordenado por Nro_Sucursal, Categoria
+        reg_emp: empleado
+
+        arch_curso: Archivo de curso ordenado por Cod_Curso
+        reg_curso: curso
+
+        emp_tec_cat, emp_no_tec_cat: Entero
+        emp_tec_suc, emp_no_tec_suc: Entero
+        emp_tec_tot, emp_no_tec_tot: Entero
+
+        resg_sucursal: N(6)
+        resg_categoria:("A","B","C")
+        
+        PROCEDIMIENTO CORTE_CATEGORIA ES
+            Escribir("La cantidad de total de empleados en la categoría: ",resg_categoria," es: ",emp_tec_cat + emp_no_tec_cat)
+            Escribir("De ellos ",emp_tec_cat," son tecnicos")
+            Escribir("De ellos ",emp_no_tec_cat," NO son tecnicos")
+
+            emp_tec_suc:= emp_tec_suc + emp_tec_cat
+            emp_no_tec_suc:= emp_no_tec_suc + emp_no_tec_cat
+
+            emp_tec_cat:= 0
+            emp_no_tec_cat:= 0
+
+            resg_categoria:=reg_emp.Categoria
+        FIN_PROCEDIMIENTO
+        
+        PROCEDIMIENTO CORTE_SUCURSAL ES
+            CORTE_CATEGORIA
+            Escribir("La cantidad de total de empleados en la sucursal: ",resg_sucursal," es: ",emp_tec_suc + emp_no_tec_suc)
+            Escribir("De ellos ",emp_tec_suc," son tecnicos")
+            Escribir("De ellos ",emp_no_tec_suc," NO son tecnicos")
+
+            emp_tec_tot:= emp_tec_tot + emp_tec_suc
+            emp_no_tec_tot:= emp_no_tec_tot + emp_no_tec_suc
+
+            emp_tec_suc:= 0
+            emp_no_tec_suc:= 0
+
+            resg_sucursal:=reg_emp.Nro_Sucursal
+        FIN_PROCEDIMIENTO 
+        
+        
+    PROCESO
+        ABRIR E/(arch_emp); Leer(arch_emp, reg_emp)
+        ABRIR E/(arch_emp);
+        emp_tec_suc:= 0 ; emp_no_tec_suc:= 0
+        emp_tec_cat:= 0 ; emp_no_tec_cat:= 0
+        emp_tec_tot:= 0 ; emp_no_tec_tot:= 0
+
+        resg_sucursal:= reg_emp.Nro_Sucursal
+        resg_categoria:= reg_emp.Categoria
+        MIENTRAS NFDA(arch_emp) HACER
+            SI resg_sucursal <> reg_emp.Nro_Sucursal ENTONCES
+                CORTE_SUCURSAL
+            SINO
+                SI resg_categoria <> reg_emp.Categoria ENTONCES
+                    CORTE_CATEGORIA
+                FIN_SI
+            FIN_SI
+            SI reg_emp.Tecnico="si" ENTONCES
+                emp_tec_cat:=emp_tec_cat + 1
+            SINO
+                emp_no_tec_cat:=emp_no_tec_cat + 1
+            FIN_SI
+            reg_curso.Cod_Curso:=reg_emp.Cod_Curso
+            Leer(arch_curso,reg_curso)
+            SI EXISTE ENTONCES
+                Escribir("sucursal: ",reg_emp.Nro_Sucursal,", categoría: ",reg_emp.categoría,", nombre del empleado: ", reg_emp.Nombre_Empleado,", nombre del curso: ",reg_curso.nombre)
+            SINO
+                Escribir("sucursal: ",reg_emp.Nro_Sucursal,", categoría: ",reg_emp.categoría,", nombre del empleado: ", reg_emp.Nombre_Empleado,", No se encontró ningun curso")
+            FIN_SI
+            Leer(arch_emp,reg_emp)
+        FIN_MIENTRAS
+        CORTE_SUCURSAL
+        Escribir("La cantidad de total de empleados es: ",emp_tec_tot + emp_no_tec_tot)
+        Escribir("De ellos ",emp_tec_tot," son tecnicos")
+        Escribir("De ellos ",emp_no_tec_tot," NO son tecnicos")
+        CERRAR(arch_emp);CERRAR(arch_curso)
+FIN_ACCION
+
+
