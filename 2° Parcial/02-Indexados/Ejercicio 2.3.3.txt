@@ -32,7 +32,7 @@ ACCION E.2.3.3 ES
         categoria_ingresada: 1..4
         salir: ("S","N")
     PROCESO
-        ABRIR E/(Arch_peaje)
+        ABRIR E/S(Arch_peaje)
         Escribir("Desea realizar una busqueda? S/N")
         Leer(salir)
         MIENTRAS salir="S" HACER
