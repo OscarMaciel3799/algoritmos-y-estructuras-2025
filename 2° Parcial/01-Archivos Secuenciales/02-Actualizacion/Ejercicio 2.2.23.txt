@@ -1,7 +1,3 @@
-|-------------------------------------------------------------------------------|
-|                           NO SE ENTIENDE LA CONSIGNA                          |
-|                                                                               |
-|-------------------------------------------------------------------------------|
 Enunciado:  
 Una empresa de distribución de energía eléctrica posee un archivo maestro con los siguientes 
 datos de sus clientes (la fecha de última lectura son las mediciones realizadas hasta el mes 
@@ -71,26 +67,63 @@ ACCION E.2.23 ES
                 reg_med.Id_Casa:= HV
             FIN_SI
         FIN_PROCEDIMIENTO
+
+        fecha_limite = REGISTRO
+            año=2015
+            mes=1
+            dia=31
+        FIN_REGISTRO
+
+        PROCEDIMIENTO LOTE ES
+            MIENTRAS reg_act.Id_Casa = reg_med.Id_Casa HACER
+                SI reg_med.Fecha_Medicion<= fecha_limite ENTONCES
+                        consumo_total := consumo_total + reg_med.consumo
+                        cantidad := cantidad + 1
+                        reg_act.fecha_ult_lectura := reg_med.Fecha_Medicion
+                FINSI
+            LEER_MEDICIONES
+            FIN_MIENTRAS
+            SI cantidad> 0 ENTONCES
+                reg_act.prom_lecturas:=consumo_total/cantidad
+            FIN_SI
+        FIN_PROCEDIMIENTO
+
+        consumo_total: REAL
+        cantidad: ENTERO
+        
     PROCESO
         ABRIR E/(arch_cliente); LEER_CLIENTE
         ABRIR E/(arch_med); LEER_MEDICIONES
         ABRIR S/(arch_act)
 
-        MIENTRAS (reg_cliente.Id_Casa <> HV) o (reg_med.Id_Casa <> HV) HACER
-            SI reg_cliente.Id_Casa < reg_med.Id_Casa ENTONCES
+        MIENTRAS (reg_cliente.Id_Casa <> HV) o (reg_med.Id_Casa <> HV) HACER 
+            SI reg_cliente.Id_Casa < reg_med.Id_Casa ENTONCES //maestro sin movimiento
                 Escribir(arch_act,reg_cliente)
             SINO
-                SI ENTONCES
-                
+                SI reg_cliente.Id_Casa = reg_med.Id_Casa ENTONCES
+                    consumo_total := reg_cliente.cant_lecturas * reg_cliente.prom_lecturas
+                    cantidad := reg_cliente.cant_lecturas
+                    reg_act:=reg_cliente
                 SINO
-                
+                    consumo_total := 0
+                    cantidad := 0
+                    reg_act.Id_Casa:= reg_med.Id_Casa
                 FIN_SI
+                LOTE
+                    SEGUN reg_act.prom_lecturas HACER
+                        <20000:
+                                reg_act.Tipo_Consumidor:="A"
+                        <40000:
+                                reg_act.Tipo_Consumidor:="B"
+                        >=40000
+                                reg_act.Tipo_Consumidor:="C"
+                    FIN_SEGUN
+                    Escribir(arch_act,reg_act)
             FIN_SI
+            LEER_CLIENTE
         FIN_MIENTRAS
         CERRAR(arch_cliente)
         CERRAR(arch_med)
         CERRAR(arch_act) 
         
 FIN_ACCION
-
-
