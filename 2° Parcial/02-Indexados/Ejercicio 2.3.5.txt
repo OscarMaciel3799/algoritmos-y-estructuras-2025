@@ -1,0 +1,240 @@
+Enunciado:  
+Para poder comprar dólares en una entidad bancaria al precio oficial ($9,40), el beneficiario, 
+debe tener un ingreso promedio en los últimos 12 meses equivalente a dos veces 
+el sueldo mínimo vital y móvil (el cual en la actualidad es de $5000 por mes). 
+Luego, con el sueldo del mes actual, solo se permite comprar por un importe no superior al 30% del mismo.
+
+Por ej.: si una persona tiene un sueldo de $10.000, desde septiembre del año pasado, al dia de hoy 
+esa persona cumple la condición para comprar y puede comprar dólares por un monto máximo 
+de $3.000 (equivalente a U$S 319).
+
+Para ello se cuenta con dos archivos indexados:
+
+CABECERA_SUELDO Indexado por DNI, Periodo, Nro_Recibo
+    | DNI N(8) | Periodo N(6) | Nro_Recibo N(15) | ApyNom AN(50) | Empresa AN(50) |
+
+El periodo está representado por 6 caracteres numéricos dispuestos de forma de año/mes (aaaamm). 
+El número de recibo (Nro_Recibo) es único. Una persona puede tener varios recibos de sueldo. 
+La clave de este archivo es DNI, Periodo y Nro_Recibo.
+
+RECIBO Indexado por Nro_Recibo
+| Nro_Recibo N(15) | Concepto N(8) | Tipo (0..2) | Monto N(15,2) |
+
+El campo tipo puede contener los siguientes valores: 
+0 - Sueldo básico, 1 – Otros Ingresos, 2 – Descuentos. 
+Para calcular el sueldo mínimo se suman el sueldo (tipo 0), y los otros ingresos (tipo 1), 
+NO se restan los descuentos. La clave es Nro_Recibo.
+
+Dado el escenario descripto, se pide escribir dos algoritmos:
+
+1. a. Que el empleado del Banco ingrese un número de documento de algún interesado en comprar dólares, 
+    y le devuelve si está habilitado o no para comprar y, en caso positivo, cuál es el 
+    monto máximo en pesos que se le autoriza.
+   b. Si el interesado desea comprar, solicite el monto en pesos que destinará a la compra, 
+    el cual deberá ser descontado de su cuenta. Los datos de la cuenta están en un 
+    archivo indexado con la siguiente estructura (indexado por DNI):
+    | DNI N(8) | Nro_Cuenta N(25) | Saldo N(15,2) |
+
+   c. Los puntos a y b se repiten hasta que el operador (empleado del Banco) indique que desea finalizar.
+
+2. Procesar peticiones de compra, de acuerdo a un archivo de entrada de peticiones, 
+evaluando si es posible realizar la operación o no. Si no es posible, indicar cual es el motivo: 
+1 – No tiene el ingreso promedio suficiente, o 
+2 – Pide más del 30 % de su sueldo actual.
+
+PETICIONES
+    | DNI N(8) | Cant_Soli N(15,2) |
+El resultado de la evaluación se debe grabar en un nuevo archivo de salida con el siguiente formato:
+
+SALIDA
+    | DNI N(8) | Cant_Soli N(15,2) | Pudo (si,no) | Error 1..2 |
+
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.2.3.5.1 ES 
+    AMBIENTE 
+        cabecera_sueldo = REGISTRO
+            DNI: N(8)
+            Periodo: N(6)
+            Nro_Recibo: N(15)
+            ApyNom: AN(50)
+            Empresa: AN(50)
+        FIN_REGISTRO
+
+        recibo = REGISTRO
+            Nro_Recibo: N(15)
+            Concepto: N(8)
+            Tipo: 0..2
+            Monto: N(15,2)
+        FIN_REGISTRO
+
+        cuenta = REGISTRO
+            DNI: N(8)
+            Nro_Cuenta: N(25)
+            Saldo: N(15,2)
+        FIN_REGISTRO
+
+        arch_sueldo: Archivo de cabecera_sueldo Indexado por DNI, Periodo, Nro_Recibo
+        reg_sueldo: cabecera_sueldo
+
+        arch_recibo: Archivo de recivo Indexado por Nro_Recibo
+        reg_recibo: recibo
+
+        arch_cuenta: Archivo de cuenta Indexado por DNI
+        reg_cuenta: cuenta
+
+        ingresos: N(15,2)
+        cant_ing: N(3)
+        ingreso_actual: N(15,2)
+        salida: ("S","N")
+        monto_autorizado, monto_solicitado: N(15,2)
+        
+        PROCEDIMIENTO HABILITADO ES
+            Leer(arch_sueldo,reg_sueldo)
+            SI EXISTE ENTONCES
+                MIENTRAS arch_sueldo.DNI = dni HACER
+                    reg_recibo.Nro_Recibo:=reg_sueldo.Nro_Recibo
+                    Leer(arch_recibo,reg_recibo)
+                    SI reg_recibo.tipo <> 2 ENTONCES
+                        ingreso_actual:=reg_recibo.monto
+                        ingresos:=ingresos + ingreso_actual
+                        cant_ing:=cant_ing+1
+                    FIN_SI
+                    reg_sueldo.DNI:=dni
+                    Leer(arch_sueldo,reg_sueldo)
+                FIN_MIENTRAS
+            SINO
+                monto_autorizado:=-1
+            FIN_SI 
+            SI ingreso/cant_ing > 5000 ENTONCES
+                monto_autorizado:=ingreso_actual*0.3
+            SINO
+                monto_autorizado:=-1
+            FIN_SI
+        FIN_PROCEDIMIENTO
+
+    PROCESO
+        ABRIR E/(arch_sueldo)
+        ABRIR E/(arch_recibo)
+        ABRIR E/S(arch_cuenta)
+
+        Escribir("Desea Buscar un DNI? S/N")
+        Leer(salida)
+        MIENTRAS salida="S" HACER 
+            Escribir("Ingrese el DNI que desee verificar")
+            Leer(reg_sueldo.DNI)
+            monto_autorizado:=-1
+
+            HABILITADO
+            SI monto_autorizado>-1 ENTONCES
+                Escribir("El maximo autorizado es: ", monto_autorizado," cuanto desea retirar?")
+                Leer(monto_solicitado)
+                SI monto_solicitado <= monto_solicitado ENTONCES
+                    reg_cuenta.DNI:=reg_sueldo.DNI
+                    Leer(arch_cuenta,reg_cuenta)
+                    reg_cuenta.Saldo:= reg_cuenta.Saldo - monto_solicitado
+                    RE-Escribir(arch_cuenta, reg_cuenta)
+                SINO
+                    Escribir("El monto es mayor al permitido")
+                FIN_SI
+            SINO
+                Escribir("No está autorizado a comprar dolares")
+            FIN_SI
+            Escribir("Desea Buscar un DNI? S/N")
+            Leer(salida)
+        FIN_MIENTRAS
+        CERRAR(arch_sueldo); CERRAR(arch_recibo); CERRAR(arch_cuenta)
+FIN_ACCION
+
+
+ACCION E.2.3.5.2 ES 
+    AMBIENTE 
+        cabecera_sueldo = REGISTRO
+            DNI: N(8)
+            Periodo: N(6)
+            Nro_Recibo: N(15)
+            ApyNom: AN(50)
+            Empresa: AN(50)
+        FIN_REGISTRO
+
+        peticiones = REGISTRO
+            DNI: N(8)
+            Cant_Soli: N(15,2)
+        FIN_REGISTRO
+
+        salida = REGISTRO
+            DNI: N(8)
+            Cant_Soli: N(15,2)
+            Pudo: ("si","no")
+            Error: 1..2
+        FIN_REGISTRO
+
+        arch_sueldo: Archivo de cabecera_sueldo Indexado por DNI, Periodo, Nro_Recibo
+        reg_sueldo: cabecera_sueldo
+
+        arch_pet: Archivo de peticiones ordenado por DNI
+        reg_pet: peticiones
+
+        arch_sal: Archivo de salida ordenado por DNI
+        reg_sal: salida
+        
+        ingresos: N(15,2)
+        cant_ing: N(3)
+        ingreso_actual: N(15,2)
+        monto_autorizado, monto_solicitado: N(15,2)
+        
+        PROCEDIMIENTO HABILITADO ES
+            Leer(arch_sueldo,reg_sueldo)
+            SI EXISTE ENTONCES
+                MIENTRAS arch_sueldo.DNI = dni HACER
+                    reg_recibo.Nro_Recibo:=reg_sueldo.Nro_Recibo
+                    Leer(arch_recibo,reg_recibo)
+                    SI reg_recibo.tipo <> 2 ENTONCES
+                        ingreso_actual:=reg_recibo.monto
+                        ingresos:=ingresos + ingreso_actual
+                        cant_ing:=cant_ing+1
+                    FIN_SI
+                    reg_sueldo.DNI:=dni
+                    Leer(arch_sueldo,reg_sueldo)
+                FIN_MIENTRAS
+            SINO
+                HABILITADO:=-1
+            FIN_SI 
+            SI ingreso/cant_ing > 5000 ENTONCES
+                HABILITADO:=ingreso_actual*0.3
+            SINO
+                HABILITADO:=-1
+            FIN_SI
+        FIN_PROCEDIMIENTO
+        
+    PROCESO
+        ABRIR E/(arch_sueldo)
+        ABRIR E/(arch_pet)
+        ABRIR E/S (arch_sal)
+
+        MIENTRAS NFDA(arch_pet) HACER
+            reg_sueldo.DNI:=reg_pet.DNI
+            monto_autorizado:=-1
+            HABILITADO
+            SI monto_autorizado > -1 ENTONCES
+                SI monto_autorizado <= reg_pet.Cant_Soli ENTONCES
+                    reg_sal.DNI:=reg_pet.DNI
+                    reg_sal.Cant_Soli:=reg_pet.Cant_Soli
+                    reg_sal.Pudo:="si"
+                SINO
+                    reg_sal.DNI:=reg_pet.DNI
+                    reg_sal.Cant_Soli:=reg_pet.Cant_Soli
+                    reg_sal.Pudo:="no"
+                    reg_sal.Error:=2
+                FIN_SI
+            SINO
+                reg_sal.DNI:=reg_pet.DNI
+                reg_sal.Cant_Soli:=reg_pet.Cant_Soli
+                reg_sal.Pudo:="no"
+                reg_sal.Error:=1
+            FIN_SI
+            Escribir(arch_sal,reg_sal)
+        FIN_MIENTRAS
+        CERRAR(arch_sueldo); CERRAR(arch_pet); CERRAR(arch_sal); 
+FIN_ACCION
