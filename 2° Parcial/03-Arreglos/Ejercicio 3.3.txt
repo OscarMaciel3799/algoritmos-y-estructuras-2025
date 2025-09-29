@@ -1,0 +1,25 @@
+Enunciado:  
+Dados un vector de reales a de n elementos, con n ∈ N0, y un número real x >= 0, 
+calcular el valor y tal que:
+    n
+y=  ∑ (ai * x**i)
+   i=1
+ 
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.3.3 ES 
+    AMBIENTE 
+        n=20
+        x=13
+        a: ARREGLO DE [1..n] DE REAL
+        y: REAL
+        i: ENTERO
+    PROCESO
+        y:=0
+        PARA i:=1 HASTA n HACER
+            y:= y + (a[i]*(x**i))
+        FIN_PARA
+        Escribir("El resultado de la sumatoria es: ",y)
+FIN_ACCION
+
+
