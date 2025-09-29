@@ -1,0 +1,27 @@
+Enunciado:  
+Escribir un algoritmo que permita cargar un arreglo de N nombres, 
+considerando que cada nombre debe tener entre 1 y 10 caracteres.
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.3.6 ES 
+    AMBIENTE 
+        n=15
+        arr: ARREGLO DE [1..n,1..10] DE CARACTER
+        i, j : ENTERO
+        car: CARACTER
+    PROCESO
+        PARA i:=1 HASTA n HACER
+            j:=10
+            Escribir("Ingrese el primer caracter del nombre")
+            Leer(car)
+            REPETIR 
+                arr[i]:=car
+                j:=j-1
+                Escribir("Ingrese el siguiente caracter del nombre, si ya no hay más caracter ingrese * ")
+                Leer(car)
+            HASTA QUE (car:="*" o j=0)
+        FIN_PARA
+FIN_ACCION
+
+
