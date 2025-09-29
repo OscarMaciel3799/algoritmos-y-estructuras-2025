@@ -1,0 +1,34 @@
+Enunciado:  
+Dado un arreglo de 50 elementos, cada uno de los cuales tiene los siguientes datos: 
+Código de localidad y Lluvia caída en un año. 
+Escribir un algoritmo que permita saber dada una localidad, cuanto llovió en el año. 
+Aplicar el método más adecuado considerando que el arreglo esta ordenado por Código de localidad.
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.3.11 ES 
+    AMBIENTE 
+        datos = REGISTRO
+            cod_loc: AN(6)
+            lluvia: N(3,2)
+        FIN_REGISTRO
+        info: ARREGLO DE [1..50] de datos
+        i: ENTERO
+        localidad_ingresada: AN(6)
+        tot_lluvia: N(3,2)
+    PROCESO
+        tot_lluvia:=0
+        Escribir("Ingrese el codigo de la localidad que desea calcular el total")
+        Leer(localidad_ingresada)
+        
+        i:=1
+        MIENTRAS i<50 y info[i].cod_loc<>localidad_ingresada HACER 
+            i:=i+1
+        FIN_MIENTRAS
+        SI info[i].cod_loc=localidad_ingresada ENTONCES
+            Escribir("La cantidad de lluvia caida en el año es: ", info[i].lluvia)
+        SINO
+            Escribir("No se encontró la localidad ingresada")
+        FIN_SI
+FIN_ACCION
+
+
