@@ -1,0 +1,50 @@
+Enunciado:  
+Genere un único algoritmo que resuelva las 3 consignas del ejercicio anterior.
+---
+Para cada una de las consignas siguientes, genere un algoritmo que permita solucionarla (3 algoritmos) 
+usando un arreglo de 100 números enteros:
+
+a. Almacenar 100 números.
+b. Localizar el número de mayor valor y el de menor valor, informar sus valores y sus posiciones.
+c. Contar y sumar todos los números pares.
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.3.2 ES 
+    AMBIENTE 
+        arr: ARREGLO DE [1..100] DE ENTERO
+        min_max: ARREGLO DE [1..4] DE ENTERO
+        par: ARREGLO DE [1.2] DE ENTERO
+        i: ENTERO
+    PROCESO
+        min_max[1]:=HV
+        min_max[3]:=LV
+        par[1]:=0
+        par[2]:=0
+        PARA i:=1 HASTA 100 HACER
+            Escribir("Ingrese el numero para la posicion ",i)
+            Leer(arr[i])
+
+            SI arr[i]<min_max[1] ENTONCES
+                min_max[1]:=arr[i]
+                min_max[2]:=i
+            FIN_SI
+
+            SI arr[i]>min_max[3] ENTONCES
+                min_max[3]:=arr[i]
+                min_max[4]:=i
+            FIN_SI
+
+            SI arr[i] % 2 = 0 ENTONCES
+                par[1]:=par[1]+1
+                par[2]:=par[2] + arr[i]
+            FIN_SI
+        FIN_PARA
+        
+        Escribir("El menor valor es ",min_max[1]," y  su posicion es: ",min_max[2])
+        Escribir("El mayor valor es ",min_max[3]," y  su posicion es: ",min_max[4])
+
+        Escribir("La cantidad de numeros pares es: ", par[1]," y la suma de ellos es: ",par[2])
+FIN_ACCION
+
+
