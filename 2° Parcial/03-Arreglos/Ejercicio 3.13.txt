@@ -1,0 +1,65 @@
+Enunciado:  
+Se precisa ordenar un arreglo de N alumnos de mayor a menor, 
+de acuerdo a la cantidad de materias aprobadas. 
+
+Cada elemento del arreglo contiene Nro. de Legajo y Cantidad de materias aprobadas. 
+Escriba por lo menos dos algoritmos que permitan solucionar el problema; 
+especifique cuál de las formas considera más eficiente y por qué.
+
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.3.13 ES 
+    AMBIENTE 
+        n=30
+        alumnos = REGISTRO
+            nro_legajo: N(5)
+            mat_aprob: N(2)
+        FIN_REGISTRO
+
+        arr: ARREGLO DE [1..n] de alumnos
+        aux: alumnos
+        i: ENTERO
+        bandera: LOGICO
+    PROCESO
+        bandera:= FALSO
+        MIENTRAS NO bandera HACER 
+            bandera:= VERDADERO
+            PARA i:=1 HASTA n-1 HACER
+                SI arr[i].mat_aprob < arr[i+1].mat_aprob ENTONCES
+                    aux:=arr[i]
+                    arr[i]:=arr[i+1]
+                    arr[i+1]:=aux
+                    
+                    bandera:= FALSO
+                FIN_SI
+            FIN_PARA
+        FIN_MIENTRAS
+FIN_ACCION
+
+
+ACCION E.3.13 ES 
+    AMBIENTE 
+        n=30
+        alumnos = REGISTRO
+            nro_legajo: N(5)
+            mat_aprob: N(2)
+        FIN_REGISTRO
+
+        arr: ARREGLO DE [1..n] de alumnos
+        aux: alumnos
+        i, j, max: ENTERO
+    PROCESO
+        PARA i:=1 HASTA n-1 HACER
+            aux:=arr[i]
+            max:=i
+            PARA j:=i+1 HASTA n HACER
+                SI aux.mat_aprob < arr[j].mat_aprob ENTONCES
+                    aux:=arr[j]
+                    max:=j
+                FIN_SI
+            FIN_PARA
+            arr[max]:=arr[i]
+            arr[i]:=aux
+        FIN_PARA
+FIN_ACCION
