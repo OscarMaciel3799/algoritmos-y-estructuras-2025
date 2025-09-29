@@ -1,0 +1,46 @@
+Enunciado:  
+
+A partir del arreglo de videos descrito en el ejercicio anterior, 
+diseñe un algoritmo que permita atender un pedido de alquiler, 
+para lo cual debe verificar si es posible o no y, cuando corresponda, 
+actualizar la cantidad de personas que vieron dicha película.
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.3.12 ES 
+    AMBIENTE 
+        videos = REGISTRO
+            titulo: AN(6)
+            director: AN(20)
+            categoría: AN(20)
+            cant_vistas: ENTERO
+            Alquilado: ("si","no")
+        FIN_REGISTRO
+        info: ARREGLO DE [1..100] de videos
+        i: ENTERO
+        titulo_ingresado: AN(6)
+        presatamos: ARREGLO DE [1..100] DE ENTERO // Lo consideramos cargados con los prestamos anteriores
+        salida: LOGICO
+    PROCESO
+        Escribir("Ingrese la pelicula que desee alquilar")
+        Leer(titulo_ingresado)
+
+        i:=1
+        MIENTRAS info[i].titulo <> titulo_ingresado y i<100 HACER
+            i:i+1
+        FIN_MIENTRAS
+
+        SI info[i].titulo = titulo_ingresado ENTONCES
+            SI info[i].Alquilado = "no" ENTONCES
+                Escribir("El video esta disponible")
+                prestamos[i]:=prestamos[i]+1
+                info[i].Alquilado := "si"
+            SINO
+                Escribir("El video NO esta disponible")
+            FIN_SI
+        SINO
+            Escribir("El video NO esta en nuestra bases de datos")
+        FIN_SI
+FIN_ACCION
+
+
