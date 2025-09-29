@@ -1,0 +1,58 @@
+Enunciado:  
+Para cada una de las consignas siguientes, genere un algoritmo que permita solucionarla (3 algoritmos) 
+usando un arreglo de 100 números enteros:
+
+a. Almacenar 100 números.
+b. Localizar el número de mayor valor y el de menor valor, informar sus valores y sus posiciones.
+c. Contar y sumar todos los números pares.
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.3.1.a ES 
+    AMBIENTE 
+        arr: ARREGLO DE [1..100] DE ENTERO
+        i: ENTERO
+    PROCESO
+        PARA i:=1 HASTA 100 HACER
+            Escribir("Ingrese un número para la posicion ",i)
+            Leer(arr[i])
+        FIN_PARA
+FIN_ACCION
+
+ACCION E.3.1.b ES 
+    AMBIENTE 
+        arr: ARREGLO DE [1..100] DE ENTERO
+        i, mayorValor,mayorPosicion, menorValor, menorPosicion: ENTERO
+    PROCESO
+        mayorValor:=LV
+        menorValor:=HV
+        PARA i:=1 HASTA 100 HACER
+            SI arr[i] < menorValor ENTONCES
+                menorValor:=arr[i]
+                menorPosicion:=i
+            FIN_SI
+
+            SI arr[i] > mayorValor ENTONCES
+                mayorValor:=arr[i]
+                mayorPosicion:=i
+            FIN_SI
+        FIN_PARA
+        Escribir("El mayor valor es: ", mayorValor," y se encuentra en la posicion: ",mayorPosicion)
+        Escribir("El menor valor es: ", menorValor," y se encuentra en la posicion: ",menorPosicion)
+FIN_ACCION
+
+ACCION E.3.1.c ES 
+    AMBIENTE 
+        arr: ARREGLO DE [1..100] DE ENTERO
+        i, cant_pares, total_pares: ENTERO
+    PROCESO
+        cant_pares:=0
+        total_pares:=0
+        PARA i:=1 HASTA 100 HACER
+            SI arr[i] % 2 = 0 ENTONCES
+                cant_pares:=cant_pares + 1
+                total_pares:= total_pares + arr[i]
+            FIN_SI
+        FIN_PARA
+        Escribir("La cantidad de numeros pares es: ",cant_pares," y su suma es: ",total_pares)
+FIN_ACCION
