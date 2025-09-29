@@ -1,0 +1,43 @@
+Enunciado:  
+Dados 2 vectores:
+A: arreglo [1 .. 30] de reales B: arreglo [1 .. 30] de reales
+
+Ambos ordenados de forma creciente, escribir un algoritmo que realice la mezcla de ambos 
+para obtener otro vector tambien ordenado de forma creciente
+
+C: arreglo [1 .. 60] de reales
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.3.5 ES 
+    AMBIENTE 
+        A: arreglo [1 .. 30] de real 
+        B: arreglo [1 .. 30] de real
+        C: arreglo [1 .. 60] de real
+        i, j, k: Entero
+    PROCESO
+        j:=1
+        k:=1
+        PARA i:=1 HASTA 60 HACER
+            SI A[j]<B[k] ENTONCES
+                C[i]:=A[j]
+                j:=j+1
+            SINO
+                SI B[k]<A[j] ENTONCES
+                    C[i]:=B[k]
+                    k:=k+1
+                SINO
+                    SI j<30 ENTONCES
+                        C[i]:=A[j]
+                        j:=j+1
+                    SINO
+                        C[i]:=A[k]
+                        k:=k+1
+                    FIN_SI
+                FIN_SI
+            FIN_SI
+        FIN_PARA
+
+FIN_ACCION
+
+
