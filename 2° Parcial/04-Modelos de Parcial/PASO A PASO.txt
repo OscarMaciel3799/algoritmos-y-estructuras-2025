@@ -1,0 +1,60 @@
+ACTUALIZACION UNITARIA (maximo 1 movimiento por registro)
+    AMBIENTE
+        crear los formatos de los registros
+        crear las variables archivos y registros (de entrada/s y/o salida/s)
+        crear procedimientos de lectura de archivos
+        crear variables auxiliares en caso que sea necesario
+        crear procedimientos de ACTUALIZACION(posibles movimientos: ALTA, BAJA (fisica o logica) , ACTUALIZACION)
+            paso directo o maestro sin movimiento (maestro<movimiento)
+            actualizacion del registro (maestro=movimiento)
+            movimiento sin maestro (maestro>movimiento)
+    
+    PROCESO
+        abrir archivos
+        leer archivos secuenciales (maestro y movimiento)
+        iniciar mientras
+            evaluar si es (identificar un posible tratar registro)
+                paso directo o maestro sin movimiento (maestro<movimiento)
+                actualizacion del registro (maestro=movimiento)
+                movimiento sin maestro (maestro>movimiento)
+        cerrar archivos
+    fin accion
+
+ACTUALIZACION EN LOTE (multiples movimientos por registro)
+    AMBIENTE
+        crear los formatos de los registros
+        crear las variables archivos y registros (de entrada/s y/o salida/s)
+        crear procedimientos de lectura de archivos
+        crear variables auxiliares en caso que sea necesario
+        crear procedimientos de ACTUALIZACION(posibles movimientos: ALTA, BAJA (fisica o logica) , ACTUALIZACION)
+            paso directo o maestro sin movimiento (maestro<movimiento)
+            actualizacion en lote del registro (maestro=movimiento)
+            movimiento sin maestro (maestro>movimiento)
+    
+    PROCESO
+        abrir archivos
+        leer archivos secuenciales (maestro y movimiento)
+        iniciar mientras
+            evaluar si es(identificar un posible tratar registro)
+                paso directo o maestro sin movimiento (maestro<movimiento)
+                lote (maestro=movimiento)
+                movimiento sin maestro (maestro>movimiento)
+        cerrar archivos
+    fin accion
+
+PROCESOS ESTADISTICO
+    AMBIENTE
+        crear los formatos de los registros
+        crear las variables archivos y registros (de entrada/s y/o salida/s)
+        definir tamaño e indices del arreglo
+    
+    PROCESO
+        abrir archivos
+        leer archivo secuencial
+        inicializar arreglo
+        iniciar mientras
+            transformar los indices en caso que sea necesario
+            acumular los valores de las celdas
+        mostrar la tabla
+        cerrar archivos
+    fin accion
