@@ -97,9 +97,9 @@ ACCION Ejercicio_N°1 ES
                         reg_act.fecha_baja:= FECHA_ACTUAL
                     OTROS: 
                         SI reg_mov.tipo = "I" ENTONCES
-                            reg_act.saldo := reg_act.saldo - reg_mov.monto
-                        SINO
                             reg_act.saldo := reg_act.saldo + reg_mov.monto
+                        SINO
+                            reg_act.saldo := reg_act.saldo - reg_mov.monto
                         FIN_SI
                 FIN_SEGUN
                 LEER_MOVIMIENTOS
@@ -111,7 +111,7 @@ ACCION Ejercicio_N°1 ES
     PROCESO
         ABRIR E/(arch_cli); LEER_CLIENTES
         ABRIR E/(arch_mov); LEER_MOVIMIENTOS
-        ABRIR E/S (arch_act)
+        ABRIR /S (arch_act)
         clientes_nuevos:=0
         MIENTRAS (reg_cli.clave <> HV o reg_mov.clave <> HV ) HACER
             SI reg_cli.clave = reg_mov.clave ENTONCES // actualización en lote
@@ -219,7 +219,7 @@ ACCION Ejercicio_N°2 ES
         i:1..16 // Considero que los id de las sucursales van de 1 a 15
         j: 1..4
     PROCESO
-        ABRIR E/(arch_cli); 
+        ABRIR E/(arch_cli); Leer(arch_cli,reg_cli)
         ABRIR E/(arch_suc);
 
         PARA i:= 1 HASTA 16 HACER
