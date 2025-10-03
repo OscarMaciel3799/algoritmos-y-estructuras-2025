@@ -1,0 +1,44 @@
+Enunciado:  
+
+Repita el ejercicio anterior, pero suponiendo que se precisa localizar todos los nombres que 
+comienzan con una letra dada.
+
+Escribir un algoritmo que permita localizar un nombre en un arreglo de N nombres, 
+ordenados alfabéticamente. Cada nombre puede tener, como máximo, 10 caracteres. 
+Escriba por lo menos dos algoritmos que permitan solucionar el problema; 
+especifique cuál de las formas considera más eficiente y por qué.
+
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.3.8 ES 
+    AMBIENTE 
+        N=46
+        Matriz: ARREGLO DE [1..N,1..10]
+        i: 1..N
+        j: 1..10
+        salida: LOGICO
+        letra_dada: caracter
+    PROCESO
+        // Considero el arreglo cargado
+        Escribir("Ingrese una letra")
+        Leer(letra_dada)
+        i:=1
+        salida:=FALSO
+        MIENTRAS i<N y salida=FALSO HACER 
+            SI Matriz[i,1]=letra_dada ENTONCES
+                MIENTRAS i<N y Matriz[i,1]=letra_dada HACER
+                    // muestro los caracteres del nombre
+                    PARA j:=1 HASTA 10 HACER
+                        Escribir(Matriz[i,j])
+                    FIN_PARA
+                    i:=i+1
+                FIN_MIENTRAS
+                salida:=VERDADERO
+            SINO
+                i:=i+1
+            FIN_SI
+        FIN_MIENTRAS
+FIN_ACCION
+
+
