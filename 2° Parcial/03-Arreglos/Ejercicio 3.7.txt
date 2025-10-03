@@ -1,0 +1,31 @@
+Enunciado:  
+Escribir un algoritmo que permita localizar un nombre en un arreglo de N nombres, 
+ordenados alfabéticamente. Cada nombre puede tener, como máximo, 10 caracteres. 
+Escriba por lo menos dos algoritmos que permitan solucionar el problema; 
+especifique cuál de las formas considera más eficiente y por qué.
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.3.7 ES 
+    AMBIENTE 
+        n=23
+        arr: ARREGLO DE [1..N] DE AN(10)
+        i: ENTERO
+        nombre_ingresado: AN(10)
+    PROCESO
+        Escribir("Ingrese el nombre que desea buscar")
+        Leer(nombre_ingresado)
+        i:=1
+        MIENTRAS i<N y nombre_ingresado<>arr[i] HACER
+            i:=i+1
+        FIN_MIENTRAS
+
+        SI arr[i]=nombre_ingresado ENTONCES
+            Escribir("El nombre ingresado se encuentra en la posicion: ",i)
+        SINO
+            Escribir("Nombre no encontrado")
+        FIN_SI
+
+FIN_ACCION
+
+
