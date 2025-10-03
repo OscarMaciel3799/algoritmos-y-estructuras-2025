@@ -1,0 +1,281 @@
+Ejercicio N° 1 
+Un importante banco del país cuenta con la información de todos sus clientes en un archivo secuencial 
+con el siguiente formato:
+
+CLIENTES (ordenado por id_sucursal, id_cliente)
+id_sucursal | id_cliente | nombre y apellido | saldo a la fecha | fecha alta | fecha baja
+
+Al final de cada mes, corre un proceso de actualización con todos los movimientos generados por cada cliente 
+durante el mes. La información se encuentra en un archivo secuencial con la siguiente estructura:
+
+MOVIMIENTOS (ordenado por id_sucursal, id_cliente, cod_movimiento)
+id_sucursal | id_cliente | cod_movimiento (0..99)| nombre y apellido | fecha_movimiento | monto | detalle | categoría (1..6) | tipo
+
+Donde:
+ -cod_movimiento indica: 
+    0 (alta de un nuevo cliente) , 
+    99 (baja de un cliente) , y 
+    cualquier otro valor entre 1 y 98 es una transacción en la cuenta del cliente.
+ -detalle: indica una descripción del movimiento.
+ -categoria: indica la categoría del movimiento (
+    1-Supermercado , 
+    2-Farmacia, 
+    3-Carniceria, 
+    4-Transferencia, 
+    5-Pago de servicios, 
+    6-Otros).
+ -tipo: indica 
+    “I” si es un ingreso, 
+    “E” si es un egreso.
+
+Se pide:
+a. Desarrollar un algoritmo que permita mantener actualizado el archivo CLIENTES con sus respectivos saldos. 
+    Informar por pantalla cualquier tipo de error que considere pertinente durante el proceso.
+b. Indicar la cantidad de clientes que se dieron de baja el último mes.
+
+ACCION Ejercicio_N°1 ES
+    AMBIENTE
+        cl = REGISTRO
+            id_sucursal: AN(6)
+            id_cliente: AN(6)
+        FIN_REGISTRO
+
+        fecha = REGISTRO
+            año: 1900..2100
+            mes: 1..12
+            dia: 1..31
+        FIN_REGISTRO
+
+        CLIENTES = REGISTRO
+            clave: cl
+            NyA: AN(20)
+            saldo: REAL
+            fecha_alta: fecha
+            fecha_baja: fecha
+        FIN_REGISTRO
+
+        MOVIMIENTOS = REGISTRO
+            clave: cl
+            cod_mov: 0..99
+            NyA: AN(20)
+            fecha_mov: fecha
+            monto
+            detalle
+            categoría (1..6)
+            tipo: ("I","E")
+        FIN_REGISTRO
+
+        arch_cli, arch_act: Archivo de CLIENTES ordenado por clave
+        reg_cli, reg_act: CLIENTES
+
+        arch_mov: Archivo de MOVIMIENTOS ordenado por clave y cod_mov
+        reg_mov: MOVIMIENTOS
+        
+        cant_bajas: ENTERO
+        año_actual: 1900..2100
+        mes_actual: 1..12
+        PROCEDIMIENTO LEER_CLIENTES ES
+            Leer(arch_cli,reg_cli)
+            SI FDA(arch_cli) ENTONCES
+                arch_cli.clave:=HV
+            FIN_SI
+        FIN_PROCEDIMIENTO
+        
+        PROCEDIMIENTO LEER_MOVIMIENTOS ES
+            Leer(arch_mov,reg_mov)
+            SI FDA(arch_mov) ENTONCES
+                arch_mov.clave:=HV
+            FIN_SI
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO CONTEO_BAJAS ES
+            SI reg_act.fecha_baja.mes = mes_actual y reg_act.fecha_baja.año = año_actual ENTONCES
+                cant_bajas:=cant_bajas+1
+            FIN_SI
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO LOTE ES 
+            MIENTRAS (reg_act.clave=reg_mov.clave) HACER
+                SEGUN reg_mov.cod_mov HACER
+                    0:
+                        Escribir("ERROR - No se puede dar de alta a un cliente existente")
+                    <99:
+                        SI reg_mov.tipo = "I" ENTONCES
+                            reg_act.saldo:=reg_act.saldo + reg_mov.monto
+                        SINO
+                            reg_act.saldo:=reg_act.saldo - reg_mov.monto
+                        FIN_SI
+                    99:
+                        SI reg_act.fecha_baja = "-" ENTONCES
+                            reg_act.fecha_baja:=FECHA_ACTUAL
+                        SINO
+                            Escribir("ERROR - No se puede dar de baja a un cliente ya Inactivo")
+                        FIN_SI
+                FIN_SEGUN
+                LEER_MOVIMIENTOS
+            FIN_MIENTRAS
+            CONTEO_BAJAS
+            Escribir(arch_act,reg_act)
+        FIN_PROCEDIMIENTO
+
+    PROCESO
+        ABRIR E/(arch_cli); LEER_CLIENTES
+        ABRIR E/(arch_mov); LEER_MOVIMIENTOS
+        ABRIR /S(arch_act)
+
+        cant_bajas:=0
+        Escribir("Ingrese el mes y el año actual")
+        Leer(mes_actual,año_actual)
+        MIENTRAS (reg_cli.clave<>HV o reg_mov.clave<>HV) HACER
+
+            SI reg_cli.clave=reg_mov.clave ENTONCES // actualizacion-baja
+                reg_act:=reg_cli
+                LOTE
+                LEER_CLIENTES
+            SINO
+                SI reg_cli.clave < reg_mov.clave ENTONCES // maestro sin movimiento
+                    reg_act:=reg_cli
+                    Escribir(arch_act,reg_act)
+                    CONTEO_BAJAS
+                    LEER_CLIENTES
+                SINO    // alta, actualizacion
+                    SEGUN HACER
+                        0:
+                            reg_act.clave:=reg_mov.clave
+                            reg_act.NyA:=reg_mov.NyA
+                            reg_act.saldo:=reg_mov.monto
+                            reg_act.fecha_alta:=FECHA_ACTUAL
+                            reg_act.fecha_baja:="-"
+
+                            LEER_MOVIMIENTOS
+                            SI reg_act.clave=reg_mov.clave ENTONCES
+                                LOTE
+                            SINO
+                                Escribir(arch_act,reg_act)
+                            FIN_SI
+                        <99:
+                            Escribir("ERROR - No se puede operar con un cliente NO existente")
+                            LEER_MOVIMIENTOS
+                        99:
+                            Escribir("ERROR - No se puede dar de baja a un cliente NO existente")
+                            LEER_MOVIMIENTOS
+                    FIN_SEGUN
+                FIN_SI
+            FIN_SI
+        FIN_MIENTRAS
+        Escribir("La cantidad de clientes dados de baja este mes es: ", cant_bajas)
+        CERRAR(arch_cli)
+        CERRAR(arch_act)
+        CERRAR(arch_mov)
+FIN_ACCION
+
+
+
+
+Ejercicio N° 2 
+El banco ha solicitado un informe para conocer cómo se integra su cartera de clientes, agrupándolos por sucursal 
+y categoría de cliente, a partir de los datos del archivo de CLIENTES (usar las estructuras de datos del ejercicio 
+anterior).
+Considerando que son 15 sucursales, y la información de las sucursales se encuentra en un archivo indexado:
+Sucursales (indexado por id_sucursal) 
+id sucursal | nombre de la sucursal | direccion | localidad
+
+La estructura del informe solicitado es la siguiente:
+_________________________________________________________________________________________________
+|                    | Categoría diamante | Categoría oro | Categoría estándar | Totales por suc |
+--------------------------------------------------------------------------------------------------
+|Nombre sucursal 1   |                    |               |                    |                 |
+-------------------------------------------------------------------------------------------------- 
+|Nombre sucursal 2   |                    |               |                    |                 |
+-------------------------------------------------------------------------------------------------- 
+| . . .                                                                                          |
+--------------------------------------------------------------------------------------------------
+|Nombre sucursal 15  |                    |               |                    |                 |
+-------------------------------------------------------------------------------------------------- 
+|Totales x categoría |                    |               |                    |                 | 
+--------------------------------------------------------------------------------------------------
+La categoría del cliente dependerá de los montos obtenidos en su saldo de la cuenta al último día del mes.
+    - Montos menores a $100.000 serán de categoría estándar.
+    - Montos menores a $1.500.000 serán de categoría oro.
+    - Montos superiores serán de categoría diamante.
+
+Nota: considerar SOLO clientes dados de baja, ya que el banco propone realizar un nuevo plan de fidelización. 
+
+ACCION Ejercicio_N°1 ES
+    AMBIENTE
+        fecha = REGISTRO
+            año: 1900..2100
+            mes: 1..12
+            dia: 1..31
+        FIN_REGISTRO
+
+        CLIENTES = REGISTRO
+            id_sucursal: AN(6)
+            id_cliente: AN(6)
+            NyA: AN(20)
+            saldo: REAL
+            fecha_alta: fecha
+            fecha_baja: fecha
+        FIN_REGISTRO
+
+        arch_cli: Archivo de CLIENTES ordenado por clave
+        reg_cli: CLIENTES
+
+        SUCURSALES = REGISTRO 
+            id_suc: AN(8)
+            nombre: AN(20)
+            direccion: AN(40)
+            localidad: AN(40)
+        FIN_REGISTRO
+
+        arch_suc: Archivod de SUCURSALES Indexado por id_suc
+        reg_suc: SUCURSALES
+        info: ARREGLO DE [1..16,1..4] DE ENTERO
+        i: 1..16
+        j: 1..4
+    PROCESO
+        ABRIR E/(arch_cli); Leer(arch_cli,reg_cli)
+        ABRIR E/(arch_suc) 
+
+        PARA i:=1 HASTA 16 HACER
+            PARA j:=1 HASTA 4 HACER
+                info[i,j]:=0
+            FIN_PARA
+        FIN_PARA
+
+        MIENTRAS NFDA(arch_cli) HACER
+            SI reg_cli.fecha_baja<>"-" ENTONCES
+                i:= reg_cli.id_sucursal
+                SEGUN reg_cli.saldo HACER
+                    <100000:
+                        j:=1
+                    <1500000:
+                        j:=2
+                    >=1500000:
+                        j:=3
+                FIN_SEGUN
+
+                info[i,j]:=info[i,j] + 1
+                info[i,4]:=info[i,4] + 1
+                info[16,j]:=info[16,j] + 1
+                info[16,4]:=info[16,4] + 1
+            FIN_SI
+            Leer(arch_cli,reg_cli)
+        FIN_MIENTRAS
+        
+        Escribir("Sucursales\ Categorias  Categoria Diamante  Categoria Oro  Categoria Estandar  Totales x Sucursales")
+        PARA i:=1 HASTA 16 HACER
+            SI i <> 16 ENTONCES
+                reg_suc.id_suc := i 
+                Leer(arch_suc,reg_suc)
+                Escribir(reg_suc.nombre)
+            SINO
+                Escribir("Totales x Categoria")
+            FIN_SI
+            PARA j:=1 HASTA 4 HACER
+                Escribir( info[i,j] )
+            FIN_PARA
+        FIN_PARA
+        CERRAR(arch_cli)
+        CERRAR(arch_suc)
+FIN_ACCION
