@@ -1,0 +1,283 @@
+Ejercicio N° 1
+Santa Claus y su equipo de duendes registran toda la información de los niños que esperan regalos durante
+la Navidad. Cada niño está registrado en un archivo secuencial llamado NIÑOS, donde se guarda información
+sobre su comportamiento y su deseo principal.
+Al final de la temporada previa a Navidad, los duendes recopilan los eventos ocurridos durante el mes en un
+archivo secuencial llamado EVENTOS, que detalla las novedades, incluyendo cambios de comportamiento,
+solicitudes de regalos, y demás actualizaciones.
+
+Archivo NIÑOS (ordenado por id_pais, id_niño)
+id_pais | id_niño | NyA | puntaje_buen_comportamiento | id_regalo | nombre_regalo | fecha_registro | fecha_retiro
+• id_pais: Identificador del País del niño.
+• id_niño: Identificador único del niño.
+• puntaje_buen_comportamiento: Puntaje que indica el comportamiento del niño (puede ser positivo o negativo).
+• regalo_deseado: Nombre del regalo que desea recibir.
+• fecha_registro: Fecha en la que se registró al niño.
+• fecha_retiro: Fecha en la que fue retirado de la lista de navidad (si corresponde).
+
+Archivo EVENTOS (ordenado por id_pais, id_niño, cod_evento)
+id_pais | id_niño | cod_evento| fecha_evento | detalle | puntaje_cambio | tipo | id_regalo_deseado | regalo_deseado
+• cod_evento: 
+    0: Alta de un nuevo niño ;
+    99: Retiro de un niño de la lista;
+    1-98: Actualización de puntaje de comportamiento o cambio de regalo deseado.
+• detalle: Descripción del evento (por ejemplo, "Ayudó a su hermano", "Se peleó en la escuela", etc.).
+• puntaje_cambio: Valor que se sumará o restará al puntaje de comportamiento del niño.
+• tipo: 
+    "A" si el evento mejora el puntaje (positivo),
+    "R" si lo reduce (negativo),
+    vacío si es un cambio de regalo.
+• regalo_deseado: Nuevo regalo deseado (si corresponde a un cambio).
+
+Se pide: Desarrollar un algoritmo que permita mantener actualizado el archivo NIÑOS con los eventos
+registrados en el archivo EVENTOS.
+El algoritmo debe ajustar los puntajes de comportamiento y actualizar los regalos deseados si corresponde.
+Informar por pantalla cualquier tipo de error que considere pertinente durante el proceso.
+Además indicar:
+a. La cantidad total de niños nuevos que se registraron durante el proceso.
+b. El nombre del niño con mejor puntaje de buen comportamiento.
+
+
+ACCION EjercicioN°1 ES
+    AMBIENTE
+        cl = REGISTRO
+            id_pais: AN(6)
+            id_niño: AN(6)
+        FIN_REGISTRO
+
+        f = REGISTRO
+            año: 1900..2100
+            mes: 1..12
+            dia: 1..31
+        FIN_REGISTRO
+
+        NIÑOS = REGISTRO
+            clave: cl
+            NyA: AN(20)
+            puntaje: N(4)
+            id_regalo: AN(6)
+            regalo: AN(20)
+            fecha_registro: f
+            fecha_retiro: f
+        FIN_REGISTRO
+
+        EVENTOS = REGISTRO
+            clave: cl
+            cod_evento: 0..99
+            fecha_evento: f
+            detalle:AN(30)
+            puntaje: N(4)
+            tipo: ("A","R")
+            id_regalo: AN(6)
+            regalo: AN(20)
+        FIN_REGISTRO
+        
+        arch_niño, arch_act: Archivo de NIÑOS ordenado por clave
+        reg_niño, reg_act: NIÑOS
+
+        arch_evento: Archivo de EVENTOS ordenado por clave y cod_evento
+        reg_evento: EVENTOS
+
+        PROCEDIMIENTO LEER_NIÑOS ES
+            Leer(arch_niño,reg_niño)
+            SI FDA(arch_niño) ENTONCES
+                arch_niño.clave:= HV
+            FIN_SI
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO LEER_EVENTOS ES
+            Leer(arch_evento,reg_evento)
+            SI FDA(arch_evento) ENTONCES
+                arch_evento.clave:= HV
+            FIN_SI
+        FIN_PROCEDIMIENTO
+
+        cant_nuevos, mayor_puntaje: N(4)
+        mayor_nombre: AN(20)
+
+        PROCEDIMIENTO LOTE ES
+            MIENTRAS reg_niño.clave = reg_evento.clave HACER
+                SEGUN reg_evento.cod_evento HACER
+                    0:
+                        Escribir("ERROR - No se puede dar de alta a un niño existente")
+                    <99:
+                        SI reg_act.id_regalo <> reg_evento.id_regalo ENTONCES
+                            reg_act.id_regalo :=reg_evento.id_regalo
+                            reg_act.regalo := reg_evento.regalo
+                        SINO
+                            SI reg_evento.tipo = "A" ENTONCES
+                                reg_act.puntaje := reg_act.puntaje + reg_evento.puntaje
+                            SINO
+                                reg_act.puntaje := reg_act.puntaje - reg_evento.puntaje
+                            FIN_SI
+                        FIN_SI
+                    99:
+                        reg_act.fecha_retiro:= FECHA_ACTUAL
+                FIN_SEGUN
+                LEER_EVENTOS
+            FIN_MIENTRAS
+            Escribir(arch_act,reg_act)
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO MAYOR ES
+            SI reg_act.puntaje> mayor_puntaje ENTONCES
+                mayor_puntaje:=reg_act.puntaje
+                mayor_nombre:=reg_act.NyA
+            FIN_SI
+        FIN_PROCEDIMIENTO
+    PROCESO
+        ABRIR E/(arch_niño); LEER_NIÑOS
+        ABRIR E/(arch_evento); LEER_EVENTOS
+        ABRIR /S(arch_act)
+
+        cant_nuevos:=0 ; mayor_puntaje := LV
+
+        MIENTRAS (reg_niño.clave<>HV o reg_evento.clave<> HV) HACER
+            SI reg_niño.clave<reg_evento.clave ENTONCES  
+                reg_act:=reg_niño
+                Escribir(arch_act,reg_act)
+
+                MAYOR
+            SINO
+                SI reg_niño.clave=reg_evento.clave ENTONCES
+                    reg_act:=reg_niño
+                    LOTE
+
+                    MAYOR
+                SINO
+                    reg_act.clave:= reg_evento.clave
+                    reg_act.NyA:= reg_evento.NyA
+                    reg_act.puntaje:= reg_evento.puntaje
+                    reg_act.id_regalo:= reg_evento.id_regalo
+                    reg_act.regalo:= reg_evento.regalo
+                    reg_act.fecha_registro:= FECHA_ACTUAL
+
+                    LEER_EVENTOS
+
+                    SI reg_act.clave=reg_evento.clave  ENTONCES
+                        LOTE
+                    SINO
+                        Escribir(arch_act,reg_act)
+                    FIN_SI
+                    cant_nuevos:=cant_nuevos+1
+                    MAYOR
+                FIN_SI
+            FIN_SI
+        FIN_MIENTRAS
+        Escribir("La cantidad de niños nuevos es: ",cant_nuevos)
+        Escribir("El niño con mayor puntaje es: ", mayor_nombre)
+
+        CERRAR(arch_niño)
+        CERRAR(arch_act)
+        CERRAR(arch_evento)
+FIN_ACCION
+
+Ejercicio N° 2
+Santa Claus y su equipo desean conocer cómo se distribuyen los regalos entregados por región y categoría
+de niños según su nivel de comportamiento (registrado en el archivo NIÑOS del Ejercicio 1).
+Para ello, cuentan con un archivo indexado que contiene la información de las regiones donde Santa Claus
+realiza sus entregas de regalos (importante: las regiones abarcan varios países).
+
+Archivo REGIONES (indexado por id_pais)
+id_pais| nombre_pais| id_region | nombre_region
+Santa Claus solicita un informe con la siguiente estructura:
+_____________________________________________________________________________________________________
+|                    | Categoría Excelente | Categoría Buena | Categoría Regular | Totales x Región |
+-----------------------------------------------------------------------------------------------------
+|Nombre region 1     |                    |                  |                   |                  |
+-----------------------------------------------------------------------------------------------------
+|Nombre region 2     |                    |                  |                   |                  |
+-----------------------------------------------------------------------------------------------------
+| . . .                                                                                             |
+----------------------------------------------------------------------------------------------------
+|Nombre region 15    |                    |                  |                   |                  |
+-----------------------------------------------------------------------------------------------------
+|Totales x categoría |                    |                  |                   |                  | 
+-----------------------------------------------------------------------------------------------------
+
+La categoría del niño dependerá de su nivel de comportamiento:
+• Puntaje mayor o igual a 80: Categoría Excelente.
+• Puntaje entre 50 y 79: Categoría Buena.
+• Puntaje menor a 50: Categoría Regular.
+Nota: Incluir únicamente los niños que no hayan sido retirados de la lista de Navidad.
+
+
+ACCION EjercicioN°1 ES
+    AMBIENTE
+        f = REGISTRO
+            año: 1900..2100
+            mes: 1..12
+            dia: 1..31
+        FIN_REGISTRO
+
+        NIÑOS = REGISTRO
+            id_pais: AN(6)
+            id_niño: AN(6)
+            NyA: AN(20)
+            puntaje: N(4)
+            id_regalo: AN(6)
+            regalo: AN(20)
+            fecha_registro: f
+            fecha_retiro: f
+        FIN_REGISTRO
+
+        REGIONES = REGISTRO
+            id_pais: AN(6)
+            nombre_pais: AN(20)
+            id_region: AN(6)
+            nombre_region: AN(20)
+        FIN_REGISTRO
+        
+        arch_niño : Archivo de NIÑOS ordenado por clave
+        reg_niño : NIÑOS
+
+        arch_reg: Archivo de REGIONES indexado por id_pais
+        reg_reg: REGIONES
+
+        info: ARREGLO DE [1..16,1..4] // Considero que las regiones estan numeradas del 1..15
+        nombres_regiones: ARREGLO DE [1..15] DE AN(20)
+        i: 1..16
+        j:1..4
+    PROCESO
+        ABRIR E/(arch_niño); Leer(arch_niño,reg_niño)
+
+        PARA i:=1 HASTA 16 HACER
+            PARA j:=1 HASTA 4 HACER
+                info[i,j]:=0
+            FIN_PARA
+        FIN_PARA
+
+        MIENTRAS NFDA(arch_niño) HACER
+            reg_reg.id_pais:=reg_niño.id_pais
+            Leer(arch_reg,reg_reg)
+            i:=reg_reg.id_region
+            nombres_regiones[i]:=reg_reg.nombre_region
+            SEGUN reg_niño.puntaje HACER
+                <50:
+                    j:=3
+                <79:
+                    j:=2
+                >=80:
+                    j:=1
+            FIN_SEGUN
+            info[i,j]:=info[i,j]+1
+            info[16,j]:=info[16,j]+1
+            info[i,4]:=info[i,4]+1
+            info[16,4]:=info[16,4]+1
+            Leer(arch_niño,reg_niño)
+        FIN_MIENTRAS
+
+        Escribir("Region\ Categorias  Categoria Diamante  Categoria Oro  Categoria Estandar  Totales x Region")
+        PARA i:=1 HASTA 16 HACER
+            SI i = 16 ENTONCES
+                Escribir("Totales x Categoria")
+            SINO
+                Escribir(nombres_regiones[i])
+            FIN_SI
+            PARA j:=1 HASTA 4 HACER
+                Escribir(info[i,j])
+            FIN_PARA
+        FIN_PARA
+        CERRAR(arch_niño)
+        CERRAR(arch_reg)
+FIN_ACCION
