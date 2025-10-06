@@ -81,14 +81,14 @@ ACCION EjercicioN°1 ES
         PROCEDIMIENTO LEER_NIÑOS ES
             Leer(arch_niño,reg_niño)
             SI FDA(arch_niño) ENTONCES
-                arch_niño.clave:= HV
+                reg_niño.clave:= HV
             FIN_SI
         FIN_PROCEDIMIENTO
 
         PROCEDIMIENTO LEER_EVENTOS ES
             Leer(arch_evento,reg_evento)
             SI FDA(arch_evento) ENTONCES
-                arch_evento.clave:= HV
+                reg_evento.clave:= HV
             FIN_SI
         FIN_PROCEDIMIENTO
 
@@ -96,17 +96,19 @@ ACCION EjercicioN°1 ES
         mayor_nombre: AN(20)
 
         PROCEDIMIENTO LOTE ES
-            MIENTRAS reg_niño.clave = reg_evento.clave HACER
+            MIENTRAS reg_act.clave = reg_evento.clave HACER
                 SEGUN reg_evento.cod_evento HACER
                     0:
                         Escribir("ERROR - No se puede dar de alta a un niño existente")
                     <99:
-                        SI reg_act.id_regalo <> reg_evento.id_regalo ENTONCES
+                        SI reg_act.id_regalo <> reg_evento.id_regalo ENTONCES //actualizacion de regalo
                             reg_act.id_regalo :=reg_evento.id_regalo
                             reg_act.regalo := reg_evento.regalo
-                        SINO
+
+                        SINO    // actualizacion de comportamiento
                             SI reg_evento.tipo = "A" ENTONCES
                                 reg_act.puntaje := reg_act.puntaje + reg_evento.puntaje
+
                             SINO
                                 reg_act.puntaje := reg_act.puntaje - reg_evento.puntaje
                             FIN_SI
@@ -133,7 +135,7 @@ ACCION EjercicioN°1 ES
         cant_nuevos:=0 ; mayor_puntaje := LV
 
         MIENTRAS (reg_niño.clave<>HV o reg_evento.clave<> HV) HACER
-            SI reg_niño.clave<reg_evento.clave ENTONCES  
+            SI reg_niño.clave<reg_evento.clave ENTONCES // maestro sin movimiento 
                 reg_act:=reg_niño
                 Escribir(arch_act,reg_act)
 
@@ -146,11 +148,13 @@ ACCION EjercicioN°1 ES
                     MAYOR
                 SINO
                     reg_act.clave:= reg_evento.clave
-                    reg_act.NyA:= reg_evento.NyA
+                    Escribir("Ingrese el nombre y apellido del nuevo niño")
+                    Leer(reg_act.NyA)
                     reg_act.puntaje:= reg_evento.puntaje
                     reg_act.id_regalo:= reg_evento.id_regalo
                     reg_act.regalo:= reg_evento.regalo
                     reg_act.fecha_registro:= FECHA_ACTUAL
+                    reg_act.fecha_retiro:= " "
 
                     LEER_EVENTOS
 
@@ -252,19 +256,21 @@ ACCION EjercicioN°1 ES
             Leer(arch_reg,reg_reg)
             i:=reg_reg.id_region
             nombres_regiones[i]:=reg_reg.nombre_region
-            SEGUN reg_niño.puntaje HACER
-                <50:
-                    j:=3
-                <79:
-                    j:=2
-                >=80:
-                    j:=1
-            FIN_SEGUN
-            info[i,j]:=info[i,j]+1
-            info[16,j]:=info[16,j]+1
-            info[i,4]:=info[i,4]+1
-            info[16,4]:=info[16,4]+1
-            Leer(arch_niño,reg_niño)
+            SI reg_niño.fecha_retiro=" " ENTONCES
+                SEGUN reg_niño.puntaje HACER
+                    <50:
+                        j:=3
+                    <79:
+                        j:=2
+                    >=80:
+                        j:=1
+                FIN_SEGUN
+                info[i,j]:=info[i,j]+1
+                info[16,j]:=info[16,j]+1
+                info[i,4]:=info[i,4]+1
+                info[16,4]:=info[16,4]+1
+                Leer(arch_niño,reg_niño)
+            FIN_SI
         FIN_MIENTRAS
 
         Escribir("Region\ Categorias  Categoria Diamante  Categoria Oro  Categoria Estandar  Totales x Region")
