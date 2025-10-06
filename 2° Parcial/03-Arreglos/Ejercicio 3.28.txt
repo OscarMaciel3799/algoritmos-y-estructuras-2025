@@ -1,0 +1,74 @@
+Enunciado:  
+La Municipalidad de Resistencia desea obtener una estadística de los valores (en $) de los terrenos de la ciudad, 
+discriminados por zona y ubicación dentro de la manzana (en esquina, interna, etc.), 
+y los totales por zona y ubicación. El valor final de cada terreno es igual a:
+
+Valor del Terreno = Superficie terreno (en M2) * valor del M2 * coeficiente de incremento
+
+Para ello cuenta con la siguiente información:
+
+1. Un archivo de los terrenos con los siguientes datos:
+
+| Nro_Terreno | Zona | Ubicacion | Superficie | 
+Zona: codificadas de A a F
+Ubicación: codificada de 1 a 10
+
+2. Un arreglo V que contiene los valores del M2 por zona.
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.3.28 ES 
+    AMBIENTE 
+        terrenos = REGISTRO
+            nro_terreno: N(4)
+            zona: A..F
+            ubicacion: 1..10
+            superficie: REAL
+        FIN_REGISTRO
+        arch_terr: Archivo de terreno
+        reg_terr: terreno
+
+        v: ARREGLO DE [A..F] DE REAL
+        valores: ARREGLO DE [A..G,1..11]
+        i: A..G
+        j: 1..11
+    PROCESO
+        ABRIR E/(arch_terr); Leer(arch_terr,reg_terr)
+
+        PARA i:=A HASTA G HACER
+            PARA j:=1 HASTA 11 HACER
+                valores[i,j]:=0
+            FIN_PARA
+        FIN_PARA
+
+        MIENTRAS NFDA(arch_terr) HACER 
+            i:=reg_terr.zona
+            j:=reg_terr.ubicacion
+
+            valores[i,j]:=valores[i,j] + reg_terr.superficie * V[i]
+            valores[i,11]:=valores[i,11] + reg_terr.superficie * V[i]
+            valores[G,j]:=valores[G,j] + reg_terr.superficie * V[i]
+            valores[G,11]:=valores[G,11] + reg_terr.superficie * V[i]
+
+            Leer(arch_terr,reg_terr)
+        FIN_MIENTRAS
+
+        PARA j:=1 HASTA 10 HACER
+            Escribir("Ubicacion ",j)
+        FIN_PARA
+        Escribir("Totales x Zona")
+
+        PARA i:=A HASTA G HACER
+            SI i = G ENTONCES
+                Escribir("Totales x Ubicacion")
+            SINO
+                Escribir("Zona ",i)
+            FIN_SI
+
+            PARA j:=1 HASTA 11 HACER
+                Escribir(valores[i,j])
+            FIN_PARA
+        FIN_PARA
+        CERRAR(arch_terr)
+FIN_ACCION
+
+
