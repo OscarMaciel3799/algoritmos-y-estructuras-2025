@@ -1,0 +1,46 @@
+Enunciado:  
+Una empresa que comercializa una cierta cantidad de artículos diferentes desea confeccionar un ranking de ventas 
+de los mismos, a partir de una secuencia ordenada por articulo que contiene:
+
+| NRO_ARTICULO | TIPO | CANT_VENDIDA |
+
+Escribir un algoritmo que emita el ranking deseado en orden decreciente por cantidad.
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.3.16 ES 
+    AMBIENTE 
+        articulo = REGISTRO
+            nro_articulo: N(6)
+            tipo: AN(3)
+            cant_vendida: N(4)
+        FIN_REGISTRO
+
+        arch_art: Archivo de articulo ordenado por nro_articulo
+        reg_art,aux: articulo
+        N=789
+        art: ARREGLO DE [1..N] de articulo
+        i: 1..N
+        bandera: LOGICO
+    PROCESO
+        ABRIR(arch_art); 
+        
+        PARA i:=1 HASTA N HACER
+            Leer(arch_art,reg_art)
+            art[i]:=reg_art
+        FIN_PARA
+
+        bandera:= FALSO
+        MIENTRAS NO bandera HACER
+            bandera:= VERDADERO
+            PARA i:=1 HASTA N-1 HACER
+                SI art[i]<art[i+1]
+                    aux:=art[i]
+                    art[i]:=art[i+1]
+                    art[i+1]:=aux
+                    bandera:= FALSO
+                FIN_SI
+            FIN_PARA
+        FIN_MIENTRAS
+FIN_ACCION
+
+
