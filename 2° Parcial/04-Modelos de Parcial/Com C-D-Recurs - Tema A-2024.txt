@@ -82,9 +82,9 @@ ACCION Ejercicio_N°1 ES
         FIN_PROCEDIMIENTO
 
         PROCEDIMIENTO LEER_MOVIMIENTOS ES
-            Leer(arch_cli, reg_cli)
-            SI FDA(arch_cli) ENTONCES
-                reg_cli.clave:= HV
+            Leer(arch_mov, reg_mov)
+            SI FDA(arch_mov) ENTONCES
+                reg_mov.clave:= HV
             FIN_SI
         FIN_PROCEDIMIENTO
 
@@ -127,8 +127,9 @@ ACCION Ejercicio_N°1 ES
                             clientes_nuevos:=clientes_nuevos+1
                             reg_act.clave := reg_mov.clave
                             reg_act.NyA := reg_mov.NyA
-                            reg_act.fecha_alta := reg_mov.fecha_mov
                             reg_act.saldo := reg_mov.monto
+                            reg_act.fecha_alta := reg_mov.fecha_mov
+                            reg_act.fecha_baja := " "
 
                             LEER_MOVIMIENTOS
                             SI reg_act.clave = reg_mov.clave ENTONCES
@@ -228,9 +229,9 @@ ACCION Ejercicio_N°2 ES
             FIN_PARA
         FIN_PARA
 
-        MIENTRAS NFDA(arch_suc) HACER
-            SI reg_cli.fecha_alta=NULL ENTONCES
-                SEGUN reg_cli.monto HACER
+        MIENTRAS NFDA(arch_cli) HACER
+            SI reg_cli.fecha_baja=" " ENTONCES
+                SEGUN reg_cli.saldo HACER
                     <100000 :
                         j:=3
                     <1500000:
