@@ -1,0 +1,63 @@
+Enunciado:  
+Se precisa generar una secuencia con los datos de los 10 videos más vistos de una categoría, 
+a partir de una secuencia de entrada de 200 registros que contiene el 
+Título de la película, Nombre del Director, Categoría de película, Cantidad de personas que la vieron 
+y que está ordenada por el Título de la película.
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.3.17 ES 
+    AMBIENTE 
+        entrada= REGISTRO
+            titulo: AN(20)
+            director: AN(20)
+            categoria: AN(20)
+            cant_vistas: N(4)
+        FIN_REGISTRO
+        
+        arch_entrada,arch_salida: Archivo de entrada ordenado por titulo
+        reg_entrada,aux: entrada
+        categoria_elegida: AN(20)
+        ordenado: ARREGLO DE [1..200] de entrada
+        i, j: 1..200
+        bandera: LOGICO
+    PROCESO
+        ABRIR E/(arch_art)
+        ABRIR /S(arch_salida)
+
+        Escribir("Ingrese la categoria que desea ordenar")
+        Leer(categoria_elegida)
+        j:=1
+        PARA i:=1 HASTA 200 HACER
+            SI reg_art.categoria=categoria_elegida ENTONCES
+                ordenado[j]:=reg_art
+                j:=j+1
+            FIN_SI
+        FIN_PARA
+
+        bandera:= FALSO
+        MIENTRAS NO bandera HACER
+            bandera:= VERDADERO
+            PARA i:=1 HASTA j-1 HACER
+                SI ordenado[i].cant_vistas<ordenado[i+1].cant_vistas
+                    aux:=ordenado[i]
+                    ordenado[i]:=ordenado[i+1]
+                    ordenado[i+1]:=aux
+                    bandera:= FALSO
+                FIN_SI
+            FIN_PARA
+        FIN_MIENTRAS
+
+        SI j>10 ENTONCES
+            j:=10
+        FIN_SI
+
+        PARA i:=1 HASTA j HACER
+            Escribir(arch_salida,ordenado[i])
+        FIN_PARA
+
+        CERRAR(arch_entrada)
+        CERRAR(arch_salida)
+FIN_ACCION
+
+
