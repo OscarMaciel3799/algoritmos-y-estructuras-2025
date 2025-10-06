@@ -33,7 +33,7 @@ ACCION E.3.16 ES
         MIENTRAS NO bandera HACER
             bandera:= VERDADERO
             PARA i:=1 HASTA N-1 HACER
-                SI art[i]<art[i+1]
+                SI art[i].cant_vendida<art[i+1].cant_vendida
                     aux:=art[i]
                     art[i]:=art[i+1]
                     art[i+1]:=aux
