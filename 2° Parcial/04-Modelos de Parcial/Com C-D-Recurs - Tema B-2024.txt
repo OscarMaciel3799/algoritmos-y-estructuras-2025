@@ -59,8 +59,8 @@ ACCION Ejercicio_N°1 ES
             cod_mov: 0..99
             NyA: AN(20)
             fecha_mov: fecha
-            monto
-            detalle
+            monto: REAL
+            detalle: AN(40)
             categoría (1..6)
             tipo: ("I","E")
         FIN_REGISTRO
@@ -77,14 +77,14 @@ ACCION Ejercicio_N°1 ES
         PROCEDIMIENTO LEER_CLIENTES ES
             Leer(arch_cli,reg_cli)
             SI FDA(arch_cli) ENTONCES
-                arch_cli.clave:=HV
+                reg_cli.clave:=HV
             FIN_SI
         FIN_PROCEDIMIENTO
         
         PROCEDIMIENTO LEER_MOVIMIENTOS ES
             Leer(arch_mov,reg_mov)
             SI FDA(arch_mov) ENTONCES
-                arch_mov.clave:=HV
+                reg_mov.clave:=HV
             FIN_SI
         FIN_PROCEDIMIENTO
 
@@ -106,7 +106,7 @@ ACCION Ejercicio_N°1 ES
                             reg_act.saldo:=reg_act.saldo - reg_mov.monto
                         FIN_SI
                     99:
-                        SI reg_act.fecha_baja = "-" ENTONCES
+                        SI reg_act.fecha_baja = " " ENTONCES
                             reg_act.fecha_baja:=FECHA_ACTUAL
                         SINO
                             Escribir("ERROR - No se puede dar de baja a un cliente ya Inactivo")
@@ -139,13 +139,13 @@ ACCION Ejercicio_N°1 ES
                     CONTEO_BAJAS
                     LEER_CLIENTES
                 SINO    // alta, actualizacion
-                    SEGUN HACER
+                    SEGUN reg_mov.cod_mov HACER
                         0:
                             reg_act.clave:=reg_mov.clave
                             reg_act.NyA:=reg_mov.NyA
                             reg_act.saldo:=reg_mov.monto
                             reg_act.fecha_alta:=FECHA_ACTUAL
-                            reg_act.fecha_baja:="-"
+                            reg_act.fecha_baja:=" "
 
                             LEER_MOVIMIENTOS
                             SI reg_act.clave=reg_mov.clave ENTONCES
@@ -201,7 +201,7 @@ La categoría del cliente dependerá de los montos obtenidos en su saldo de la c
 
 Nota: considerar SOLO clientes dados de baja, ya que el banco propone realizar un nuevo plan de fidelización. 
 
-ACCION Ejercicio_N°1 ES
+ACCION Ejercicio_N°2 ES
     AMBIENTE
         fecha = REGISTRO
             año: 1900..2100
@@ -222,7 +222,7 @@ ACCION Ejercicio_N°1 ES
         reg_cli: CLIENTES
 
         SUCURSALES = REGISTRO 
-            id_suc: AN(8)
+            id_suc: AN(6)
             nombre: AN(20)
             direccion: AN(40)
             localidad: AN(40)
@@ -244,15 +244,15 @@ ACCION Ejercicio_N°1 ES
         FIN_PARA
 
         MIENTRAS NFDA(arch_cli) HACER
-            SI reg_cli.fecha_baja<>"-" ENTONCES
+            SI reg_cli.fecha_baja<>" " ENTONCES
                 i:= reg_cli.id_sucursal
                 SEGUN reg_cli.saldo HACER
                     <100000:
-                        j:=1
+                        j:=3
                     <1500000:
                         j:=2
                     >=1500000:
-                        j:=3
+                        j:=1
                 FIN_SEGUN
 
                 info[i,j]:=info[i,j] + 1
