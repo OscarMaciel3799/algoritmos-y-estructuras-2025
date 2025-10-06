@@ -144,7 +144,7 @@ ACCION EjercicioN°1 ES
                 SI reg_niño.clave=reg_evento.clave ENTONCES
                     reg_act:=reg_niño
                     LOTE
-
+                    LEER_NIÑOS
                     MAYOR
                 SINO
                     reg_act.clave:= reg_evento.clave
@@ -158,11 +158,8 @@ ACCION EjercicioN°1 ES
 
                     LEER_EVENTOS
 
-                    SI reg_act.clave=reg_evento.clave  ENTONCES
-                        LOTE
-                    SINO
-                        Escribir(arch_act,reg_act)
-                    FIN_SI
+                    LOTE
+
                     cant_nuevos:=cant_nuevos+1
                     MAYOR
                 FIN_SI
