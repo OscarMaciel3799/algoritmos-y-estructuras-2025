@@ -1,0 +1,29 @@
+Enunciado:  
+Dada una matriz de 6 x 6 de enteros, cuya última fila y columna contienen ceros, calcular la suma de cada fila 
+y guardar en la última celda de la misma; y la suma de cada columna y guardar en la última celda de la misma. 
+Calcular también el total general y guardar en la posición (6,6).
+
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.3.21 ES 
+    AMBIENTE 
+        matriz: ARREGLO de [1..6,1..6] de ENTERO
+        i,j: 1..6
+    PROCESO
+        PARA i:=1 HASTA 6 HACER
+            PARA j:=1 HASTA 6 HACER
+                matriz[i,6]:=matriz[i,6] + matriz[i,j]
+                matriz[6,j]:=matriz[6,j] + matriz[i,j]
+                matriz[6,6]:=matriz[6,6] + matriz[i,j]
+            FIN_PARA
+        FIN_PARA
+
+        PARA i:=1 HASTA 6 HACER
+            PARA j:=1 HASTA 6 HACER
+                Escribir(matriz[i,j])
+            FIN_PARA
+        FIN_PARA
+FIN_ACCION
+
+
