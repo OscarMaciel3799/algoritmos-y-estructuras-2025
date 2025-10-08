@@ -1,0 +1,33 @@
+Enunciado:  
+Dada una matriz cuadrada de 5 x 5 de números, sumar filas y columnas y guardar en una matriz de 2 x 5, 
+de modo que la fila 1 contenga la suma de cada fila y la fila 2, la suma de cada columna
+    x x x x x   //totales filas
+    x x x x x   // totales columnas
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.3.22 ES 
+    AMBIENTE 
+        matriz: ARREGLO de [1..6,1..6] de ENTERO
+        i,j: 1..6
+        totales: ARREGLO de [1..2,1..5] de ENTERO
+    PROCESO
+        PARA i:=1 HASTA 5 HACER
+            totales[i,1]:=0
+            totales[i,2]:=0
+        FIN_PARA
+
+        PARA i:=1 HASTA 5 HACER
+            PARA j:=1 HASTA 5 HACER
+                totales[1,i]:=totales[1,i] + matriz[i,j]
+                totales[2,i]:=totales[2,i] + matriz[i,j]
+            FIN_PARA
+        FIN_PARA
+
+        PARA i:=1 HASTA 5 HACER
+            PARA j:=1 HASTA 2 HACER
+                Escribir(totales[i,j])
+            FIN_PARA
+        FIN_PARA
+FIN_ACCION
+
+
