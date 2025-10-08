@@ -1,0 +1,272 @@
+Enunciado:  
+La municipalidad posee un archivo secuencial con los datos de todos los estacionamientos realizados 
+en el mes de Octubre de 2018
+
+ESTACIONAMIENTOS
+
+| FECHA: fecha| PATENTE: AN(7) | HoraDesde: N(2) | HoraHasta: N(2) | Posta: 1..100 |
+
+El costo es por multiplos de 1 hora. El costo por hora se calcula considerando la franja horaria del estacionamiento 
+(siempre tomar el mayor costo), las franjas horarias son:
+
+   . de 00 a 06: costo por hora $9
+   . de 07 a 13: costo por hora $14
+   . de 14 a 19: costo por hora $12
+   . de 20 a 23: costo por hora $6
+
+Ejemplo: si una persona estaciona desde las 5 hasta las 10, son 6 horas de estacionamiento (10 - 5 + 1) 
+y como se encuentra en dos franajas horarias se tiene que tomar la de mayor costo ($14 por hora). 
+Por lo tanto el importe generado es 14 x 6 = 84. (NOTA a efectos de simplificar los calculos, 
+solo calcular el costo de la franja horaria con respecto a la hora desde y la hora hasta).
+
+Se pide realizar un algoritmo que permita determinar:
+
+   . Posta con mayor importe generado // POSTA_IMPORTE
+   . Día con mayor cantidad de estacionamientos.                                 
+   . En qué día y en que posta se generó la mayor cantidad de estacionamientos   
+
+Otras Preguntas:
+¿Es posible calcular cual fue la zona horaria con mayor cantidad de estacionamientos? // ZONA_MAYOR_ESTACIONAMIENTOS
+En caso de ser posible, realizar el algoritmo.
+
+¿Es posible determinar la cantidad maxima de permanencia que tienen los autos estacionados? //MAXIMA_PERMANENCIA
+En caso de ser posible, realizar el algoritmo.
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.3.32 ES 
+   AMBIENTE 
+      fecha = REGISTRO
+         año: 1900..2100
+         mes: 1..12
+         dia: 1..31
+      FIN_REGISTRO
+
+      ESTACIONAMIENTOS = REGISTRO
+         FECHA: fecha	
+         PATENTE: AN(7)	
+         HoraDesde: N(2)	
+         HoraHasta: N(2)	
+         Posta: 1..100
+      FIN_REGISTRO
+
+      arch_est: Archivo de ESTACIONAMIENTOS 
+      reg_est: ESTACIONAMIENTOS
+
+      zonas_est: ARREGLO DE [1..4]
+      cant_horas, max_zona: ENTERO
+
+      PROCEDIMIENTO ZONA_MAYOR_ESTACIONAMIENTOS ES
+         SEGUN reg_est.HoraHasta HACER
+            <6:
+               i:=1
+               cant_horas:=(reg_est.HoraHasta - reg_est.HoraDesde + 1)
+               zonas_est[i]:=zonas_est[i]+cant_horas
+            <13:
+
+               SI reg_est.HoraDesde<7 ENTONCES
+                  i:=1
+                  cant_horas:=(6 - reg_est.HoraDesde + 1)
+                  zonas_est[i]:=zonas_est[i]+cant_horas
+
+                  i:=2
+                  cant_horas:=(reg_est.HoraHasta - 7 + 1)
+                  zonas_est[i]:=zonas_est[i]+cant_horas
+
+               SINO
+                  i:=2
+                  cant_horas:=(reg_est.HoraHasta - reg_est.HoraDesde + 1)
+                  zonas_est[i]:=zonas_est[i]+cant_horas
+               FIN_SI
+            <19:
+               SEGUN reg_est.HoraDesde HACER
+                  <6:
+                     i:=1
+                     cant_horas:=(7 - reg_est.HoraDesde + 1)
+                     zonas_est[i]:=zonas_est[i]+cant_horas
+
+                     i:=2
+                     cant_horas:=(13 - 7 + 1)
+                     zonas_est[i]:=zonas_est[i]+cant_horas
+
+                     i:=3
+                     cant_horas:=(reg_est.HoraHasta - 14 + 1)
+                     zonas_est[i]:=zonas_est[i]+cant_horas
+
+                  <13:
+
+                     i:=2
+                     cant_horas:=(13 - reg_est.HoraDesde + 1)
+                     zonas_est[i]:=zonas_est[i]+cant_horas
+
+                     i:=3
+                     cant_horas:=(reg_est.HoraHasta - 14 + 1)
+                     zonas_est[i]:=zonas_est[i]+cant_horas
+                  <19: 
+                     i:=3
+                     cant_horas:=(reg_est.HoraHasta - reg_est.HoraDesde + 1)
+                     zonas_est[i]:=zonas_est[i]+cant_horas
+               FIN_SEGUN
+            <23:
+               SEGUN reg_est.HoraDesde HACER
+                  <6:
+                     i:=1
+                     cant_horas:=(7 - reg_est.HoraDesde + 1)
+                     zonas_est[i]:=zonas_est[i]+cant_horas
+
+                     i:=2
+                     cant_horas:=(13 - 7 + 1)
+                     zonas_est[i]:=zonas_est[i]+cant_horas
+
+                     i:=3
+                     cant_horas:=(19 - 14 + 1)
+                     zonas_est[i]:=zonas_est[i]+cant_horas
+
+                     i:=4
+                     cant_horas:=(reg_est.HoraHasta - 19 + 1)
+                     zonas_est[i]:=zonas_est[i]+cant_horas
+                  <13:
+                     i:=2
+                     cant_horas:=(13 - reg_est.HoraDesde + 1)
+                     zonas_est[i]:=zonas_est[i]+cant_horas
+
+                     i:=3
+                     cant_horas:=(reg_est.HoraHasta - 14 + 1)
+                     zonas_est[i]:=zonas_est[i]+cant_horas
+
+                     i:=4
+                     cant_horas:=(reg_est.HoraHasta - 19 + 1)
+                     zonas_est[i]:=zonas_est[i]+cant_horas
+                  <19: 
+                     i:=3
+                     cant_horas:=(reg_est.HoraHasta - reg_est.HoraDesde + 1)
+                     zonas_est[i]:=zonas_est[i]+cant_horas
+
+                     i:=4
+                     cant_horas:=(reg_est.HoraHasta - 19 + 1)
+                     zonas_est[i]:=zonas_est[i]+cant_horas
+                  <23:
+                     i:=4
+                     cant_horas:=(reg_est.HoraHasta - 23 + 1)
+                     zonas_est[i]:=zonas_est[i]+cant_horas
+               FIN_SEGUN
+         FIN_SEGUN
+      FIN_PROCEDIMIENTO
+
+      mayor_importe, importe: ENTERO
+      posta_mayor_importe:1..100
+      precio_hora: ENTERO
+
+      PROCEDIMIENTO POSTA_IMPORTE ES
+         SEGUN reg_est.HoraHasta HACER
+            <6: 
+               precio_hora:=9
+            <13:
+               precio_hora:=14
+            <19:
+               SI reg_est.HoraDesde<=13 ENTONCES
+                  precio_hora:=14
+               SINO
+                  precio_hora:=12
+               FIN_SI
+            <23:
+               SEGUN reg_est.HoraDesde HACER
+                  <=13:
+                     precio_hora:=14
+                  <=19
+                     precio_hora:=12
+                  >19:
+                     precio_hora:=6
+               FIN_SEGUN
+         FIN_SEGUN
+         importe:=(reg_est.HoraHasta - reg_est.HoraDesde + 1)*precio_hora
+         
+         zonas_est[i]:=zonas_est[i]+importe
+         SI importe > mayor_importe ENTONCES
+               mayor_importe:=importe
+               posta_mayor_importe:=reg_est.posta
+         FIN_SI
+      FIN_PROCEDIMIENTO
+
+      mayor_permanencia: ENTERO
+
+      PROCEDIMIENTO MAXIMA_PERMANENCIA ES
+         SI (reg_est.HoraHasta-reg_est.HoraDesde) > max_perm ENTONCES
+                  max_perm:=(reg_est.HoraHasta-reg_est.HoraDesde)
+         FIN_SI
+      FIN_PROCEDIMIENTO
+      
+      cant_est: ARREGLO DE [1..31,1..101] //dias de octubre, posta
+      i: 1..31
+      j: 1..101
+      
+      dia_mayor_est: 1..31
+      dia_est: 1..31
+      posta_est: 1..100
+      zona_mayor_est: ENTERO
+      max_perm: ENTERO
+
+   PROCESO
+      ABRIR E/(arch_est)
+      Leer(arch_est,reg_est)
+
+      PARA i:= 1 HASTA 4 HACER
+         zonas_est[i]:=0
+      FIN_PARA
+
+      PARA i:=1 HASTA 31 HACER
+         PARA j:=1 HASTA 101 HACER
+            cant_est[i,j]:=0
+         FIN_PARA
+      FIN_PARA
+
+      mayor_importe:=LV      
+      max_perm:=LV
+
+      MIENTRAS NFDA(arch_est) HACER
+         POSTA_IMPORTE
+         MAXIMA_PERMANENCIA
+         ZONA_MAYOR_ESTACIONAMIENTOS
+
+         i:=reg_est.fecha.dia
+         j:=reg_est.posta
+
+         cant_est[i,j]:=cant_est[i,j] + 1
+         cant_est[i,101]:=cant_est[i,101] + 1
+
+         Leer(arch_est,reg_est)
+      FIN_MIENTRAS
+
+      zona_mayor_est:=1
+      PARA i:= 1 HASTA 4 HACER
+         SI zonas_est[zona_mayor_est]<zonas_est[i] ENTONCES
+            zona_mayor_est:=i
+         FIN_SI
+      FIN_PARA
+
+      dia_mayor_est:=1
+      dia_est:=1
+      posta_est:=1
+      PARA i:=1 HASTA 31 HACER
+         PARA j:=1 HASTA 100 HACER
+            SI cant_est[i,j]>cant_est[dia_est,posta_est] ENTONCES
+               dia_est:=i
+               posta_est:=j
+            FIN_SI
+         FIN_PARA
+         SI cant_est[i,101] > cant_est[dia_mayor_est,101]
+            dia_mayor_est:=i
+         FIN_SI
+      FIN_PARA
+
+      Escribir("La posta con mayor importes generado fue: ",posta_mayor_importe)
+      Escribir("El día con mayor cantidad de estacionamientos fue: ",dia_mayor_est)
+      Escribir("La mayor cantidad de estacionamientos fue el dia: ",dia_est," en la posta: ",posta_est)
+
+      Escribir("La zona horaria con mayor cantidad de estacionamientos fue: ",zona_mayor_est)
+      Escribir("La cantidad maxima de permanencia fue: ",max_perm)
+      
+      CERRAR(arch_est)
+FIN_ACCION
+
+
