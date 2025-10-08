@@ -1,0 +1,41 @@
+Enunciado:  
+Dadas dos matrices A y B, cuadradas, de 5 x 5, con números enteros, 
+cargar una matriz C, de 5 x 5 teniendo en cuenta las siguientes condiciones: 
+- la diagonal principal completar con ceros, 
+- en las posiciones por encima de la diagonal principal, copiar los correspondientes elementos de la matriz A.
+- en las posiciones por debajo de la diagonal principal, copiar los elementos correspondientes de la matriz B.
+
+    0 A A A A
+    B 0 A A A
+    B B 0 A A
+    B B B 0 A
+    B B B B 0
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.3.20 ES 
+    AMBIENTE 
+        A,B,C: ARREGLO de [1..5,1..5] de ENTERO //A y B se consideran cargados
+        i,j : 1..5
+    PROCESO
+        PARA i:=1 HASTA 5 HACER
+            PARA j:=1 HASTA 5 HACER
+                SI i=j ENTONCES
+                    C[i,j]:=0
+                SINO
+                    SI j>i ENTONCES
+                        C[i,j]:=A[i,j]
+                    SINO // i>j
+                        C[i,j]:=B[i,j]
+                    FIN_SI
+                FIN_SI
+            FIN_PARA
+        FIN_PARA
+
+        PARA i:=1 HASTA 5 HACER
+            PARA j:=1 HASTA 5 HACER
+                Escribir(C[i,j])
+            FIN_PARA
+        FIN_PARA
+FIN_ACCION
+
+
