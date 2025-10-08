@@ -148,11 +148,8 @@ ACCION Ejercicio_N°1 ES
                             reg_act.fecha_baja:=" "
 
                             LEER_MOVIMIENTOS
-                            SI reg_act.clave=reg_mov.clave ENTONCES
-                                LOTE
-                            SINO
-                                Escribir(arch_act,reg_act)
-                            FIN_SI
+                            LOTE
+                            
                         <99:
                             Escribir("ERROR - No se puede operar con un cliente NO existente")
                             LEER_MOVIMIENTOS
