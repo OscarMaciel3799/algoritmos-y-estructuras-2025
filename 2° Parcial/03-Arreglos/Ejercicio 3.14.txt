@@ -1,0 +1,67 @@
+Enunciado:  
+El mes que viene se realizará en Buenos Aires el desfile “Alta Moda 2018”, el cual reúne a
+los diseñadores más reconocidos del país. Para organizar las pasadas, 
+se dispone de un arreglo por diseñador, con la siguiente información: 
+nombre de el/la modelo y altura. 
+
+La directora del evento necesita que se imprima cada lista ordenada de acuerdo a la altura de 
+el/la modelo. Escribir un algoritmo que permita ingresar los datos de cada diseñador 
+e imprimirlos de acuerdo a lo solicitado.
+
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.3.14 ES 
+    AMBIENTE 
+        // no sabemos la cantidad de diseñadores, ni la cantidad máxima de modelos por diseñador
+        // asumimos que todos los diseñadores tienen la misma cantidad m de modelos
+        d=7
+        m=5
+        info = REGISTRO
+            nombre: AN(20)
+            altura: N(3)    // ctms
+        FIN_REGISTRO
+        
+        // considero el arreglo cargado
+        modelos: ARREGLO DE [1..d,1..m] DE info // d: cantidad total de diseñadores; m: cantidad de modelos por diseñador
+        i:1..d
+        j:1..m
+        reg_info, reg_aux: info
+        bandera: LOGICO
+    PROCESO
+        PARA i:=1 HASTA d HACER
+            Escribir("Ingrese el nombre y altura (en ctms) de las modelos del diseñador n° ",i)
+            PARA j:=1 HASTA m HACER
+                Escribir("Ingrese el nombre y altura (en ctms) de la modelo n°: "j", del diseñador n° ",i)
+                Leer(reg_info.nombre,reg_info.altura)
+                modelos[i,j]:=reg_info
+            FIN_PARA
+        FIN_PARA
+
+        PARA i:=1 HASTA d HACER
+            bandera:=VERDADERO
+            MIENTRAS bandera HACER
+                bandera:=FALSO
+                PARA j:=1 HASTA m-1 HACER
+                    SI modelos[i,j+1].altura>modelos[i,j].altura ENTONCES
+                        reg_aux:=modelos[i,j]
+                        modelos[i,j]:=modelos[i,j+1]
+                        modelos[i,j+1]:=reg_aux
+                        bandera:=VERDADERO
+                    FIN_SI
+                FIN_PARA
+            FIN_MIENTRAS
+            
+        FIN_PARA
+
+        PARA i:=1 HASTA d HACER
+            Escribir("Modelos del diseñador n° ",i)
+            PARA j:=1 HASTA m HACER
+                Escribir("Nombre: ",modelos[i,j].nombre," , altura: ",modelos[i,j].altura)
+            FIN_PARA
+        FIN_PARA
+
+        FIN_MIENTRAS
+FIN_ACCION
+
+
