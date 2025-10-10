@@ -30,7 +30,7 @@ ACCION E.3.25 ES
         i: "A".."C"
         j: 1...12
     PROCESO
-        PARA i:= "A"" HASTA "C" HACER
+        PARA i:= "A" HASTA "C" HACER
             PARA j:=1 HASTA 12 HACER
                 montos[i,j]:=0
             FIN_PARA
@@ -48,7 +48,7 @@ ACCION E.3.25 ES
             montos["C",12]:=montos["C",12] + reg_comp.importe
         FIN_MIENTRAS
 
-        PARA i:= "A"" HASTA "C" HACER
+        PARA i:= "A" HASTA "C" HACER
             PARA j:=1 HASTA 12 HACER
                 Escribir(montos[i,j])
             FIN_PARA
