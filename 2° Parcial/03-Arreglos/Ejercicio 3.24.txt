@@ -1,0 +1,83 @@
+Enunciado:  
+Se cuenta con información acerca de los cajeros de un Supermercado, el cual se halla estructurado en 
+10 cajas registradoras. Dicha información está registrada en una secuencia que contiene 
+Apellido y Nombre del empleado, número de caja que tiene asignada, importe facturado y horario de facturación; 
+la secuencia está ordenada alfabéticamente por Apellido y Nombre. 
+
+Se solicita una estadística de los importes facturados, discriminado por 
+número de caja y franja de horas y además los montos totales, según el siguiente formato:
+
+|       Cajas     | 8-10 | 10-12 | 12-16 | 16-18 | 18-20 | Total x Cajas |
+|       1         |  ... |	...  |	...  |	...  |	...  |	     ...     |
+|       ..        |	 ... |	...  |	...  |	...  |	...  |	     ...     |
+|       10        |  ... |	...  |	...  |	...  |	...  |	     ...     |
+| Total x horas   |  ... |	...  |	...  |	...  |	...  |	     ...     |
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.3.24 ES 
+    AMBIENTE 
+        info = REGISTRO
+            NyA: AN(20)
+            nro_caja: N(2)
+            importe: N(6,2)
+            horario: 1..24
+        FIN_REGISTRO
+
+        arch_info: Archivo de info ordenado por NyA
+        reg_info: info
+
+        importes: ARREGLO de [1..11,1..6] DE n(6,2)
+        i:1..11
+        j:1..6
+    PROCESO
+        PARA i:=1 HASTA 11 HACER
+            PARA l:=1 HASTA 6 HACER
+                importes[i,j]:=0
+            FIN_PARA
+        FIN_PARA
+
+        ABRIR E/(arch_info); Leer(arch_info,reg_info)
+
+        MIENTRAS NFDA(arch_info) HASTA
+            i:=reg_info.nro_caja
+            SI reg_info.horario >=8 reg_info.horario<10 ENTONCES
+                j:=1
+            SINO
+                SI reg_info.horario >=10 reg_info.horario<12 ENTONCES
+                    j:=2
+                SINO
+                    SI reg_info.horario >=12 reg_info.horario<16 ENTONCES
+                        j:=3
+                    SINO
+                        SI reg_info.horario >=16 reg_info.horario<18 ENTONCES
+                            j:=4
+                        SINO
+                            SI reg_info.horario >=18 reg_info.horario<=20 ENTONCES
+                                j:=5
+                            FIN_SI
+                        FIN_SI
+                    FIN_SI
+                FIN_SI
+            FIN_SI
+
+            importes[i,j]:=importes[i,j]+reg_info.importe
+            importes[11,j]:=importes[11,j]+reg_info.importe
+            importes[i,6]:=importes[i,6]+reg_info.importe
+            importes[11,6]:=importes[11,6]+reg_info.importe
+        FIN_MIENTRAS
+        
+        Escribir("|       Cajas     | 8-10 | 10-12 | 12-16 | 16-18 | 18-20 | Total x Cajas |")
+        PARA i:=1 HASTA 11 HACER
+            SI i=11 ENTONCES
+                Escribir(" Total x horas")
+            SINO
+                Escribir( i )
+            FIN_SI
+            PARA j:=1 HASTA 6 HACER
+                Escribir(importes[i,j])
+            FIN_PARA
+        FIN_PARA
+FIN_ACCION
+
+
