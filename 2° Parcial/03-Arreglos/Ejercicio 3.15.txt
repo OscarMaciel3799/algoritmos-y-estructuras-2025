@@ -1,0 +1,40 @@
+Enunciado:  
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.3.15 ES 
+    AMBIENTE 
+        n=65
+        original: ARREGLO DE [1..n] de ENTERO // arreglo cargado
+        aux,repetidos: ENTERO
+        bandera: LOGICA
+    PROCESO
+        bandera:= VERDADERO
+        repetidos:=0
+        MIENTRAS bandera HACER
+            bandera:=FALSO
+            PARA i:=1 HASTA n-1 HACER
+                SI original[i]<original[i+1] ENTONCES
+                    aux:=original[i]
+                    original[i]:=original[i+1]
+                    original[i+1]:=aux
+
+                    bandera:=VERDADERO
+                FIN_SI
+                SI original[i]=original[i+1] ENTONCES
+                    aux:=original[i+1]
+                    original[i+1]:=original[n-repetidos]
+                    original[n-repetidos]:=aux
+                    repetidos:=repetidos+1
+
+                    bandera:=VERDADERO
+                FIN_SI
+            FIN_PARA
+        FIN_MIENTRAS
+
+        PARA i:=1 HASTA n-repetidos HACER
+            Escribir(original[i])
+        FIN_PARA
+FIN_ACCION
+
+
