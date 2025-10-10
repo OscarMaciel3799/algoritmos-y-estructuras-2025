@@ -1,0 +1,58 @@
+Enunciado:  
+Una Fábrica que posee 4 plantas de producción en nuestro país y compra materia prima a 3 proveedores distintos, 
+desea realizar un control de los montos totales correspondientes a compras realizadas en cada planta durante 
+el último año, discriminados por proveedor y por mes. Para ello dispone de un archivo con los datos de las 
+facturas correspondientes. (Aclaración: el archivo no está ordenado por ningún criterio)
+
+COMPRAS
+
+| Nro_Factura | Proveedor (A,B,C) | Fecha dd/mm/aaaa | Nro_Planta 1..4 | Importe |
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.3.25 ES 
+    AMBIENTE 
+        COMPRAS = REGISTRO
+            nro_factura: N(4)
+            proveedor: ("A","B","C")
+            fecha = REGISTRO
+                año: 1900..2100
+                mes: 1..12
+                dia: 1..31
+            FIN_REGISTRO
+            nro_planta: 1..4
+            importe: N(6,2)
+        FIN_REGISTRO
+
+        arch_comp: Archivo de COMPRAS
+        reg_comp: COMPRAS
+        montos: ARREGLO DE ["A".."C",1..12]
+        i: "A".."C"
+        j: 1...12
+    PROCESO
+        PARA i:= "A"" HASTA "C" HACER
+            PARA j:=1 HASTA 12 HACER
+                montos[i,j]:=0
+            FIN_PARA
+        FIN_PARA
+        
+        ABRIR E/(arch_comp); Leer(arch_comp,reg_comp)
+
+        MIENTRAS NFDA(arch_comp) HACER
+            i:=reg_comp.proveedor
+            j:=reg_comp.fecha.mes
+
+            montos[i,j]:=montos[i,j] + reg_comp.importe
+            montos["C",j]:=montos["C",j] + reg_comp.importe
+            montos[i,12]:=montos[i,12] + reg_comp.importe
+            montos["C",12]:=montos["C",12] + reg_comp.importe
+        FIN_MIENTRAS
+
+        PARA i:= "A"" HASTA "C" HACER
+            PARA j:=1 HASTA 12 HACER
+                Escribir(montos[i,j])
+            FIN_PARA
+        FIN_PARA
+FIN_ACCION
+
+
