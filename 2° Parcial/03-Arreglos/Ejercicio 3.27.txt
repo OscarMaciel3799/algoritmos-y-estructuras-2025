@@ -1,0 +1,92 @@
+Enunciado:  
+Se desea efectuar una estadística de ventas. Se cuenta para ello con una secuencia de las facturas emitidas, 
+las cuales son identificadas por un Número; dicha secuencia contiene información relativa al cliente: 
+su Número y Zona a la cual pertenece, como así también el Tipo de mercadería entregada, la Cantidad de unidades, 
+el total gravado, el total exento de IVA y el valor del IVA. 
+
+Construya un algoritmo que emita 
+por zona, y dentro de la zona por tipo de mercadería 
+el total de unidades vendidas, el total gravado, el total exento y el total de IVA, 
+y además un total general con la misma información. 
+
+Hay 9 zonas y 4 tipos de mercadería.
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.3.27 ES 
+    AMBIENTE 
+        facturas = REGISTRO
+            nro_factura: N(4)
+            nro_cliente: N(4)
+            zona: 1..9
+            tipo: 1..4
+            Cantidad: N(3)
+            total_gravado: N(6,2)
+            total_excento: N(6,2)
+            iva: N(2,2)
+        FIN_REGISTRO
+
+        arch_fact: Archivo de facturas ordenado por nro_factura
+        reg_fact: facturas
+        info = REGISTRO
+            unidades: N(4)
+            gravado: N(6,2)
+            excento: N(6,2)
+            iva:N(2,2)
+        FIN_REGISTRO
+        reg_info: info
+
+        matriz: ARREGLO de [1..10,1..5] de info
+        i:1..10
+        j:1..5
+    PROCESO
+        PARA i:=1 HASTA 10 HACER
+            PARA j:=1 HASTA 5 HACER
+                reg_info.unidades:=0
+                reg_info.gravado:=0
+                reg_info.excento:=0
+                reg_info.iva:=0
+                matriz[i,j]:=reg_info
+            FIN_PARA
+        FIN_PARA
+
+        ABRIR E/(arch_fact); Leer(arch_fact,reg_fact)
+
+        MIENTRAS NFDA(arch_fact) HACER
+            i:=reg_fact.zona
+            j:=reg_fact.tipo
+
+            matriz[i,j].unidades:=matriz[i,j].unidades + reg_fact.Cantidad
+            matriz[i,j].gravado:=matriz[i,j].gravado + reg_fact.total_gravado
+            matriz[i,j].excento:=matriz[i,j].excento + reg_fact.total_excento
+            matriz[i,j].iva:=matriz[i,j].iva + reg_fact.iva
+            
+            matriz[10,j].unidades:=matriz[10,j].unidades + reg_fact.Cantidad
+            matriz[10,j].gravado:=matriz[10,j].gravado + reg_fact.total_gravado
+            matriz[10,j].excento:=matriz[10,j].excento + reg_fact.total_excento
+            matriz[10,j].iva:=matriz[10,j].iva + reg_fact.iva
+
+            matriz[i,5].unidades:=matriz[i,5].unidades + reg_fact.Cantidad
+            matriz[i,5].gravado:=matriz[i,5].gravado + reg_fact.total_gravado
+            matriz[i,5].excento:=matriz[i,5].excento + reg_fact.total_excento
+            matriz[i,5].iva:=matriz[i,5].iva + reg_fact.iva
+
+            matriz[10,5].unidades:=matriz[10,5].unidades + reg_fact.Cantidad
+            matriz[10,5].gravado:=matriz[10,5].gravado + reg_fact.total_gravado
+            matriz[10,5].excento:=matriz[10,5].excento + reg_fact.total_excento
+            matriz[10,5].iva:=matriz[10,5].iva + reg_fact.iva
+        FIN_MIENTRAS
+
+        Escribir("Zonas\Tipos   Tipo 1   Tipo 2   Tipo 3   Tipo 4   Total x Zona")
+        PARA i:=1 HASTA 10 HACER
+            SI i= 10 ENTONCES
+                Escribir("Total x Tipo")
+            SINO
+                Escribir("Zona ",i)
+            FIN_SI
+            PARA j:=1 HASTA 5 HACER
+                Escribir(matriz[i,j].unidades, matriz[i,j].gravado, matriz[i,j].excento, matriz[i,j].iva)
+            FIN_PARA
+        FIN_PARA
+FIN_ACCION
+
+
