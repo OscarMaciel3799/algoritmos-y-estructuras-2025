@@ -48,7 +48,7 @@ ACCION E.2.3.8 ES
         ABRIR E/S(arch_am)
 
         Escribir("Ingrese su codigo de usuario y el codigo de su amigo")
-        Leer(reg_am.clave.cod_us, reg_am.clave.reg_am)
+        Leer(reg_am.clave.cod_us, reg_am.clave.cod_am)
         Escribir("Ingrese la opcion deseada 1-Agregar Amigo; 2-Eliminar Amigo y 3-Escribir en el Muro.")
         Leer(opciones)
 
@@ -59,7 +59,7 @@ ACCION E.2.3.8 ES
                     Escribir("Error, el cod de amigo pertenece a un amigo actual")
                 SINO
                     reg_am.fecha_amistad:= FECHA_ACTUAL
-                    Escribir(reg_am.clave.cod_us, reg_am.clave.reg_am)
+                    Escribir(arch_am, reg_am)
                 FIN_SI
             2:
                 SI EXISTE ENTONCES
