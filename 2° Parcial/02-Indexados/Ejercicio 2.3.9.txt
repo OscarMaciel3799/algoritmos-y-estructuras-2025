@@ -1,0 +1,123 @@
+Enunciado:  
+Pepsico S.A.I.C. desea que Ud. realice el algoritmo para poner al corriente los saldos de sus clientes y 
+el stock de la empresa. Para ello cuentan con:
+
+CLIENTES Indexado por ClienteID
+| ClienteID | Cliente_Nombre | Cliente_CUIT | Cliente_Saldo |
+
+DETALLE_CLIENTES Indexado por Nro_Operacion
+| Nro_Operacion | Fecha_Operacion | ClienteID | Importe | Factura_Numero |
+
+VENTAS Ordenado por Venta_Numero
+| Venta_Numero | Venta_Fecha | Factura_Numero | ProductoID | Cantidad_Vendida | ClienteID |
+
+PRODUCTOS Indexado por ProductoID
+| ProductoID | Stock | Producto_Detalle | Costo_Unitario |
+
+Se debe:
+    . actualizar el saldo del cliente y además 
+    . agregar el detalle de la compra que figura en el archivo de Ventas al archivo Detalle_Clientes, 
+    . por cada venta realizada se deberá descontar la cantidad vendida del stock.
+
+Por final del proceso se desea saber el total de productos vendidos, y un listado de los clientes con su saldo 
+actualizado.
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.2.3.9 ES 
+    AMBIENTE 
+        VENTAS = registro
+            venta_numero: N(4)
+            venta_fecha: Fecha
+            factura_numero: N(4)
+            producto_id: N(6)
+            cant_vendida: N(3)
+            cliente_id: N(6)
+        FIN_REGISTRO
+
+        CLIENTES = REGISTRO
+            id: N(6)
+            nombre: AN(20)
+            cuit: N(11)
+            saldo: N(6,2)
+        FIN_REGISTRO
+
+        DETALLE_CLIENTES = REGISTRO
+            nro_op: N(4)
+            fecha_op: Fecha
+            cliente_id: N(6)
+            importe: N(6,2)
+            fact_num: N(4)
+        FIN_REGISTRO
+
+        PRODUCTOS = REGISTRO
+            id: N(6)
+            stock: N(4)
+            detalle: AN(40)
+            costo: N(6,2)
+        FIN_REGISTRO
+
+        arch_ventas: Archivo de VENTAS Ordenado por venta_numero
+        reg_ventas: VENTAS
+
+        arch_cli: Archivo de CLIENTES Indexado por id
+        reg_cli: CLIENTES
+
+        arch_det: Archivo de DETALLE_CLIENTES Indexado por nro_op
+        reg_det: DETALLE_CLIENTES
+
+        arch_prod: Archivo de PRODUCTOS Indexado por id
+        reg_prod: PRODUCTOS
+
+        total_prod_vendidos: N(4)
+        
+        PROCEDIMIENTO ACTUALIZAR_PRODUCTO ES
+            reg_prod.id:=reg_ventas.producto_id
+            Leer(arch_prod,reg_prod)
+            reg_prod.stock:=reg_prod.stock - reg_ventas.cant_vendida
+
+            Re-Escribir(arch_prod,reg_prod)
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO ACTUALIZAR_SALDO ES
+            reg_cli.id:=reg_ventas.cliente_id
+            Leer(arch_cli,reg_cli)
+            reg_cli.saldo:=reg_cli.saldo-reg_prod.costo*reg_ventas.cant_vendida
+
+            Re-Escribir(arch_cli,reg_cli)
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO AGREGAR_DETALLE ES
+            reg_det.nro_op:= NUEVO_NRO_OP // procedimiento ficticio que obtiene el ultimo nro_op y le suma 1
+            reg_det.fecha_op:=reg_ventas.venta_fecha
+            reg_det.cliente_id:=reg_ventas.cliente_id
+            reg_det.importe:=reg_prod.costo*reg_ventas.cant_vendida
+            reg_det.fact_num:=reg_ventas.factura_numero
+
+            Escribir(arch_det,reg_det)
+        FIN_PROCEDIMIENTO
+
+        
+    PROCESO
+        ABRIR E/(arch_ventas); Leer(arch_ventas,reg_ventas)
+        ABRIR E/S(arch_cli)
+        ABRIR E/S(arch_det)
+        ABRIR E/S(arch_prod)
+
+        total_prod_vendidos:=0
+
+        MIENTRAS NFDA(arch_ventas) HACER
+            ACTUALIZAR_PRODUCTO
+            ACTUALIZAR_SALDO
+            AGREGAR_DETALLE
+            total_prod_vendidos:=total_prod_vendidos+reg_ventas.cant_vendida
+
+            Leer(arch_ventas,reg_ventas)
+        FIN_MIENTRAS
+        CERRAR(arch_ventas)
+        CERRAR(arch_cli)
+        CERRAR(arch_det)
+        CERRAR(arch_prod)
+FIN_ACCION
+
+
