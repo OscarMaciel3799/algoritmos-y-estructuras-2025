@@ -1,3 +1,24 @@
+CORTE DE CONTROL
+    AMBIENTE
+        crear los formatos de los registros
+        crear las variables archivos y registros (de entrada/s y/o salida/s)
+        crear resguardos
+        crear contadores/acumuladores
+        identificar y crear procedimientos de corte, del mas chico al más grande
+    
+    PROCESO
+        abrir archivos
+        leer archivo/s secuenciale/s
+        inicializar contadores/acumuladores y resguardos
+        iniciar mientras
+            tratar cortes
+            tratar registros
+            leer archivo
+        llamar corte de nivel superior
+        mostrar total general
+        cerrar archivos
+    fin accion
+
 ACTUALIZACION UNITARIA (maximo 1 movimiento por registro)
     AMBIENTE
         crear los formatos de los registros
