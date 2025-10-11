@@ -1,0 +1,120 @@
+Enunciado:  
+Se dispone de un archivo secuencial de facturas de una empresa de energía eléctrica, correspondientes a un año, 
+con el siguiente formato:
+
+| Nro_Factura | Nro_Usuario | Zona | Fecha | Consumo |
+Se desea obtener un cuadro estadístico que informe los consumos y los importes totales facturados por mes 
+discriminados por zona, con el siguiente formato:
+
+|                |  Zona A | Zona B | Zona C | Zona D | Total por mes |
+|     Enero      |	 ...   |   ...  |	...  |	 ...  |       ...     |
+|    Febrero     |	 ...   |   ...  |	...  |	 ...  |       ...     |
+|       ...      |	 ...   |   ...  |	...  |	 ...  |       ...     |
+|    Diciembre   |	 ...   |   ...  |	...  |	 ...  |       ...     |
+| Total por zona |	 ...   |   ...  |	...  |	 ...  | Total General |
+
+La ciudad está dividida en 4 Zonas (A,B,C,D), la tarifa por Kw. que cobra la empresa en cada una de ellas es: 
+Zona A: 0,05,
+Zona B: 0,07, 
+Zona C: 0,09 y
+Zona D: 0,13.
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.3.26 ES 
+    AMBIENTE 
+        FACTURAS = REGISTRO
+            nro_factura: N(4)
+            nro_usuario: N(4)
+            zona: ("A","B","C","D")
+            fecha=REGISTRO
+                año:1900..2100
+                mes:1..12
+                dia:1..31
+            FIN_REGISTRO
+            consumo: N(4)
+        FIN_REGISTRO   
+
+        info = REGISTRO
+            consumo: N(4)
+            importe: N(6,2)
+        FIN_REGISTRO
+        arch_fact: Archivo de FACTURAS
+        reg_fact: FACTURAS
+
+        facturacion: ARREGLO de [1..13,"A".."E"] de info
+        i:1..13
+        j:"A".."E"
+        importe: N(6,2)
+    PROCESO
+        PARA i:=1 HASTA 13 HACER
+            PARA "A" HASTA "E" HACER
+                facturacion[i,j].consumo:=0
+                facturacion[i,j].importe:=0
+            FIN_PARA
+        FIN_PARA
+        ABRIR E/(arch_fact); Leer(arch_fact,reg_fact)
+
+        MIENTRAS NFDA(arch_fact) HACER
+            i:=reg_fact.mes
+            j:=reg_fact.zona
+            facturacion[i,j].consumo:=facturacion[i,j].consumo + reg_fact.consumo
+
+            SEGUN reg_fact.zona HACER
+                "A":
+                    importe:=reg_fact.consumo*0.05
+                "B":
+                    importe:=reg_fact.consumo*0.07
+                "C":
+                    importe:=reg_fact.consumo*0.09
+                "D":
+                    importe:=reg_fact.consumo*0.13
+            FIN_SEGUN
+            facturacion[i,j].importe:=facturacion[i,j].importe + importe
+
+            facturacion[13,j].consumo:=facturacion[13,j].consumo + reg_fact.consumo
+            facturacion[13,j].importe:=facturacion[13,j].importe + importe
+            
+            facturacion[i,"E"].consumo:=facturacion[i,"E"].consumo + reg_fact.consumo
+            facturacion[i,"E"].importe:=facturacion[i,"E"].importe + importe
+            
+            facturacion[13,"E"].consumo:=facturacion[13,"E"].consumo + reg_fact.consumo
+            facturacion[13,"E"].importe:=facturacion[13,"E"].importe + importe
+            
+            Escribir("          Zona A	Zona B	Zona C	Zona D	Total por mes")
+            PARA i:=1 HASTA 13 HACER
+                SEGUN i HACER
+                    1:
+                        Escribir("Enero")
+                    2:
+                        Escribir("Febrero")
+                    3:
+                        Escribir("Marzo")
+                    4:
+                        Escribir("Abril")
+                    5:
+                        Escribir("Mayo")
+                    6:
+                        Escribir("Junio")
+                    7:
+                        Escribir("Julio")
+                    8:
+                        Escribir("Agosto")
+                    9:
+                        Escribir("Septiembre")
+                    10:
+                        Escribir("Octubre")
+                    11:
+                        Escribir("Noviembre")
+                    12:
+                        Escribir("Diciembre")
+                FIN_SEGUN
+                PARA "A" HASTA "E" HACER
+                    Escribir("consumo: ",facturacion[i,j].consumo,"facturacion: ", facturacion[i,j].importe)
+                FIN_PARA
+            FIN_PARA
+        FIN_MIENTRAS
+
+FIN_ACCION
+
+
