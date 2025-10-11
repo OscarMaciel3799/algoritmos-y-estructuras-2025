@@ -1,0 +1,154 @@
+Enunciado:  
+Crear un algoritmo que imprima un reporte como el que se indica, incluyendo totales por Obra Social y Clínica de 
+liquidaciones a médicos. Los archivos que intervienen son:
+
+LIQUIDACIONES Ordenado por O.S. y Clinica
+| O.S. | Clinica | Nro_Leg | Mes | Anio | Bruto | Descuento_AFIP | Descuento_DGR |
+Neto = Bruto – (Desc_AFIP + Desc_DGR)
+
+OBRAS_SOCIALES Indexado por Cod_Os
+| Cod_OS | Nombre |
+
+CLÍNICAS Indexado por Cod_Cli
+| Cod_Cli | Nombre |
+
+MÉDICOS Indexado por Nro_Leg
+| Nro_Leg | ApyNom | Especialidad | DNI |
+
+Reporte:
+
+Obra Social:	
+                Clinica:	
+                                Médicos	
+                Nro Legajo      Nombre      Neto
+                ..........	   ........	   ......
+                ..........	   ........	   ......
+                Total Clínica		       ......
+Total Obra Social			               ......
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.2.3.7 ES 
+    AMBIENTE 
+        LIQUIDACIONES = REGISTRO
+            os: N(6)
+            Clinica: N(6)
+            Nro_Leg: N(6)
+            Mes: 1..12
+            Anio: 1900..2100
+            Bruto: N(8,2)
+            Desc_AFIP: N(8,2)
+            Desc_DGR: N(8,2)
+        FIN_REGISTRO
+
+        OBRAS_SOCIALES = REGISTRO
+            Cod_OS: N(6)
+            Nombre: AN(20)
+        FIN_REGISTRO
+
+        CLÍNICAS = REGISTRO
+            Cod_Cli: N(6)
+            Nombre: AN(20)
+        FIN_REGISTRO
+        
+        MÉDICOS = REGISTRO
+            Nro_Leg: N(6)
+            ApyNom: AN(20)
+            Especialidad: AN(20)
+            DNI: N(8)
+        FIN_REGISTRO
+
+        arch_liq: Archivo de LIQUIDACIONES Ordenado por O.S. y Clinica
+        reg_liq: LIQUIDACIONES
+
+        arch_os: Archivo de OBRAS_SOCIALES Indexado por Cod_Os
+        reg_os: OBRAS_SOCIALES
+
+        arch_cli: Archivo de CLÍNICAS Indexado por Cod_Cli
+        reg_cli: CLÍNICAS
+
+        arch_med: Archivo de MÉDICOS Indexado por Nro_Leg
+        reg_med: MÉDICOS
+
+        resg_os: N(6)
+        resg_clinica: N(6)
+
+        neto, total_clinica, total_os: N(8,2)
+        
+        PROCEDIMIENTO CORTE_CLINICA ES
+            Escribir("               Total Clinica: ",total_clinica)
+            total_os:=total_os + total_clinica
+
+            total_clinica:=0
+            resg_clinica:=reg_liq.Clinica
+
+            SI NFDA(arch_liq) ENTONCES
+                reg_cli.Cod_Cli:=reg_liq.Clinica
+                Leer(arch_cli,reg_cli) //asumo que siempre existe
+                Escribir("Clinica: ",reg_cli.Nombre)	
+                Escribir("          Médicos         ")	
+                Escribir("Nro Legajo      Nombre      Neto")	
+            FIN_SI
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO CORTE_OS ES
+            CORTE_CLINICA
+            Escribir("      Total Obra Social: ",total_os)
+
+            total_os:=0
+            resg_os:=reg_liq.os
+            
+            SI NFDA(arch_liq) ENTONCES
+                reg_os.Cod_OS:=reg_liq.os
+                Leer(arch_os,reg_os) //asumo que siempre existe
+                Escribir("Obra Social: ",reg_os.Nombre)	
+            FIN_SI
+        FIN_PROCEDIMIENTO
+    PROCESO
+        ABRIR E/(arch_liq); Leer(arch_liq,reg_liq)
+        ABRIR E/(arch_os)
+        ABRIR E/(arch_cli)
+        ABRIR E/(arch_med)
+
+        resg_os:=reg_liq.os
+        resg_clinica:=reg_liq.Clinica
+
+        total_clinica:= 0
+        total_os:= 0
+
+        reg_os.Cod_OS:=reg_liq.os
+        Leer(arch_os,reg_os) //asumo que siempre existe
+        reg_cli.Cod_Cli:=reg_liq.Clinica
+        Leer(arch_cli,reg_cli) //asumo que siempre existe
+
+        Escribir("Obra Social: ",reg_os.Nombre)	
+        Escribir("Clinica: ",reg_cli.Nombre)	
+        Escribir("          Médicos         ")	
+        Escribir("Nro Legajo      Nombre      Neto")
+
+        MIENTRAS NFDA(arch_liq) HACER
+            SI resg_os<>reg_liq.os ENTONCES
+                CORTE_OS
+            SINO
+                SI resg_clinica<> reg_liq.Clinica ENTONCES
+                    CORTE_CLINICA
+                FIN_SI
+            FIN_SI
+
+            reg_med.Nro_Leg:=reg_liq.Nro_Leg
+            Leer(arch_med,reg_med) //asumo que siempre existe
+
+            neto:=reg_liq.Bruto-(reg_liq.Desc_AFIP+reg_liq.Desc_DGR)
+            Escribir(reg_med.Nro_Leg, reg_med.ApyNom, neto)
+            total_clinica:=total_clinica+neto
+
+            Leer(arch_liq,reg_liq)
+        FIN_MIENTRAS
+        CORTE_OS
+        CERRAR(arch_liq)
+        CERRAR(arch_os)
+        CERRAR(arch_cli)
+        CERRAR(arch_med)
+FIN_ACCION
+
+
