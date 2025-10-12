@@ -60,7 +60,7 @@ ACCION E.2.3.10 ES
 
         Escribir("Desea Ingresar los datos del primer cliente? S/N")
         Leer(salida)
-
+        cant_cargas:=0
         MIENTRAS salida="N" HACER
             Escribir("Ingresar el DNI del cliente")
             Leer(dni_ingresado)
@@ -76,6 +76,7 @@ ACCION E.2.3.10 ES
                     Escribir("No se puede aplicar descuento")
                 FIN_SI
             SINO
+                cant_cargas:=cant_cargas+1
                 reg_cli.DNI: N(8)
                 Escribir("Ingrese por favor, su apellido y nombre, edad y ciudad")
                 Leer(reg_cli.Ape_Nom, reg_cli.Edad, reg_cli.Ciudad)
@@ -100,6 +101,7 @@ ACCION E.2.3.10 ES
             Escribir("Desea Ingresar los datos del siguiente cliente? S/N")
         Leer(salida)
         FIN_MIENTRAS
+        Escribir("La cantidad de cargas a clientes no existentes es: ",cant_cargas)
         CERRAR(arch_cli)
         CERRAR(arch_puntos)
 FIN_ACCION
