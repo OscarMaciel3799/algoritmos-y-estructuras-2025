@@ -1,0 +1,107 @@
+Enunciado:  
+Una empresa dedicada a la venta de combustibles para automotores anunció una promoción mediante la cual 
+los clientes pueden acceder a descuentos importantes. En cada carga los clientes suman 10 puntos por cada $100 
+de combustible, y una vez que el cliente llega a los 100 puntos, este los puede canjear por un descuento de $100 
+en el importe total. La cantidad de puntos que tiene cada cliente está almacenado en el archivo indexado PUNTOS 
+el cual tiene el siguiente formato:
+
+PUNTOS Indexado por DNI
+| DNI | Cant_Puntos | Ult_Carga |
+
+Los datos de cada cliente se encuentran almacenados en el archivo CLIENTE también indexado con el siguiente formato
+
+CLIENTE Indexado por DNI
+| DNI | Ape_Nom | Edad | Ciudad |
+
+Se pide realizar el algoritmo que permita:
+1. Realizar la carga interactiva de las cargas de combustible (ingresando monto), 
+actualizando la cantidad de Puntos y la Fecha de Última Carga en el archivo PUNTOS. Si no existe el Cliente, 
+se lo debe inicializar en ambos archivos con los datos correspondientes.
+2. Permitir al cliente aplicar descuentos a las cargas realizadas siempre y cuando tenga puntos suficientes 
+(sólo se puede canjear 100 puntos por carga).
+3. Determinar la cantidad de cargas realizadas de usuarios no existentes.
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.2.3.10 ES 
+    AMBIENTE 
+        fecha = REGISTRO
+            año: 1900..2100
+            mes: 1..12
+            dia: 1..31
+        FIN_REGISTRO
+
+        PUNTOS = REGISTRO
+            DNI: N(8)
+            Cant_Puntos: N(3)
+            Ult_Carga: fecha
+        FIN_REGISTRO
+
+        CLIENTE = REGISTRO
+            DNI: N(8)
+            Ape_Nom: AN(20)
+            Edad: N(3)
+            Ciudad: AN(20)
+        FIN_REGISTRO
+
+        arch_puntos: Archivo de PUNTOS Indexado por DNI
+        reg_puntos: PUNTOS
+        
+        arch_cli: Archivo de CLIENTE Indexado por DNI
+        reg_cli: CLIENTE
+
+        cant_cargas: N(4)
+        salida: ("S","N")
+        dni_ingresado: N(8)
+        monto_carga: N(6,2)
+    PROCESO
+        ABRIR E/(arch_puntos)
+        ABRIR E/(arch_cli)
+
+        Escribir("Desea Ingresar los datos del primer cliente? S/N")
+        Leer(salida)
+
+        MIENTRAS salida="N" HACER
+            Escribir("Ingresar el DNI del cliente")
+            Leer(dni_ingresado)
+            reg_cli.DNI:=dni_ingresado
+            Leer(arch_cli,reg_cli)
+            SI EXISTE ENTONCES
+                reg_puntos.DNI:=dni_ingresado
+                Leer(arch_puntos,reg_puntos)    // considero existente
+                SI reg_puntos.Cant_Puntos=100 ENTONCES
+                    reg_puntos.Cant_Puntos:=0
+                    Escribir("Se puede aplicar descuentos")
+                SINO
+                    Escribir("No se puede aplicar descuento")
+                FIN_SI
+            SINO
+                reg_cli.DNI: N(8)
+                Escribir("Ingrese por favor, su apellido y nombre, edad y ciudad")
+                Leer(reg_cli.Ape_Nom, reg_cli.Edad, reg_cli.Ciudad)
+                Escribir(arch_cli,reg_cli)
+
+                reg_puntos.DNI:= dni_ingresado
+                reg_puntos.Cant_Puntos:= 0
+                reg_puntos.Ult_Carga:= FECHA_ACTUAL
+
+                Escribir(arch_puntos,reg_puntos)
+            FIN_SI
+
+            Escribir("Ingresar el monto de carga")
+            Leer(monto_carga)
+            SI reg_puntos.Cant_Puntos + (monto_carga DIV 100) > 100
+                reg_puntos.Cant_Puntos:=100  
+            SINO
+                reg_puntos.Cant_Puntos:=reg_puntos.Cant_Puntos + (monto_carga DIV 100)
+            FIN_SI
+            Re-Escribir(arch_puntos,reg_puntos)
+
+            Escribir("Desea Ingresar los datos del siguiente cliente? S/N")
+        Leer(salida)
+        FIN_MIENTRAS
+        CERRAR(arch_cli)
+        CERRAR(arch_puntos)
+FIN_ACCION
+
+
