@@ -77,7 +77,7 @@ ACCION E.2.3.10 ES
                 FIN_SI
             SINO
                 cant_cargas:=cant_cargas+1
-                reg_cli.DNI: N(8)
+                reg_cli.DNI: dni_ingresado
                 Escribir("Ingrese por favor, su apellido y nombre, edad y ciudad")
                 Leer(reg_cli.Ape_Nom, reg_cli.Edad, reg_cli.Ciudad)
                 Escribir(arch_cli,reg_cli)
@@ -99,7 +99,7 @@ ACCION E.2.3.10 ES
             Re-Escribir(arch_puntos,reg_puntos)
 
             Escribir("Desea Ingresar los datos del siguiente cliente? S/N")
-        Leer(salida)
+            Leer(salida)
         FIN_MIENTRAS
         Escribir("La cantidad de cargas a clientes no existentes es: ",cant_cargas)
         CERRAR(arch_cli)
