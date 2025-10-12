@@ -41,7 +41,7 @@ ACCION E.2.3.1.a ES
         arch_fac: Archivo de factura ordenado por Nro_Cliente, Nro_Factura
         reg_fac: factura
 
-        arch_cli: Archivo de cliente ordenado por Nro_Cliente
+        arch_cli: Archivo de cliente Indexado por Nro_Cliente
         reg_cli: cliente
 
     PROCESO
