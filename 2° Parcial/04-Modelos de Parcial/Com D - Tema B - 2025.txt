@@ -1,0 +1,332 @@
+La biblioteca Publica de AED City lanzó el programa "A ver si leen", destinado a promover la lectura mediante 
+diversas actividades, como talleres en escuelas, entraga de libros y el uso de plataformas interactivas. 
+Con este fin, se neccesita desarrollar una aplicacion de gestion bibliotecaria que permita administrador los 
+prestamos, devoluciones e inventario general de forma eficiente.
+
+Archivo de EJEMPLARES (informacion 2024)
+Archivo secuencial ordenado por cod_lib y cod_ejemplar, con el siguiente formato:
+|---------------|-------------|---------------------------------------------------------------|
+| Cod_lib       | N(8)        | Código de libro                                               |
+|---------------|-------------|---------------------------------------------------------------|
+| Cod_ejemplar  | N(10)       | Código de ejemplar                                            |
+|---------------|-------------|---------------------------------------------------------------|
+| Descripcion   | AN(255)     | Titulo o detalle del ejemplar                                 |
+|---------------|-------------|---------------------------------------------------------------|
+| Tipo_libro    | Carácter    | A (Autoayuda), D (Didácticos), L (Literatura), N (No ficción) |
+|---------------|-------------|---------------------------------------------------------------|
+| Disponible    | "Si"/"No"   | Indica si el ejemplar está disponible para prestamo           |
+|---------------|-------------|---------------------------------------------------------------|
+| Estado        | AN(10)      | "Bien" , "Reparación" ,"Baja"                                 |
+|---------------|-------------|---------------------------------------------------------------|
+| Fecha         | aaaa/mm/dd  | Fecha de devolucion (si esta prestado) o de baja o reparación |
+|---------------|-------------|---------------------------------------------------------------|
+
+Estado: Indica la condicion del ejemplar:
+- Bien: se pueden realizar prestamos.
+- Reparación : no disponible temporalmente.
+- Baja: deterirado o fuera de uso.
+
+Archivo de NOVEDADES
+Archivo secuencial ordenado por Cod_lib, Cod_ejemplar, tipo_novedad y fecha_novedad
+|---------------|------------------------------------------------------------------------|
+| Cod_lib       | Código de libro                                                        |
+|---------------|------------------------------------------------------------------------|
+| Cod_ejemplar  | Código de ejemplar                                                     |
+|---------------|------------------------------------------------------------------------|
+| Tipo_novedad  | 1: Ingreso  - 2: Prestamo - 3: Devolucion - 4: Mantenimiento - 5: Baja |
+|---------------|------------------------------------------------------------------------|
+| Fecha_novedad | Fecha del evento                                                       |
+|---------------|------------------------------------------------------------------------|
+| Id_usuario    | Identificador del usuario asociado (si corresponde)                    |
+|---------------|------------------------------------------------------------------------|
+
+Las novedades producen los siguientes efectos sobre el archivo de EJEMPLARES
+|-------------------|--------------------------------------------------------------------------------------------|
+| Tipo de novedad   | Descripcion de actualizacion                                                               |
+|-------------------|--------------------------------------------------------------------------------------------|
+| 1 (Ingreso)       | Nuevo ejemplar: Disponible ="Si" , Fecha = en blanco                                       |
+|-------------------|--------------------------------------------------------------------------------------------|
+| 2 (Prestamo)      | Disponible = "No", Fecha = Fecha_novedad + cantidad de dias segun tipo de usuario          |
+|                   | Estudiante: 10 dias, Docente: 15 dias, Público general: 7 dias. Suponer que existe         |
+|                   | la funcion sumar_dias(fecha, dias) que devuelve la nueva fecha.                            |
+|-------------------|--------------------------------------------------------------------------------------------|
+| 3 (Devolucion)    | Disponible = "No" , Fecha = en blanco                                                      |
+|-------------------|--------------------------------------------------------------------------------------------|
+| 4 (Mantenimiento) | Disponible = "No" , Estado = "Reparacion" , Fecha = Fecha_novedad                          |
+|-------------------|--------------------------------------------------------------------------------------------|
+| 5 (Baja)          | Disponible = "No" , Estado = "Baja" , Fecha = Fecha_novedad                                |
+|-------------------|--------------------------------------------------------------------------------------------|
+
+Archivo de USUARIOS (Indexado por Id_usuario)
+|--------------|-----------------------------------------------------|
+| Id_usuario   | Identificador unico                                 |
+|--------------|-----------------------------------------------------|
+| Nombre       | Nombre del usuario                                  |
+|--------------|-----------------------------------------------------|
+| Edad         | Edad del usuario                                    |
+|--------------|-----------------------------------------------------|
+| Tipo_usuario | E = Estudiante, D = Docente, P = Publico general    |
+|--------------|-----------------------------------------------------|
+
+EJERCICIO 1
+a. Desarrollar un algoritmo que mantenga actualizado el archivo de EJEMPLARES, considerando que pueden existir 
+multiples novedades para un mismo ejemplar. Controlar errores de datos o referencias inexistentes (por ejemplo: 
+ejemplares o usuarios no registrados) e informar adecuadamente al usuario.
+b. Informar cuantos ejemplares se encuentran actualmente prestados.
+
+ACCION E1 ES
+    AMBIENTE
+        cl = REGISTRO
+            cod_lib: N(8)
+            cod_ej: N(10)
+        FIN_REGISTRO
+        f = REGISTRO
+            año: 1900..2100
+            mes: 1..12
+            dia: 1..31
+        FIN_REGISTRO
+        EJEMPLARES = REGISTRO
+            clave: cl
+            tipo: ("A","D","L","N")
+            desc: AN(255)
+            disp: ("Si","No")
+            estado: ("Bien","Reparacion","Baja")
+            fecha: f
+        FIN_REGISTRO
+        NOVEDADES = REGISTRO
+            clave: cl
+            tipo: 1..5
+            fecha: f
+            id_usuario: N(6)
+        FIN_REGISTRO
+        USUARIOS = REGISTRO
+            id: AN(6)
+            nombre: AN(20)
+            edad: N(2)
+            tipo: ("E","D","P")
+        FIN_REGISTRO
+
+        arch_ej, arch_act: Archivo de EJEMPLARES ordenado por clave
+        reg_ej, reg_act: EJEMPLARES
+
+        arch_nov: Archivo de NOVEDADES ordenado por clave, tipo y fecha
+        reg_nov: NOVEDADES
+
+        arch_us: Archivo de USUARIOS Indexado por id
+        reg_us: USUARIOS
+
+        cant_ej_prest: N(4)
+        PROCEDIMIENTO LEER_EJEMPLAR ES
+            Leer(arch_ej, reg_ej)
+            SI FDA(arch_ej) ENTONCES
+                reg_ej.clave := HV
+            FIN_SI
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO LEER_NOVEDAD ES
+            Leer(arch_nov, reg_nov)
+            SI FDA(arch_nov) ENTONCES
+                reg_nov.clave := HV
+            FIN_SI
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO LOTE ES
+            MIENTRAS reg_act.clave = reg_nov.clave HACER
+                SEGUN reg_nov.tipo HACER
+                    1:
+                        Escribir("Error - El ejemplar ya se encuentra cargado")
+                    2:
+                        SI reg_nov.disp = "Si" ENTONCES
+                            reg_act.disp:= "No"
+                            reg_us.id:=reg_nov.id_usuario
+                            Leer(arch_us,reg_us)
+                            SI EXISTE ENTONCES
+                                SEGUN reg_us.tipo HACER
+                                    "E":
+                                        reg_act.fecha:=sumar_dias(reg_act.fecha,10)
+                                    "D":
+                                        reg_act.fecha:=sumar_dias(reg_act.fecha,15)
+                                    "P":
+                                        reg_act.fecha:=sumar_dias(reg_act.fecha,7)
+                                FIN_SEGUN
+                            SINO
+                                Escribir("Error -  El usuario no existe")
+                            FIN_SI
+                        SINO
+                            Error("Error- El ejemplar no esta disponible")
+                        FIN_SI
+                    3:
+                        reg_act.disp:="Si"
+                        reg_act.fecha:=" "
+                    4:
+                        reg_act.disp:="No"
+                        reg_act.estado:="Reparacion"
+                        reg_act.fecha:=reg_nov.fecha
+                    5:
+                        reg_act.disp:="No"
+                        reg_act.estado:="Baja"
+                        reg_act.fecha:=reg_nov.fecha
+                FIN_SEGUN
+                LEER_EJEMPLAR
+            FIN_MIENTRAS
+            SI reg_act.estado = "Bien" y reg_act.disp= "No" ENTONCES
+                cant_ej_prest:=cant_ej_prest+1
+            FIN_SI
+            Escribir(arch_act,reg_act)
+        FIN_PROCEDIMIENTO
+    PROCESO
+        ABRIR E/(arch_ej); LEER_EJEMPLAR
+        ABRIR /S(arch_act)
+        ABRIR E/(arch_nov); LEER_NOVEDAD
+        ABRIR E/(arch_us)
+
+        cant_ej_prest:=0
+
+        MIENTRAS (reg_ej.clave <> HV) o (reg_nov.clave<> HV) HACER
+            SI reg_ej.clave < reg_nov.clave ENTONCES
+                reg_act:=reg_ej
+                SI reg_act.estado = "Bien" y reg_act.disp= "No" ENTONCES
+                    cant_ej_prest:=cant_ej_prest+1
+                FIN_SI
+                Escribir(arch_act,reg_act)
+                LEER_EJEMPLAR
+            SINO
+                SI reg_ej.clave = reg_nov.clave ENTONCES
+                    reg_act:=reg_ej
+                    LOTE
+                    LEER_EJEMPLAR
+                SINO
+                    reg_act.clave:=reg_nov.clave
+                    Escribir("Ingrese el tipo del ejemplar nuevo")
+                    Leer(reg_act.tipo)
+                    reg_act.desc:= " "
+                    reg_act.disp:= "Si"
+                    reg_act.estado:= "Bien"
+                    reg_act.fecha: " "
+
+                    LEER_NOVEDAD
+                    LOTE
+                FIN_SI
+            FIN_SI
+        FIN_MIENTRAS
+        Escribir("La cantidad de ejemplares prestados actualmente es: ",cant_ej_prest)
+        CERRAR(arch_ej)
+        CERRAR(arch_act)
+        CERRAR(arch_nov)
+        CERRAR(arch_us)
+FIN_ACCION
+
+EJERCICIO 2
+Como parte del mismo programa "a ver si leen", la bibliote desea obtener informacion estadistica y reportes 
+sobre el uso del servicio de presatamos y el estado general del inventario, referidos a los libros cuyo estado sea 
+"Reparacion" o "Baja".
+Desarrollar un algoritmo que procese la informacion del archivo EJEMPLARES y determine:
+a. 1. Cantidad de libros en los estados indicados, discriminados por tipo de libro y por mes.
+   2. Totales por tipo de libro, por mes y total general.
+b. Informar cual fue el tipo de libro (nombre) con menor cantidad de ejemplares en reparacion o baja para 
+un mes ingresado por el usuario.
+
+ACCION E2 ES
+    AMBIENTE
+        cl = REGISTRO
+            cod_lib: N(8)
+            cod_ej: N(10)
+        FIN_REGISTRO
+        f = REGISTRO
+            año: 1900..2100
+            mes: 1..12
+            dia: 1..31
+        FIN_REGISTRO
+        EJEMPLARES = REGISTRO
+            clave: cl
+            tipo: ("A","D","L","N")
+            desc: AN(255)
+            disp: ("Si","No")
+            estado: ("Bien","Reparacion","Baja")
+            fecha: f
+        FIN_REGISTRO
+
+        arch_ej: Archivo de EJEMPLARES ordenado por clave
+        reg_ej: EJEMPLARES
+
+        cant_menor,pos: N(4)
+        nombre: AN(20)
+
+        mes_ingresado: 1..12
+        
+        info: ARREGLO DE [1..5,1..13]
+        i: 1..5
+        j: 1..13
+
+    PROCESO
+        PARA i:=1 HASTA 5 HACER
+            PARA j:=1 HASTA  13 HACER
+                info[i,j]:=0
+            FIN_PARA
+        FIN_PARA
+
+        ABRIR E/(arch_ej); Leer(arch_ej,reg_ej)
+        Escribir("Ingrese un mes")
+        Leer(mes_ingresado)
+
+        MIENTRAS NFDA(arch_ej) HACER
+            SI reg_ej.estado <> "Bien" ENTONCES
+                SEGUN reg_ej.tipo HACER
+                    "A":
+                        i:=1
+                    "D":
+                        i:=2
+                    "L":
+                        i:=3
+                    "N":
+                        i:=4
+                FIN_SEGUN
+                j:=reg_ej.fecha.mes
+
+                info[i,j]:=info[i,j] + 1
+                info[5,j]:=info[5,j] + 1
+                info[i,13]:=info[i,13] + 1
+                info[5,13]:=info[5,13] + 1
+            FIN_SI
+        FIN_MIENTRAS
+        
+        Escribir("Cantidad de libros segun solicitado")
+        PARA i:= 1 HASTA 4 HACER
+            PARA j:=1 HASTA 12 HACER
+                Escribir(info[i,j])
+            FIN_PARA
+        FIN_PARA
+
+        Escribir("Totales x libros")
+        PARA i:=1 HASTA 4 HACER
+            Escribir(info[i,13])
+        FIN_PARA
+
+        Escribir("Totales x mes")
+        PARA j:=1 HASTA 12 HACER
+            Escribir(info[5,j])
+        FIN_PARA
+        
+        Escribir("Total General", info[5,13])
+
+        cant_menor:= info[1,mes_ingresado]
+        pos:=1
+
+        PARA i:=2 HASTA 4 HACER
+            SI cant_menor>info[i,mes_ingresado] ENTONCES
+                cant_menor:=info[i,mes_ingresado]
+                pos:=i
+            FIN_SI
+        FIN_PARA
+        SEGUN pos HACER
+            1: nombre:="Autoayuda"
+            2: nombre:="Didácticos"
+            3: nombre:="Literatura"
+            4: nombre:="No ficción"
+        FIN_SEGUN
+        Escribir("El tipo de libro con menor cantidad de ejemplares en la condicion indicada es: ",nombre)
+        CERRAR(arch_ej)
+
+FIN_ACCION
+
+
