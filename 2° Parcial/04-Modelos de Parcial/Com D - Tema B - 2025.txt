@@ -136,18 +136,18 @@ ACCION E1 ES
                     1:
                         Escribir("Error - El ejemplar ya se encuentra cargado")
                     2:
-                        SI reg_nov.disp = "Si" ENTONCES
+                        SI reg_act.disp = "Si" ENTONCES
                             reg_act.disp:= "No"
                             reg_us.id:=reg_nov.id_usuario
                             Leer(arch_us,reg_us)
                             SI EXISTE ENTONCES
                                 SEGUN reg_us.tipo HACER
                                     "E":
-                                        reg_act.fecha:=sumar_dias(reg_act.fecha,10)
+                                        reg_act.fecha:=sumar_dias(reg_nov.fecha,10)
                                     "D":
-                                        reg_act.fecha:=sumar_dias(reg_act.fecha,15)
+                                        reg_act.fecha:=sumar_dias(reg_nov.fecha,15)
                                     "P":
-                                        reg_act.fecha:=sumar_dias(reg_act.fecha,7)
+                                        reg_act.fecha:=sumar_dias(reg_nov.fecha,7)
                                 FIN_SEGUN
                             SINO
                                 Escribir("Error -  El usuario no existe")
@@ -306,7 +306,7 @@ ACCION E2 ES
         PARA j:=1 HASTA 12 HACER
             Escribir(info[5,j])
         FIN_PARA
-        
+
         Escribir("Total General", info[5,13])
 
         cant_menor:= info[1,mes_ingresado]
