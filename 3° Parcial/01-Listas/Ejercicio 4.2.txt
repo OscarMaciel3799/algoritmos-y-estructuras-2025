@@ -1,0 +1,147 @@
+Enunciado:  
+Se dispone de una lista simplemente encadenada de números enteros, diseñar un algoritmo que a 
+partir de ella genere otra lista conteniendo los nodos cuyos datos terminan en cero; 
+dichos elementos, deberán ser eliminados de la lista original. 
+Se asume que la lista está cargada, y que el algoritmo recibe como parámetro de entrada la 
+dirección del primer elemento.
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.4.2-CargaApilada(Prim: Puntero a Nodo) ES 
+    AMBIENTE 
+        Nodo = REGISTRO
+            num: Entero
+            prox: Puntero a Nodo
+        FIN_REGISTRO
+        P, Ant: Puntero a Nodo
+        L2,Aux: Puntero a Nodo
+    PROCESO
+        P:=Prim
+        Ant:=NIL
+        L2:=NIL
+        Aux:=NIL
+        MIENTRAS P<> NIL HACER
+            SI *P.num MOD 10 = 0 ENTONCES
+                Aux:=P
+                P:=*P.prox
+
+                //Desconectamos el nodo de la lista original
+                SI Ant=NIL ENTONCES
+                    // Prim apunta al segundo elemento
+                    Prim:=P
+                SINO
+                    *Ant.prox:=P
+                FIN_SI
+                
+                // Apuntamos al primer elemento de la lista dado por L2
+                *Aux.prox:=L2
+                // Ahora Nuestro puntero inicial apunta al nuevo valor
+                L2:=Aux
+            SINO
+                Ant:=P
+                P:=*P.prox
+            FIN_SI 
+        FIN_MIENTRAS
+FIN_ACCION
+
+
+ACCION E.4.2-CargaEncolada(Prim: Puntero a Nodo) ES 
+    AMBIENTE 
+        Nodo = REGISTRO
+            num: Entero
+            prox: Puntero a Nodo
+        FIN_REGISTRO
+        P, Ant: Puntero a Nodo
+        L2,ULT,Aux: Puntero a Nodo
+    PROCESO
+        P:=Prim
+        Ant:=NIL
+        L2:=NIL
+        ULT:=NIL
+        MIENTRAS P<> NIL HACER
+            SI *P.num MOD 10 = 0 ENTONCES
+                Aux:=P
+                P:=*P.prox
+
+                //Desconectamos el nodo de la lista original
+                SI Ant=NIL ENTONCES
+                    // Prim apunta al segundo elemento
+                    Prim:=P
+                SINO
+                    *Ant.prox:=P
+                FIN_SI
+                
+                // Preparamos el nodo para que vaya al final
+                *Aux.prox:=NIL
+
+                SI L2=NIL ENTONCES
+                    // Tanto el primer puntero como el ultimo apuntan al primer nodo
+                    L2:=Aux
+                    ULT:=Aux
+                SINO
+                    // El puntero del ultimo nodo actual apunta al nuevo nodo
+                    *ULT.prox:=Aux
+                    // El puntero del ultimo nodo ahora apunta al nuevo ultimo nodo
+                    ULT:=Aux
+                FIN_SI
+                
+            SINO
+                Ant:=P
+                P:=*P.prox
+            FIN_SI 
+        FIN_MIENTRAS
+FIN_ACCION
+
+
+ACCION E.4.2-CargaOrdenada(Prim: Puntero a Nodo) ES 
+    AMBIENTE 
+        Nodo = REGISTRO
+            num: Entero
+            prox: Puntero a Nodo
+        FIN_REGISTRO
+        P, Ant: Puntero a Nodo
+        L2,Aux: Puntero a Nodo
+        P2,Ant2: Puntero a Nodo
+    PROCESO
+        P:=Prim
+        Ant:=NIL
+
+        L2:=NIL
+        MIENTRAS P<> NIL HACER
+            SI *P.num MOD 10 = 0 ENTONCES
+                Aux:=P
+                P:=*P.prox
+
+                //Desconectamos el nodo de la lista original
+                SI Ant=NIL ENTONCES
+                    // Prim apunta al segundo elemento
+                    Prim:=P
+                SINO
+                    *Ant.prox:=P
+                FIN_SI
+                
+                P2:=L2
+                Ant2:=NIL   
+
+                MIENTRAS P2<>NIL y *P2.num<*Aux.num HACER
+                    Ant2:=P2
+                    P2:=*P2.prox
+                FIN_MIENTRAS
+                
+                SI Ant2=NIL ENTONCES
+                    *Aux.prox:=L2
+                    L2:=Aux
+                SINO
+                    // Inserto el nuevo nodo entre Ant2 y P
+                    *Aux.prox:=P2
+                    *Ant2.prox:=Aux
+                FIN_SI
+                
+            SINO
+                Ant:=P
+                P:=*P.prox
+            FIN_SI 
+        FIN_MIENTRAS
+FIN_ACCION
+
+
