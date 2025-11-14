@@ -1,0 +1,141 @@
+Enunciado:  
+En el restaurante ÑOQUIS se está pensando en una solución informática para el soporte de datos 
+del nuevo sistema de atención a clientes. Se han decidido por LISTAS por su dinamismo en cuanto 
+a la cantidad de elementos. Diseñe un algoritmo que realice las siguientes funciones:
+
+- Añadir cliente al ser atendido (lista simple ordenada por Nombre del Cliente).
+- Registrar su consumo (Acumular el Total Consumido en valores de montos).
+- Realizar el cobro (emitir ticket con Nombre, Fecha, Número de Mesa y Total).
+- Eliminar del listado de atención.
+
+La información almacenada debe mantenerse ordenada por Nombre del cliente.
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.4.6 ES 
+    AMBIENTE 
+        F = REGISTRO
+            año: 1900..2100
+            mes: 1..12
+            dia: 1..31
+        FIN_REGISTRO
+        CLIENTE = REGISTRO
+            nombre: AN(20)
+            fecha: F
+            mesas: N(2)
+            Total: N(5,2)
+            prox: Puntero a CLIENTE
+        FIN_REGISTRO
+
+        Prim,P, Ant, N: Puntero a CLIENTE
+        opcion: 0..3
+        fechaActual:F
+        nombre: AN(20)
+        monto: N(5,2)
+
+        PROCEDIMIENTO AÑADIRCLIENTE ES
+            NUEVO(N)
+
+            Escribir("Nombre del cliente: ")
+            Leer(*N.nombre)
+            *N.fecha := fechaActual
+            Escribir("Número de mesa: ")
+            Leer(*N.mesa)
+            *N.total := 0
+            *N.prox := NIL
+
+            P := prim
+            Ant := NIL
+
+            MIENTRAS (P <> NIL) Y (*P.nombre < *N.nombre) HACER
+                Ant := P
+                P := *P.prox
+            FINMIENTRAS
+
+            SI Ant = NIL ENTONCES
+                *N.prox := prim
+                prim := N
+            SINO
+                *N.prox := P
+                *Ant.prox := N
+            FINSI
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO REGISTRARCONSUMO ES
+            Escribir("Nombre del cliente: ")
+            leer(nombre)
+            Escribir("Monto a registrar: ")
+            leer(monto)
+
+            P := prim
+            MIENTRAS (P <> NIL) Y (*P.nombre <> nombre) HACER
+                P := *P.prox
+            FINMIENTRAS
+
+            SI P <> NIL ENTONCES
+                *P.total := *P.total + monto
+                Escribir("Consumo registrado.")
+            SINO
+                Escribir("Cliente no encontrado.")
+            FINSI
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO COBRARCLIENTE ES
+            Escribir("Nombre del cliente: ")
+            Leer(nombre)
+
+            P := prim
+            Ant:=NIL
+            MIENTRAS (P <> NIL) Y (*P.nombre <> nombre) HACER
+                Ant := P
+                P := *P.prox
+            FINMIENTRAS
+
+            SI P <> NIL ENTONCES
+                Escribir("----- TICKET -----")
+                Escribir("Cliente: ", *P.nombre)
+                Escribir("Fecha: ", *P.fecha)
+                Escribir("Mesa: ", *P.mesa)
+                Escribir("Total: $", *P.total)
+
+                SI Ant=NIL ENTONCES
+                    Prim := *P.prox
+                SINO
+                    *Ant.prox := *P.prox
+                FIN_SI
+
+                DISPONER(P)
+                Escribir("Cliente eliminado.")
+            SINO
+                Escribir("Cliente no encontrado.")
+            FIN_SI
+
+        FIN_PROCEDIMIENTO
+    PROCESO
+        Escribir("Ingrese la fecha actual")
+        Leer(fechaActual)
+        Prim:=NIL
+
+        REPETIR 
+            Escribir("----- MENU RESTAURANTE ÑOQUIS -----")
+            Escribir("1 - Añadir cliente")
+            Escribir("2 - Registrar consumo")
+            Escribir("3 - Cobrar cliente")
+            Escribir("0 - Salir")
+            Leer(opcion)
+
+
+            SEGUN opcion HACER
+                1:
+                    AÑADIRCLIENTE
+                2:
+                    REGISTRARCONSUMO
+                3:
+                    COBRARCLIENTE
+            FIN_SEGUN
+            
+        HASTA opcion=0
+
+FIN_ACCION
+
+
