@@ -1,0 +1,63 @@
+Enunciado:  
+Dada una lista simplemente encadenada que contiene datos de todas las provincias de la República 
+Argentina: nombre, capital, cantidad total de habitantes y cantidad de analfabetos, 
+y está ordenada en forma decreciente por número de habitantes analfabetos, 
+generar otras tres listas que contengan el nombre, la capital y el porcentaje de analfabetos 
+de las Provincias que respondan a las siguientes restricciones.
+    L1: <= 10 % analfabetos
+    L2: 16 a 25 % analfabetos
+    L3: => 26 % analfabetos
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.4.5(Prim: Puntero a Datos) ES 
+    AMBIENTE 
+        Datos = REGISTRO
+            nombre: AN(20)
+            capital: AN(20)
+            habitantes: N(9)
+            analfabetos: N(9)
+            prox: Puntero a Datos
+        FIN_REGISTRO
+
+        Listas = REGISTRO
+            nombre: AN(20)
+            capital: AN(20)
+            porcentaje: N(3,2)
+            prox: Puntero a Listas
+        FIN_REGISTRO
+
+        P:Puntero a Datos
+        L1, L2, L3, Aux: Puntero a Listas
+    PROCESO
+        P:=Prim
+        L1:=NIL
+        L2:=NIL
+        L3:=NIL
+        
+        MIENTRAS P<>NIL HACER
+            NUEVO(Aux)
+
+            *Aux.nombre:=*P.nombre
+            *Aux.capital:=*P.capital
+            *Aux.porcentaje:=100*(*P.analfabetos/*P.habitantes)
+
+            SI *Aux.porcentaje<=10 ENTONCES
+                *Aux.prox:=L1
+                L1:=Aux
+            SINO
+                SI 16<=*Aux.porcentaje y *Aux.porcentaje<=25 ENTONCES
+                    *Aux.prox:=L2
+                    L2:=Aux
+                SINO
+                    SI *Aux.porcentaje>25 ENTONCES
+                        *Aux.prox:=L3
+                        L3:=Aux
+                    FIN_SI
+                FIN_SI
+            FIN_SI
+            P:=*P.prox
+        FIN_MIENTRAS
+FIN_ACCION
+
+
