@@ -1,0 +1,29 @@
+Enunciado:  
+Se dispone de una lista simplemente encadenada cuyos registros están ordenados en forma ascendente 
+por una clave de tipo entero; diseñar un algoritmo que invierta el orden de la lista.
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.4.4(Prim: Puntero a Nodo) ES 
+    AMBIENTE 
+        Nodo=REGISTRO
+            clave: Entero
+            prox: Puntero a Nodo
+        FIN_REGISTRO
+
+        P,Prim: Puntero a Nodo
+        L2,Aux: Puntero a Nodo
+    PROCESO
+        P:=Prim
+        L2:=NIL
+
+        MIENTRAS P<>NIL HACER
+            Aux:=P
+            P:=*P.prox
+            *Aux.prox:=L2
+            L2:=Aux
+        FIN_MIENTRAS
+        Prim:=L2
+FIN_ACCION
+
+
