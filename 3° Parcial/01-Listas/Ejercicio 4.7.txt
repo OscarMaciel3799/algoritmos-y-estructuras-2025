@@ -1,0 +1,92 @@
+Enunciado:  
+Genere un algoritmo que recorra una secuencia texto y genere una lista simplemente encadenada 
+con la frecuencia de utilización de cada letra. La lista debe mantenerse ordenada alfabéticamente 
+y al final informar cual fue la frecuencia de cada letra y cuáles fueron la de mayor y menor frecuencia.
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.4.7 ES 
+    AMBIENTE 
+        s: Secuencia de Caracter
+        v: Caracter
+
+        Nodo = REGISTRO
+            letra: Caracter
+            frecuencia: N(4)
+            prox: Puntero a Nodo
+        FIN_REGISTRO
+
+        P,Prim,Ant,N: Puntero a Nodo
+        mayor_frecuencia, menor_frecuencia: N(4)
+        mayor_caracter, menor_caracter: Caracter
+
+        PROCEDIMIENTO EVALUAR_LETRA ES
+            P:=Prim
+            Ant:=NIL
+            
+            MIENTRAS P<>NIL y *P.letra<v HACER
+                Ant:=P
+                P:=*P.prox
+            FIN_MIENTRAS
+
+            // pregunto si la letra de p es la buscada
+
+            SI *P.letra=v ENTONCES
+                *P.frecuencia:=*P.frecuencia+1
+            SINO
+                NUEVO(N)
+
+                *N.letra:=v
+                *N.frecuencia:=1
+                *N.prox:=P
+
+                SI Ant=NIL ENTONCES
+                    Prim:=N
+                SINO
+                    *N.prox:=P
+                    *Ant.prox:=N
+                FIN_SI
+            FIN_SI
+        FIN_PROCEDIMIENTO
+
+    PROCESO
+        ARRANCAR(s); AVANZAR(s,v)
+        Prim:=NIL
+        
+        MIENTRAS NFDS(s) HACER
+            EVALUAR_LETRA
+            AVANZAR(s,v)
+        FIN_MIENTRAS
+
+        SI Prim=NIL ENTONCES
+            Escribir("No hay letras en la secuencia.")
+        SINO   
+            Escribir("Frecuencias de cada letra.")
+            P:=Prim
+            mayor_frecuencia:=LV
+            menor_frecuencia:=HV
+
+            MIENTRAS P<>NIL HACER
+                Escribir("Letra: ",*P.letra," Frecuencia: ",*P.frecuencia)
+
+                SI *P.frecuencia>mayor_frecuencia ENTONCES
+                    mayor_frecuencia:=*P.frecuencia
+                    mayor_caracter:=*P.letra
+                FIN_SI
+
+                SI *P.frecuencia<menor_frecuencia ENTONCES
+                    menor_frecuencia:=*P.frecuencia
+                    menor_caracter:=*P.letra
+                FIN_SI
+
+                P:=*P.prox
+            FIN_MIENTRAS
+
+            Escribir("La letra con menor frecuencia es: ",menor_caracter," frecuencia: ",menor_frecuencia)
+            Escribir("La letra con mayor frecuencia es: ",mayor_caracter," frecuencia: ",mayor_frecuencia)
+
+        FIN_SI
+        
+FIN_ACCION
+
+
