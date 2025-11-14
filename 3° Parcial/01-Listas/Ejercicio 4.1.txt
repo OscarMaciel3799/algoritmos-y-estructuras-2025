@@ -1,0 +1,91 @@
+Enunciado:  
+Diseñar un algoritmo para acceder, eliminar o insertar el k-ésimo elemento de una lista 
+(siendo k una posición dada). 
+Si la lista está vacía o si el valor de k esta fuera del rango del índice de la lista, 
+invocar al procedimiento de ERROR. En cualquier otro caso, efectuar el procedimiento solicitado.
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.4.1(Prim: Puntero a Nodo) ES 
+    AMBIENTE 
+        Nodo = REGISTRO
+            Dato : AN(60)
+            prox : Puntero a Nodo
+        FIN_REGISTRO
+
+        P, Ant, Q : Puntero a Nodo
+        K,pos: Entero 
+        operacion: (1,2,3)
+
+        PROCEDIMIENTO ACCEDER ES
+            SI P=NIL ENTONCES
+                ERROR("La posicion está fuera de rango para la operacion deseada.")
+            SINO
+                Escribir("El valor del dato en la posicion ",k," es:",*P.dato)
+            FIN_SI
+        FIN_PROCEDIMIENTO
+        
+        PROCEDIMIENTO ELIMINAR ES
+            SI P=NIL ENTONCES
+                ERROR("La posicion está fuera de rango para la operacion deseada.")
+            SINO
+                *Ant.prox:=*P.prox
+                DISPONER(P)
+            FIN_SI
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO INSERTAR ES
+            SI Prim=P y pos<>1 ENTONCES
+                ERROR("La posicion está fuera de rango para la operacion deseada.")
+            SINO
+                NUEVO(Q)
+                Escribir("Ingrese el valor del dato que desea insertar")
+                Leer(*Q.Dato)
+                SI pos=1 ENTONCES
+                    Prim:=Q
+                    *Q.prox:=NIL
+                SINO
+                    *Ant.prox:=Q
+                    *Q.prox:=P
+            FIN_SI
+        FIN_PROCEDIMIENTO
+        
+        PROCEDIMIENTO ERROR(err : AN(20)) ES
+            ESC("ERROR: " + err)
+        FIN_PROCEDIMIENTO
+
+    PROCESO
+        Escribir("Ingrese la posicion deseada")
+        Leer(K)
+        P:=Prim
+        
+        pos:=1
+        SI K<pos ENTONCES
+            Escribir("ERROR - la posicion es invalida.")
+        SINO
+            MIENTRAS P<>NIL y pos<K HACER
+                Ant:=P
+                P:=*P.prox
+                pos:=pos + 1
+            FIN_MIENTRAS
+            Escribir("Elija la operacion deseada:
+            1-Acceder
+            2-Eliminar
+            3-Insertar")
+            Leer(operacion)
+
+            SI Prim=P ENTONCES
+                ERROR("Lista vacía")
+            SINO
+                SEGUN operacion HACER
+                    1:
+                        ACCEDER
+                    2:
+                        ELIMINAR
+                    3:
+                        INSERTAR
+                FIN_SEGUN
+            FIN_SI
+        FIN_SI
+FIN_ACCION
+
