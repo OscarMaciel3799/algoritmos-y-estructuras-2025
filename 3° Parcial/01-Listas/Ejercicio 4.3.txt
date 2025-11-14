@@ -1,0 +1,33 @@
+Enunciado:  
+Dada una lista simplemente encadenada de números diseñar un algoritmo que calcule en forma independiente: 
+La suma de los números impares, y la suma de los números pares.
+
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.4.3(Prim: Puntero a Nodo) ES 
+    AMBIENTE 
+        Nodo = REGISTRO
+            num: Entero
+            prox: Puntero a Nodo
+        FIN_REGISTRO
+
+        P: Puntero a Nodo
+        suma_impares, suma_pares: Entero
+    PROCESO
+        P:=Prim
+        suma_impares:=0
+        suma_pares:=0
+        MIENTRAS P<>NIL HACER
+            SI *P.num MOD 2=0 ENTONCES
+                suma_pares:=suma_pares+*P.num
+            SINO
+                suma_impares:=suma_impares+*P.num
+            FIN_SI
+            P:*P.prox
+        FIN_MIENTRAS
+        Escribir("La suma de los números pares es: ",suma_pares)
+        Escribir("La suma de los números impares es: ",suma_impares)
+FIN_ACCION
+
+
