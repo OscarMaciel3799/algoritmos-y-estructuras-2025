@@ -1,0 +1,91 @@
+Enunciado:  
+Escribir un algoritmo que permita buscar, insertar o borrar un elemento identificado con una 
+clave determinada en una lista circular simplemente encadenada.
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.4.8 ES 
+    AMBIENTE 
+        Nodo = REGISTRO
+            clave: AN(6)
+            dato: N(6)
+            prox: Puntero a Nodo
+        FIN_REGISTRO
+        Prim,P,Ant,N:
+        opcion: 0..3
+        clave_buscada: AN(6)
+
+        PROCEDIMIENTO MOSTRAR_MENU ES
+            Escribir("Elija la operación deseada")
+            Escribir("1 - Buscar clave")
+            Escribir("2 - Insertar elemento")
+            Escribir("3 - Borrar elemento")
+            Escribir("0 - Salir")
+        FIN_PROCEDIMIENTO
+        
+        PROCEDIMIENTO BUSCAR_CLAVE ES
+            P:=Prim
+            Ant:=NIL
+            MIENTRAS *P.prox<>Prim y *P.clave<>clave_buscada HACER
+                Ant:=P
+                p:=*P.prox
+            FIN_MIENTRAS
+            
+            SI *P.prox<>Prim ENTONCES
+                Escribir("Se encontró elemento")
+            SINO
+                Escribir("No se encontró el elemento")
+            FIN_SI
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO INSERTAR_ELEMENTO ES
+            NUEVO(N)
+            Escribir("Ingrese la clave del nuevo elemento")
+            Leer(*N.clave)
+            Escribir("Ingrese el dato del nuevo elemento")
+            Leer(*N.dato)
+
+            SI Prim=NIL ENTONCES
+                *N.prox:=NIL
+                Prim:=N
+            SINO
+                *N.prox:=Prim
+                Prim:=N
+            FIN_SI
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO BORRAR_ELEMENTO ES
+            BUSCAR_CLAVE
+            
+            SI *P.prox<>Prim ENTONCES
+                SI Ant<>NIL ENTONCES
+                    *Ant.prox:=*P.prox
+                SINO
+                    Prim:=NIL
+                FIN_SI
+                DISPONER(P)
+            FIN_SI
+        FIN_PROCEDIMIENTO
+
+    PROCESO
+        Prim:=NIL
+        REPETIR
+            MOSTRAR_MENU
+            Leer(opcion)
+
+            SEGUN opcion HACER
+                1:
+                    Escribir("Ingrese la clave que desea buscar")
+                    Leer(clave_buscada)
+                    BUSCAR_CLAVE
+                2:
+                    INSERTAR_ELEMENTO
+                3:
+                    Escribir("Ingrese la clave del elemento que desea borrar")
+                    Leer(clave_buscada)
+                    BORRAR_ELEMENTO
+            FIN_SEGUN
+        HASTA opcion = 0
+FIN_ACCION
+
+
