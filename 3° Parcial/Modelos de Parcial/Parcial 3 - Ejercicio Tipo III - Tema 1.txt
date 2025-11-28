@@ -1,0 +1,181 @@
+Ejercicio 1
+La empresa “El Dormilón” se dedica a la venta de colchones posee el siguiente archivo secuencial 
+con información de todas las ventas del último mes (cada entrada del archivo significa una venta), 
+el mismo no se encuentra ordenado por ningún campo:
+
+VENTAS (archivo secuencial)
+Id_Venta: N(8) | Cod_Articulo: N(8) | Precio: N(18,2) | Dimensión X: N(3) | Dimensión Y: N(3)
+
+El dato "Cod_Articulo" es un dato único, los cuales están almacenados en una lista simplemente 
+encadenada ordenada por el campo tipo, con los siguientes datos:
+ARTICULOS
+Cod_Articulo: N(8) | Modelo: AN(40) | Fabricante: AN(40) | Comision: N(2)
+
+La comisión es el porcentaje con el cual se queda la fábrica por el producto vendido.
+
+La empresa le ha solicitado que escriba un algoritmo que permita:
+    a.Generar una lista simplemente encadenada que posea por lo menos los siguientes datos: 
+        Cod_Articulo, Fabricante, Modelo y cantidad vendida en el último mes. 
+        La lista debe estar ordenada por Cod_Articulo.
+    b.Informar la ganancia total de “El Dormilón”. Por cada venta se debe calcular: 
+        precio - (precio * comisión/100)
+
+ACCION E1(Prim: Puntero a ARTICULOS) ES
+    AMBIENTE
+        VENTAS = REGISTRO
+            Id_Venta: N(8)
+            Cod_Articulo: N(8)
+            Precio: N(18,2)
+            Dimensión X: N(3)
+            Dimensión Y: N(3)
+        FIN_REGISTRO
+        arch_ventas: Archivo de VENTAS
+        reg_ventas: VENTAS
+
+        ARTICULOS = REGISTRO
+            Cod_Articulo: N(8)
+            Modelo: AN(40)
+            Fabricante: AN(40)
+            Comision: N(2)
+            prox: Puntero a ARTICULOS
+        FIN_REGISTRO
+        P: Puntero a ARTICULOS
+
+        DATOS = REGISTRO
+            Cod_Articulo: N(8)
+            Fabricante: AN(40)
+            Modelo: AN(40)
+            cant_ventas: N(5)
+            prox: Puntero a DATOS
+        FIN_REGISTRO
+
+        Prim_D,Ant_D,N_D,P_D: Puntero a DATOS
+        ganancia_total: REAL
+    PROCESO
+        ABRIR E/(arch_ventas); LEER(arch_ventas,reg_ventas)
+
+        Prim_D:=NIL
+        ganancia_total:=0
+
+        MIENTRAS NFDA(arch_ventas) HACER
+            SI Prim_D=NIL ENTONCES
+                //lista vacia buscamos la info
+                P:=Prim
+                MIENTRAS P<>NIL y reg_ventas.Cod_Articulo<>*P.Cod_Articulo HACER
+                    P:=*P.prox
+                FIN_MIENTRAS
+
+                NUEVO(N_D)
+                *N_D.Cod_Articulo:= reg_ventas.Cod_Articulo
+                *N_D.Fabricante:=*P.Fabricante
+                *N_D.Modelo:=*P.Modelo
+                *N_D.cant_ventas:=1
+                *N_D.prox:=NIL
+
+                Prim_D:=N_D
+                ganancia_total:=ganancia_total + reg_ventas.precio*(1-*P.comision/100)
+            SINO
+                P_D:=Prim_D
+                Ant_D:=NIL
+                
+                MIENTRAS P_D<>NIL y reg_ventas.Cod_Articulo<*P_D.Cod_Articulo HACER
+                    Ant_D:=P_D
+                    P_D:=*P_D.prox
+                FIN_MIENTRAS
+
+                // Ya existe en la lista acumulada
+                SI P_D<>NIL y reg_ventas.Cod_Articulo=*P_D.Cod_Articulo HACER
+                    *P_D.cant_ventas:=*P_D.cant_ventas + 1
+                SINO
+                    // Buscar artículo en la lista original
+                    P:=Prim
+                    MIENTRAS P<>NIL y reg_ventas.Cod_Articulo<>*P.Cod_Articulo HACER
+                        P:=*P.prox
+                    FIN_MIENTRAS
+
+                    NUEVO(N_D)
+                    *N_D.Cod_Articulo:= *P.Cod_Articulo
+                    *N_D.Fabricante:=*P.Fabricante
+                    *N_D.Modelo:=*P.Modelo
+                    *N_D.cant_ventas:=1
+                    *N_D.prox:=P_D
+
+                    SI P_D=Prim_D ENTONCES
+                        Prim_D:=N_D
+                    SINO
+                        *Ant_D.prox:=N_D
+                    FIN_SI
+                FIN_SI
+                
+                ganancia_total:=ganancia_total + reg_ventas.precio*(1-*P.comision/100)
+
+            FIN_SI
+            LEER(arch_ventas,reg_ventas)
+        FIN_MIENTRAS
+        Escribir("La ganancia total es: ",ganancia_total)
+        CERRAR(arch_ventas)
+FIN_ACCION
+
+Ejercicio 2
+Dada una lista doblemente encadenada de números naturales, se desea eliminar de la lista todos los 
+elementos cuyo “número promedio” sea igual a un valor ingresado por el usuario. Para calcular el 
+número promedio de un número, se debe utilizar una función recursiva.
+
+Dado un número natural, definiremos como su número promedio al número que se obtiene de sumar sus 
+dígitos impares y restar sus dígitos pares. Por ej.: el número promedio de 318547 es 4 esto es,
+ numeroPromedio(318547) = numeroPromedio(31854)+7 = numeroPromedio(3185) - 4 + 7 = … 
+
+
+ACCCION E2(Prim: Puntero a NATURALES) ES
+    AMBIENTE
+        NATURALES = REGISTRO
+            numero: N(4)
+            ant: Puntero a NATURALES
+            prox: Puntero a NATURALES
+        FIN_REGISTRO
+        P,Aux:Puntero a NATURALES
+
+        valor_ingresado: Entero
+
+        FUNCION PROMEDIO(n:Entero): ES
+            SI n<10 ENTONCES
+                SI n MOD 2 = 0 ENTONCES
+                    PROMEDIO:=-n
+                SINO
+                    PROMEDIO:=n
+                FIN_SI
+            SINO
+                SI n MOD 2 = 0 ENTONCES
+                    PROMEDIO:=-(n mod 10) + PROMEDIO(n DIV 10)
+                SINO
+                    PROMEDIO:=(n mod 10) + PROMEDIO(n DIV 10)
+                FIN_SI
+            FIN_SI
+        FIN_FUNCION
+    PROCESO
+        P:=Prim
+        Escribir("Ingrese un valor")
+        Leer(valor_ingresado)
+        MIENTRAS P<>NIL HACER
+            SI PROMEDIO(*P.numero)=valor_ingresado ENTONCES
+
+                Aux := *P.prox
+
+                SI P=Prim ENTONCES
+                    Prim:=Aux
+                    SI Prim <> NIL ENTONCES
+                        *Prim.ant := NIL
+                    FIN_SI
+                SINO
+                    *(*P.ant).prox:=*P.prox
+                    SI Aux <> NIL ENTONCES
+                        *(Aux).ant:=*P.ant
+                    FIN_SI
+                FIN_SI
+                DISPONER(P)
+                P:=Aux
+            SINO
+                P:=*P.prox
+            FIN_SI
+        FIN_MIENTRAS
+FIN_ACCION
