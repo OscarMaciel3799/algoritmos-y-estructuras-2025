@@ -1,0 +1,231 @@
+TEMA 1 
+Ejercicio 1:
+Una importante cadena de supermercados está realizando un sorteo por su aniversario, 
+repartiendo importantes premios y descuentos a sus clientes, de acuerdo a las compras realizadas, 
+cuantas más compras realizan, más chances suma.
+
+La información de las compras se encuentra en un archivo secuencial, ordenado por fecha_compra:
+fecha_compra | dni_cliente | cantidad_articulos | Importe_total
+
+Además, cuenta con una programa de fidelización de clientes. La información de los socios adheridos 
+al programa, se encuentra dentro de un archivo indexado por dni del cliente:
+Dni del cliente | Apellido y Nombre | Fecha adhesión | Categoría
+
+a. Se solicita crear una lista doblemente enlazada (ordenada por ApellidoyNombre), 
+con la información sólo de las personas que forman parte del programa de socios. 
+Los datos a almacenar son los siguientes: ApellidoyNombre, chances_total
+
+Teniendo en cuenta lo siguiente:
+    -Por única vez cuando se lo agrega: 5 chances.
+        Opcional: Los clientes con más de 10 años de adhesión sumarán 10 chances, 
+        los clientes que tengan entre 3 y 10, sumarán 5 chances, 
+        los clientes con menos años, sumarán 2 chances. 
+        (Nota: para calcular solo se toma en cuenta la diferencia de años).
+
+    -Por cada compra: 
+        -Se sumará 1 punto extra por cada $100.
+        -Cantidad aleatoria de chances extra en caso de que la categoría del usuario sea Black. 	
+            Este valor se genera mediante el giro de ruleta la cual se simulará con la información 
+            almacenada en una lista simple circular de la siguiente manera: 
+            Se genera un valor aleatorio con la función Tirar(), 
+            la cual retorna un número entre 1 y 55. 
+            Para obtener el número de chances extras, tendrá que realizar tantos saltos sobre la ruleta 
+            como valor indique la función Tirar(). Los siguientes valores para los siguientes 
+            clientes se obtendrán a partir de la última posición que haya quedado.
+
+
+ACCION E1(Prim_R: Puntero a Ruleta) ES
+    AMBIENTE
+        F = REGISTRO
+            año: 1900..2100
+            mes: 1..12
+            dia: 1..31
+        FIN_REGISTRO
+        COMPRAS = REGISTRO
+            fecha_compra: F
+            dni: N(8)
+            cant_art: N(3)
+            importe: N(5,2)
+        FIN_REGISTRO
+
+        arch_comp: Archivo de COMPRAS ordenado por fecha_compra
+        reg_comp: COMPRAS
+
+        SOCIOS = REGISTRO
+            dni: N(8)
+            ap_nom: AN(20)
+            fecha_ad: F
+            categoría: AN(20)
+        FIN_REGISTRO
+
+        arch_soc: Archivo de SOCIOS indexado por dni
+        reg_soc: SOCIOS
+
+        Nodo = REGISTRO
+            ap_nom: AN(20)
+            chances: N(4)
+            ant: Puntero a Nodo
+            prox: Puntero a Nodo
+        FIN_REGISTRO
+
+        Ruleta = REGISTRO
+            chances: N(4)
+            prox: Puntero a Ruleta
+        FIN_REGISTRO
+
+        P, Prim, R, N: Puntero a Nodo
+        años_ad,cant_al,cant: N(2)
+        
+        PROCEDIMIENTO BLACK(N: Puntero a Nodo, R: Puntero a Nodo) ES
+            cant_al:=Tirar()
+                
+            // Invento de ruleta
+            PARA cant:=1 HASTA cant_al HACER
+                R:=*R.prox
+            FIN_PARA
+            *N.chances:=*N.chances+*R.chances
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO CARGAR_CHANCES ES
+            
+            SI Prim<>NIL ENTONCES
+                P:=Prim
+                MIENTRAS *P.prox<>NIL y *P.ap_nom<reg_soc.ap_nom HACER
+                    P:=*P.prox
+                FIN_MIENTRAS
+            FIN_SI
+
+            SI *P.ap_nom=reg_soc.ap_nom ENTONCES    // ya existe
+                *P.chances:=*P.chances + Trunc(reg_comp.importe/100)
+            SINO    // es nuevo
+                NUEVO(N)
+                *N.ap_nom:= reg_soc.ap_nom
+                *N.chances:= 5 + Trunc(reg_comp.importe/100)
+                años_ad:=AÑO_ACTUAL - reg_soc.fecha_ad.año
+
+                SEGUN años_ad HACER
+                    <3:
+                        *N.chances:=*N.chances+2
+                    <10:
+                        *N.chances:=*N.chances+5
+                    >=10: 
+                        *N.chances:=*N.chances+10
+                FIN_SEGUN
+                
+                SI reg_soc.categoría = "Black" ENTONCES
+                    BLACK(N,R)
+                FIN_SI
+
+                SI Prim=NIL ENTONCES // Lista Vacia
+                    *N.prox:=NIL
+                    *N.ant:=NIL
+                    Prim:=N
+                SINO
+                    SI P = Prim ENTONCES // Antes del primer nodo
+                        *N.prox:=Prim
+                        *N.ant:=NIL
+                        Prim:=N
+                    SINO
+                        SI *P.prox=NIL ENTONCES // Despues del ultimo nodo
+                            *N.prox:=NIL
+                            *N.ant:=*P.ant
+                            *(*N.ant).prox:=N
+                        SINO    // Entre dos nodos
+                            *N.prox:=P
+                            *N.ant:=*P.ant
+                            *(*N.ant).prox:=N
+                            *(*N.prox).ant:=N
+                        FIN_SI
+                    FIN_SI
+                FIN_SI
+            FIN_SI
+        FIN_PROCEDIMIENTO
+    PROCESO
+        ABRIR E/(arch_comp); LEER(arch_comp,reg_comp)
+        ABRIR E/(arch_soc);
+
+        Prim:=NIL
+        R:=Prim_R
+        MIENTRAS NFDA(arch_comp) HACER
+            reg_soc.dni:=reg_comp.dni
+            LEER(arch_soc,reg_soc)
+            SI EXISTE ENTONCES
+                CARGAR_CHANCES
+            SINO
+                Escribir("No pertenece al programa de socios.")
+            FIN_SI
+            LEER(arch_comp,reg_comp)
+        FIN_MIENTRAS
+FIN_ACCION
+
+Ejercicio 2
+Una clínica dispone de un sistema informático para monitorear la presión arterial de sus pacientes 
+de forma automatizada, rápida y segura. La información se almacena en una lista simplemente encadenada 
+con los siguientes datos:
+Dni | nombre y apellido | nro de cama | nro habitación | pa_sistolica | pa_diastolica 
+
+Los campos pa_sistolica  y pa_diastolica contienen, cada uno un arreglo de 4 mediciones.
+
+La presión arterial se considera normal cuando la presión arterial sistólica está por debajo de 120 
+la mayoría de las veces, y la presión arterial diastólica está por debajo de 80 la mayor parte del 
+tiempo (escrito como 120/80 mm Hg).
+Consigna: Escribir un algoritmo que permita eliminar de la lista a los pacientes cuyos valores 
+promedio de presión arterial (sistólica y diastólica) se encuentren dentro de valores normales.
+Importante: Para determinar la presión arterial promedio debe desarrollar y utilizar una función 
+recursiva.
+
+
+ACCION E2(Prim: Puntero a PRESION) ES
+    AMBIENTE
+        PRESION = REGISTRO
+            dni: N(8)
+            nya: AN(20)
+            nro_cama: N(4)
+            nro_hab: N(4)
+            pa_sis: ARREGLO DE [1..4] de Reales
+            pa_dias: ARREGLO DE [1..4] de Reales
+            prox: Puntero a PRESION
+        FIN_REGISTRO
+
+        P,Ant: Puntero a PRESION
+
+        FUNCION PA_SIS(pos: Entero, Suma: Entero): Real ES
+            SI pos>4 ENTONCES
+                PA_SIS:=Suma DIV 4
+            SINO
+                PA_SIS:=PA_SIS(pos+1, Suma + *P.pa_sis[pos])
+            FIN_SI
+        FIN_FUNCION
+
+        FUNCION PA_DIAS(pos: Entero, Suma: Entero): Real ES
+            SI pos>4 ENTONCES
+                PA_DIAS:=Suma/4
+            SINO
+                PA_DIAS:=PA_DIAS(pos+1, Suma + *P.pa_dias[pos])
+            FIN_SI
+        FIN_FUNCION
+        prom_sis,prom_dias: Real
+    PROCESO
+        P:=Prim
+        Ant:=NIL
+
+        MIENTRAS P<>NIL HACER
+            prom_sis:=PA_SIS(1,0)
+            prom_dias:=PA_DIAS(1,0)
+
+            SI prom_sis<120 y prom_dias<80 ENTONCES
+                SI P=Prim ENTONCES
+                    Prim:=*P.prox
+                    Disponer(P)
+                    P:=Prim
+                SINO
+                    *Ant.prox:=*P.prox
+                    Disponer(P)
+                    P:=*Ant.prox
+                FIN_SI
+            SINO
+                Ant:=P
+                P:=*P.prox
+            FIN_SI
+        FIN_MIENTRAS
+FIN_ACCION
