@@ -76,7 +76,12 @@ ACCION E1(Prim_D: Puntero a DESCUENTOS) ES
         FUNCION NO_SOCIO(comp: COMPRAS):LOGICO ES
             reg_soc.dni:=comp.dni
             LEER(arch_soc, reg_soc)
-            NO_SOCIO:=NO EXISTE
+            SI EXISTE ENTONCES
+                NO_SOCIO:=FALSO
+            SINO
+                NO_SOCIO:=VERDADERO
+            FIN_SI
+            
         FIN_FUNCION
 
         PROCEDIMIENTO CARGA_ACTUALIZACION ES
@@ -127,15 +132,15 @@ ACCION E1(Prim_D: Puntero a DESCUENTOS) ES
 
         PROCEDIMIENTO ORDEN_DESCUENTO ES
             P_D:=Prim_D
-            //Busco el primer rango posible
 
-            MIENTRAS (P_D<>NIL y reg_comp.importe<*P_D.minimo ) HACER
+            //Busco el primer rango posible
+            MIENTRAS (P_D<>NIL y *P_D.minimo>reg_comp.importe) HACER
                 P_D:=*P_D.prox
             FIN_MIENTRAS
             SI P_D = NIL ENTONCES
                 Escribir("No hay descuento disponible")
             SINO
-                MIENTRAS (P_D<>NIL y *P_D.maximo<=reg_comp.importe y *P_D.cupo_disponible>0) HACER
+                MIENTRAS (P_D<>NIL y *P_D.minimo<=reg_comp.importe y *P_D.maximo>=reg_comp.importe y *P_D.cupo_disponible=0) HACER
                     P_D:=*P_D.prox
                 FIN_MIENTRAS
                 SI P_D = NIL ENTONCES
@@ -168,11 +173,58 @@ Una clínica dispone de un sistema informático para monitorear la temperatura d
 forma automatizada, rápida y segura. La información se almacena en una lista simplemente encadenada 
 con los siguientes datos:
 Dni paciente | nombre y apellido | edad | nro de cama | nro habitación | temperaturas
-
 El campo temperaturas contiene un arreglo de 4 mediciones.
+
 Se pide mostrar el nombre y apellido y luego eliminar de la lista los pacientes que no hayan 
 registrado temperaturas mayores a 36.5°C.
+
 Escriba un algoritmo que resuelva la consigna. Para determinar si el paciente cumple la condición 
 mencionada anteriormente, se debe desarrollar y utilizar una función recursiva.
 
 
+ACCION E2(Prim: Puntero a PACIENTES) ES
+    AMBIENTE
+        PACIENTES = REGISTRO
+            dni: N(8)
+            nom_ap: AN(20)
+            edad: N(2)
+            nro_cama: (4)
+            nro_hab: (4)
+            temp: ARREGLO DE [1..4] de REAL
+            prox: Puntero a PACIENTES
+        FIN_REGISTRO
+        P,Ant,Aux: Puntero a PACIENTES
+
+        FUNCION NO_TEMP_ALTA(T:ARREGLO DE [1..4] de REAL, pos:Entero):LOGICO ES
+            SI pos>4 ENTONCES
+                NO_TEMP_ALTA:=VERDADERO
+            SINO
+                SI T[pos]>36,5 ENTONCES
+                    NO_TEMP_ALTA:=FALSO
+                SINO
+                    NO_TEMP_ALTA:=NO_TEMP_ALTA(T,pos+1)
+                FIN_SI
+        FIN_FUNCION
+        PROCEDIMIENTO ELIMINAR ES 
+            SI P=Prim ENTONCES
+                Prim:=*P.prox
+            SINO
+                *Ant.prox:=P.prox
+            FIN_SI
+            Aux:=*P.prox
+            DISPONER(P)
+            P:=Aux
+        FIN_PROCEDIMIENTO
+    PROCESO
+        P:=Prim
+        Ant:=NIL
+        MIENTRAS P<>NIL HACER
+            Escribir("El nombre y apellido del paciente es:",*P.nom_ap)
+            SI NO_TEMP_ALTA(*P.temp,1) ENTONCES
+                ELIMINAR
+            SINO
+                Ant:=P
+                P:=*P.prox
+            FIN_SI
+        FIN_MIENTRAS
+FIN_ACCION
