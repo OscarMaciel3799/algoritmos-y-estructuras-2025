@@ -1,0 +1,224 @@
+Ejercicio 1
+
+Para el día del tercer parcial de algoritmos se decidió agrupar a los alumnos en 6 aulas.
+Cada aula tendrá un profesor a cargo.
+
+Se dispone de un lista simplemente enlazada de alumnos con los siguientes datos:
+legajo | apellido_nombre | comision | notas: Arreglo [1..5] enteros
+
+Además se cuenta con dos funciones:
+-EsAlumnoLibre(), que recibe como parámetro el legajo del alumno, y devuelve 
+    Verdadero o Falso de acuerdo a si el alumno se encuentra libre o no.
+-AsignarAula(), devuelve un número aleatorio entre 1 y 6.
+
+Se solicita:
+- Generar un lista doblemente enlazada, de los alumnos en condiciones de rendir 
+    (es decir, que no se encuentren libres) con la siguiente información:
+    * cursoNro
+    * cantidad
+    * legajo
+Donde se deberá cargar un nodo por cada curso, y de forma intermedia, un nodo por cada alumno asignado 
+a dicho curso.
+Los nodos de los cursos serán los nodos cabeceras, los nodos intermedios contendrán información del 
+alumno, de tal forma que: 
+-Si es un nodo cabecera, 
+    .el campo cursoNro será el número del curso (1..6), 
+    .el campo cantidad indicará la cantidad de alumnos asignados a dicho curso 
+        (SE DEBERÁ ACTUALIZAR CADA VEZ QUE SE ASIGNE UN NUEVO ALUMNO).
+    .el campo legajo será 0.
+Si es un nodo intermedio:
+    .el campo cursoNro será el número del curso (1..6), 
+    .el campo cantidad será 1.
+    .el campo legajo será el legajo del alumno correspondiente.
+
+En el caso de que el alumno se encuentre en condiciones de rendir, eliminarlo de la lista original.
+
+Informar además:
+- Promedio de alumnos por aula
+- Aula con mayor cantidad de alumnos
+
+ACCION E1(Prim: Puntero a ALUMNOS) ES
+    AMBIENTE
+        ALUMNOS = REGISTRO
+            legajo: N(5)
+            ap_nom: AN(20)
+            comision: 1..6
+            notas: Arreglo [1..5] Entero
+            prox: Puntero a ALUMNOS
+        FIN_REGISTRO
+        P_A,Ant_A,Aux: Puntero a ALUMNOS
+        
+        NODO = REGISTRO
+            curso_nro: 1..6
+            cantidad: N(3)
+            legajo: N(5)
+            ant: Puntero a NODO
+            prox: Puntero a NODO
+        FIN_REGISTRO
+        Prim_N,P,N,ULT_N: Puntero a NODO
+        i:Entero
+        cabeceras: ARREGLO DE [1..6] DE Puntero a NODO
+
+        PROCEDIMIENTO ELIMINAR ES 
+            SI P_A=Prim ENTONCES
+                Prim:=*P_A.prox
+            SINO
+                *Ant_A.prox:=*P_A.prox
+            FIN_SI
+            Aux:=*P_A.prox
+            DISPONER(P_A)
+            P_A:=Aux
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO CARGA_CABECERAS ES
+            NUEVO(N)
+            *N.curso_nro:= 1
+            *N.cantidad:= 0
+            *N.legajo:= 0
+            *N.ant:= NIL
+            *N.prox:= NIL
+
+            Prim_N:=N
+            ULT_N:=N
+            cabeceras[1]:=ULT_N
+            PARA i:=2 HASTA 6 HACER
+                NUEVO(N)
+                *N.curso_nro:= i
+                *N.cantidad:= 0
+                *N.legajo:= 0
+                *N.ant:= ULT_N
+                *N.prox:= NIL
+                *ULT_N.prox:=N
+                ULT_N:=*ULT_N.prox
+                cabeceras[i]:=ULT_N
+            FIN_PARA
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO CARGA_INTERMEDIA(aula: Entero) ES //alumno nuevo
+            NUEVO(N)
+            *N.curso_nro:= aula
+            *N.cantidad:= 1
+            *N.legajo:= *P_A.legajo
+
+            P:=cabeceras[aula] // Puntero a Nodo cabecera para el aula correspondiente
+
+            *N.ant:=P
+            *N.prox:=*P.prox
+            *(*N.ant).prox:=N
+
+            SI *N.prox <> NIL ENTONCES
+                *(*N.prox).ant:=N
+            FIN_SI
+            *P.cantidad:=*P.cantidad+1
+            ELIMINAR
+        FIN_PROCEDIMIENTO
+
+        total_al: Entero
+        mayor_alumnos,mayor_aula: Entero
+    PROCESO
+        SI PRIM=NIL ENTONCES
+            Escribir("La lista original está vacia")
+        SINO
+            CARGA_CABECERAS
+
+            P_A:=Prim
+            Ant_A:=NIL
+
+            MIENTRAS P_A<>NIL HACER
+                SI EsAlumnoLibre(*P_A.legajo)=FALSO ENTONCES
+                    CARGA_INTERMEDIA(AsignarAula)
+                SINO
+                    Ant_A:=P_A
+                    P_A:=*P_A.prox
+                FIN_SI
+            FIN_MIENTRAS
+
+            mayor_alumnos:=-1
+            total_al:=0
+            PARA i:=1 HASTA 6 HACER
+                SI *cabeceras[i].cantidad>mayor_alumnos ENTONCES
+                    mayor_alumnos:=*cabeceras[i].cantidad
+                    mayor_aula:=i
+                FIN_SI
+                total_al:=total_al + *cabeceras[i].cantidad
+            FIN_PARA
+            Escribir("La mayor cantidad de alumnos es: ",mayor_alumnos," en el aula: ",mayor_aula)
+            Escribir("El promedio de alumnos por aula es: ",total_al/6)
+        FIN_SI
+FIN_ACCION
+
+
+
+Ejercicio 2
+Dada la lista de alumnos del ejercicio 1, se desea generar una lista simplemente enlazada ordenada 
+por nro de legajo, con todos los alumnos que hayan obtenido una calificación > 6 en al menos 
+3 instancias de exámenes. Para resolver esto último, utilizar una función recursiva.
+
+ACCION E2(Prim: Puntero a ALUMNOS) ES
+    AMBIENTE
+        ALUMNOS = REGISTRO
+            legajo: N(5)
+            ap_nom: AN(20)
+            comision: 1..6
+            notas: Arreglo [1..5] Entero
+            prox: Puntero a ALUMNOS
+        FIN_REGISTRO
+        P: Puntero a ALUMNOS
+        Prim_N,P_N,A_N,N: Puntero a ALUMNOS
+        i: Entero
+        FUNCION CONDICION(n: Entero,c: Entero,notas: Arreglo [1..5] Entero):LOGICO ES
+            SI c>2 ENTONCES
+                CONDICION:=VERDADERO
+            SINO
+                SI n>5 ENTONCES
+                    CONDICION:=FALSO
+                SINO
+                    SI notas[n]>6 ENTONCES
+                        c:=c+1
+                    FIN_SI
+                    CONDICION:=CONDICION(n+1,c,notas)
+                FIN_SI
+            FIN_SI
+        FIN_FUNCION
+
+        PROCEDIMIENTO CARGA_ORDENADA ES
+            NUEVO(N)
+            *N.legajo:=*P.legajo
+            *N.ap_nom:=*P.ap_nom
+            *N.comision:=*P.comision
+
+            PARA i := 1 HASTA 5 HACER
+                *N.notas[i] := *P.notas[i]
+            FIN_PARA
+
+            SI Prim_N=NIL ENTONCES
+                *N.prox:=NIL
+                Prim_N:=N
+            SINO
+                P_N:=Prim_N
+                A_N:=NIL
+
+                MIENTRAS P_N<>NIL y *P_N.legajo<*P.legajo HACER
+                    A_N:=P_N
+                    P_N:=*P_N.prox
+                FIN_MIENTRAS 
+
+                SI P_N = Prim_N ENTONCES
+                    *N.prox:=Prim_N
+                    Prim_N:=N
+                SINO
+                    *N.prox:=P_N
+                    *A_N.prox:=N
+                FIN_SI
+            FIN_SI
+        FIN_PROCEDIMIENTO
+    PROCESO
+        P:=Prim
+        Prim_N:=NIL
+        MIENTRAS P<>NIL HACER
+            SI CONDICION(1,0,*P.notas) ENTONCES
+                CARGA_ORDENADA
+            FIN_SI
+            P:=*P.prox
+        FIN_MIENTRAS
+FIN_ACCION
