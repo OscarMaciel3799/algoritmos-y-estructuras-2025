@@ -73,7 +73,8 @@ ACCION E1(Prim_R: Puntero a Ruleta) ES
             prox: Puntero a Ruleta
         FIN_REGISTRO
 
-        P, Prim, R, N: Puntero a Nodo
+        P, Prim,  N,ULT: Puntero a Nodo
+        R: Puntero a Ruleta
         años_ad,cant_al,cant: N(2)
         
         PROCEDIMIENTO BLACK(N: Puntero a Nodo, R: Puntero a Nodo) ES
@@ -90,12 +91,12 @@ ACCION E1(Prim_R: Puntero a Ruleta) ES
             
             SI Prim<>NIL ENTONCES
                 P:=Prim
-                MIENTRAS *P.prox<>NIL y *P.ap_nom<reg_soc.ap_nom HACER
+                MIENTRAS P<>NIL y *P.ap_nom<reg_soc.ap_nom HACER
                     P:=*P.prox
                 FIN_MIENTRAS
             FIN_SI
 
-            SI *P.ap_nom=reg_soc.ap_nom ENTONCES    // ya existe
+            SI P<>NIL y *P.ap_nom=reg_soc.ap_nom ENTONCES    // ya existe
                 *P.chances:=*P.chances + Trunc(reg_comp.importe/100)
             SINO    // es nuevo
                 NUEVO(N)
@@ -120,6 +121,7 @@ ACCION E1(Prim_R: Puntero a Ruleta) ES
                     *N.prox:=NIL
                     *N.ant:=NIL
                     Prim:=N
+                    ULT:=N
                 SINO
                     SI P = Prim ENTONCES // Antes del primer nodo
                         *N.prox:=Prim
@@ -128,8 +130,9 @@ ACCION E1(Prim_R: Puntero a Ruleta) ES
                     SINO
                         SI *P.prox=NIL ENTONCES // Despues del ultimo nodo
                             *N.prox:=NIL
-                            *N.ant:=*P.ant
+                            *N.ant:=ULT
                             *(*N.ant).prox:=N
+                            ULT:=*ULT.prox
                         SINO    // Entre dos nodos
                             *N.prox:=P
                             *N.ant:=*P.ant
