@@ -130,16 +130,76 @@ ACCION E1(Prim_G: Puntero a GUSTOS, Prim_P: Puntero a PEDIDOS) ES
 FIN_ACCION
 
 
-
-
-
-
-
 Ejercicio 2 (¿? puntos)
 
-Dada una lista circular simplemente encadenada de números enteros positivos, se desea eliminar de la lista todos los números que contengan más de 2 dígitos igual a cero (en cualquier posición). 
+Dada una lista circular simplemente encadenada de números enteros positivos, se desea eliminar 
+de la lista todos los números que contengan más de 2 dígitos igual a cero (en cualquier posición). 
 
-Para detectar dichos números debe utilizar una función recursiva que reciba un número entero positivo, por ejemplo 1007, y devuelva un número que indique la cantidad de ceros que hay en el número, en este caso 2.
+Para detectar dichos números debe utilizar una función recursiva que reciba un número entero positivo, 
+por ejemplo 1007, y devuelva un número que indique la cantidad de ceros que hay en el número, 
+en este caso 2.
+
+ACCION E2(Prim: Puntero a NUMEROS) ES
+    AMBIENTE
+        NUMEROS = REGISTRO
+            num: Entero
+            prox: Puntero a NUMEROS
+        FIN_REGISTRO
+        P,Ant,Aux: Puntero a NUMEROS
+        cant_ceros: Entero
+
+        FUNCION CEROS(n:Entero): Entero ES
+            SI n<10 ENTONCES
+                SI n=0 ENTONCES
+                    CEROS:=1
+                SINO
+                    CEROS:=0
+                FIN_SI
+            SINO
+                SI (n MOD 10) = 0 ENTONCES
+                    CEROS:= 1 + CEROS(n DIV 10)
+                SINO
+                     CEROS:= CEROS(n DIV 10)
+                FIN_SI
+            FIN_SI
+        FIN_FUNCION
+    PROCESO
+        SI Prim=NIL ENTONCES
+            Escribir("Lista vacia")
+        SINO
+            P:=Prim        
+            MIENTRAS *P.prox<>Prim HACER
+                P:=*P.prox
+            FIN_MIENTRAS
+            Ult:=P
+            P:=Prim
+            Ant:=Ult
+            
+            REPETIR
+                cant_ceros:=CEROS(*P.num)
+                SI cant_ceros>2 ENTONCES
+                    Aux:=*P.prox
+                    SI P=Prim ENTONCES
+                        Prim:=Aux
+                        *Ult.prox:=Aux
+                    SINO
+                        SI P=Ult ENTONCES
+                            Ult:=Ant
+                            *Ult.prox:=Prim
+                        SINO
+                            *Ant.prox:=Aux
+                        FIN_SI
+                    FIN_SI
+                    DISPONER(P)
+                    P:=Aux
+                SINO
+                    Ant:=P
+                    P:=*P.prox
+                FIN_SI
+            HASTA P=Prim
+        FIN_SI
+        
+FIN_ACCION
 
 
 
