@@ -228,4 +228,6 @@ ACCION E2(Prim: Puntero a PRESION) ES
                 P:=*P.prox
             FIN_SI
         FIN_MIENTRAS
+        CERRAR(arch_comp)
+        CERRAR(arch_soc)
 FIN_ACCION
