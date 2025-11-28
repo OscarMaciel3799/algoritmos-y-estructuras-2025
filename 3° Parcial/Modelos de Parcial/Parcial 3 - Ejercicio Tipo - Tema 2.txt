@@ -163,7 +163,8 @@ ACCION E1(Prim_D: Puntero a DESCUENTOS) ES
             ORDEN_DESCUENTO
             LEER(arch_comp,reg_comp)
         FIN_MIENTRAS
-
+        CERRAR(arch_comp)
+        CERRAR(arch_soc)
 FIN_ACCION
 
 
@@ -209,7 +210,7 @@ ACCION E2(Prim: Puntero a PACIENTES) ES
             SI P=Prim ENTONCES
                 Prim:=*P.prox
             SINO
-                *Ant.prox:=P.prox
+                *Ant.prox:=*P.prox
             FIN_SI
             Aux:=*P.prox
             DISPONER(P)
