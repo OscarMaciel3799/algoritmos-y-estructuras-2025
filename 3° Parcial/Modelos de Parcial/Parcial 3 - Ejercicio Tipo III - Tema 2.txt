@@ -1,0 +1,147 @@
+Ejercicio 1
+Una empresa de helados llamada FRREze trabaja actualmente con listas para manejar los pedidos que recibe 
+y, al final de la jornada, los vuelca al disco rígido. Sin embargo desea ampliar las funcionalidades del 
+sistema actual para ofrecer mayor información sobre las ventas diarias a los administradores.
+Se posee una lista simplemente enlazada, ordenada, de los gustos de la empresa con sus correspondientes 
+nombres y precio por unidad.
+CodGusto: N(10) | Nombre Gusto: AN(50) | Precio Unitario: N(5,2)
+
+A su vez se posee otra lista simplemente encadenada, de pedidos por día ordenada por CodPedido y CodGusto.
+Cada vez que un cliente compra un helado se almacena el código del pedido, el código del gusto de 
+helado escogido, el nombre del vendedor y la cantidad de unidades del mismo. 
+
+CodPedido N(10)| CodGusto N(10)| Nombre vendedor AN(30)| Cantidad N(10)
+
+Las dos funcionalidades adicionales que se desean son:
+-Generar una lista doblemente enlazada de los gustos de helado vendidos en el día, indicando código 
+del gusto y su cantidad total.
+-Una opción para consultar que, a partir del nombre de un gusto, ingresado por teclado, 
+muestre el monto ($) obtenido en el día por ese gusto. Considerar que solo se realiza una sola 
+consulta y en caso de errores en el ingreso informar por pantalla.
+
+ACCION E1(Prim_G: Puntero a GUSTOS, Prim_P: Puntero a PEDIDOS) ES
+    AMBIENTE
+        GUSTOS = REGISTRO
+            cod_gusto: N(10)
+            nombre: AN(50)
+            precio_unitario: N(5,2)
+            prox: Puntero a GUSTOS
+        FIN_REGISTRO
+        P_G: Puntero a GUSTOS
+
+        PEDIDOS = REGISTRO
+            codPedido: N(10)
+            cod_gusto: N(10)
+            vendedor: AN(30)
+            cantidad: N(10)
+            prox: Puntero a PEDIDOS
+        FIN_REGISTRO
+        P_P: Puntero a PEDIDOS
+
+        SALIDA = REGISTRO
+            cod_gusto: N(10)
+            cantidad: N(10)
+            ant:Puntero a SALIDA
+            prox: Puntero a SALIDA
+        FIN_REGISTRO
+        Prim_S,P_S,N_S,Ult_S: Puntero a SALIDA
+        gusto_ingresado: AN(50)
+    PROCESO
+        Prim_S:=NIL
+        SI Prim_P=NIL ENTONCES
+            Escribir("No hay pedidos en la lista")
+        SINO
+            P_P:=Prim_P
+
+            MIENTRAS P_P<>NIL HACER
+                P_G:=Prim_G
+                MIENTRAS P_G<>NIL y *P_P.cod_gusto<>*P_G.cod_gusto HACER
+                    P_G:=*P_G.prox
+                FIN_MIENTRAS
+
+                SI Prim_S=NIL ENTONCES
+                    NUEVO(N_S)
+                    *N_S.cod_gusto:=*P_P.cod_gusto
+                    *N_S.cantidad:=*P_P.cantidad
+                    *N_S.ant:=NIL
+                    *N_S.prox:=NIL
+                    Prim_S:=N_S
+                    Ult_S:=N_S
+                SINO
+                    P_S:=Prim_S
+
+                    MIENTRAS P_S<>NIL y *P_S.cod_gusto<*P_G.cod_gusto HACER
+                        P_S:=*P_S.prox
+                    FIN_MIENTRAS
+
+                    SI P_S<>NIL y *P_S.cod_gusto=*P_G.cod_gusto ENTONCES
+                        *P_S.cantidad:=*P_S.cantidad+*P_P.cantidad
+                    SINO
+                        NUEVO(N_S)
+                        *N_S.cod_gusto:=*P_P.cod_gusto
+                        *N_S.cantidad:=*P_P.cantidad
+                        SI P_S=Prim_S ENTONCES
+                            *N_S.prox:=P_S
+                            *N_S.ant:=NIL
+                            Prim_S:=N_S
+                            *(*N_S.prox).ant:=N_S
+                        SINO
+                            SI P_S=NIL ENTONCES
+                                *N_S.prox:=NIL
+                                *N_S.ant:=Ult_S
+                                *Ult_S.prox:=N_S
+                                Ult_S:=*Ult_S.prox
+                            SINO
+                                *N_S.prox:=P_S
+                                *N_S.ant:=*P_S.ant
+                                *(*N_S.prox).ant:=N_S
+                                *(*N_S.ant).prox:=N_S
+                            FIN_SI
+                        FIN_SI
+                    FIN_SI
+                FIN_SI
+                P_P:=*P_P.prox
+            FIN_MIENTRAS
+        FIN_SI
+        Escribir("Ingrese el gusto que desea buscar")
+        Leer(gusto_ingresado)
+
+        P_G:=Prim_G
+        MIENTRAS P_G<>NIL y *P_G.nombre<>gusto_ingresado HACER
+            P_G:=*P_G.prox
+        FIN_MIENTRAS
+        SI P_G=NIL ENTONCES
+            Escribir("No se encontro el gusto buscado")
+        SINO    
+            P_S:=Prim_S
+
+            MIENTRAS P_S<>NIL y *P_S.cod_gusto<*P_G.cod_gusto HACER 
+                P_S:=*P_S.prox
+            FIN_MIENTRAS
+
+            SI P_S=NIL o (*P_S.cod_gusto<>*P_G.cod_gusto) ENTONCES
+                Escribir("No se registraron ventas de ese gusto")
+            SINO
+                SI *P_S.cod_gusto=*P_G.cod_gusto ENTONCES
+                    Escribir("El monto obtenido por ese gusto es: ",(*P_G.precio_unitario)*(*P_S.cantidad))
+                FIN_SI
+            FIN_SI
+        FIN_SI
+FIN_ACCION
+
+
+
+
+
+
+
+Ejercicio 2 (¿? puntos)
+
+Dada una lista circular simplemente encadenada de números enteros positivos, se desea eliminar de la lista todos los números que contengan más de 2 dígitos igual a cero (en cualquier posición). 
+
+Para detectar dichos números debe utilizar una función recursiva que reciba un número entero positivo, por ejemplo 1007, y devuelva un número que indique la cantidad de ceros que hay en el número, en este caso 2.
+
+
+
+
+
