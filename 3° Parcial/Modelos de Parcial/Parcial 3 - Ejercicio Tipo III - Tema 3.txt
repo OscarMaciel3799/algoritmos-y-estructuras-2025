@@ -171,10 +171,6 @@ FIN_ACCION
 
 
 
-
-
-
-
 Ejercicio 2
 
 Dada una lista circular simplemente encadenada de números enteros positivos, se desea generar una nueva 
@@ -184,4 +180,64 @@ método más conveniente de carga.
 Para detectar dichos números debe utilizar una función recursiva que reciba un número entero positivo, 
 por ejemplo 1234, y devuelve un número que indique la cantidad de dígitos pares que hay en el número, 
 en este caso 2.
- 
+
+
+ACCION E2(Prim: Puntero a POSITIVOS) ES 
+    AMBIENTE
+        POSITIVOS = REGISTRO
+            valor: Entero
+            prox: Puntero a POSITIVOS
+        FIN_REGISTRO
+        P: Puntero a POSITIVOS
+
+        PARES = REGISTRO
+            valor: Entero
+            prox: Puntero a PARES
+        FIN_REGISTRO
+        Prim_P,Ult_P,P_P,N_P: Puntero a PARES
+        cant_pares: Entero
+
+        FUNCION DIGITOS_PARES(n:Entero):Entero ES
+            SI n<10 ENTONCES
+                SI n MOD 2 = 0 ENTONCES
+                    DIGITOS_PARES:=1
+                SINO
+                    DIGITOS_PARES:=0
+                FIN_SI
+            SINO
+                SI n MOD 2 = 0 ENTONCES
+                    DIGITOS_PARES:=1 + DIGITOS_PARES(n DIV 10)
+                SINO
+                    DIGITOS_PARES:=DIGITOS_PARES(n DIV 10)
+                FIN_SI
+            FIN_SI
+        FIN_FUNCION
+    PROCESO
+        Prim_P:=NIL
+        Ult_P:=NIL
+
+        SI Prim=NIL ENTONCES
+            Escribir("Lista original vacia")
+        SINO
+            P:=Prim
+            REPETIR
+                cant_pares:=DIGITOS_PARES(*P.valor)
+                SI cant_pares>2 ENTONCES
+                    NUEVO(N_P)
+                    *N_P.valor:=*P.valor
+
+                    SI Prim_P=NIL ENTONCES // nueva lista vacia  
+                        *N_P.prox:=N_P  
+                        Prim_P:=N_P
+                        Ult_P:=N_P
+
+                    SINO    //cargo antes del primero
+                        *N_P.prox:=Prim_P
+                        Prim_P:=N_P
+                        *Ult_P.prox:=Prim_P
+                    FIN_SI
+                FIN_SI
+                P:=*P.prox
+            HASTA P=Prim
+        FIN_SI
+FIN_ACCION
