@@ -60,12 +60,12 @@ ACCION E1(Prim: Puntero a ALUMNOS) ES
         cabeceras: ARREGLO DE [1..6] DE Puntero a NODO
 
         PROCEDIMIENTO ELIMINAR ES 
-            SI P_A=Prim ENTONCES
-                Prim:=*P_A.prox
-            SINO
-                *Ant_A.prox:=*P_A.prox
-            FIN_SI
             Aux:=*P_A.prox
+            SI P_A=Prim ENTONCES
+                Prim:=Aux
+            SINO
+                *Ant_A.prox:=Aux
+            FIN_SI
             DISPONER(P_A)
             P_A:=Aux
         FIN_PROCEDIMIENTO
@@ -126,7 +126,7 @@ ACCION E1(Prim: Puntero a ALUMNOS) ES
 
             MIENTRAS P_A<>NIL HACER
                 SI EsAlumnoLibre(*P_A.legajo)=FALSO ENTONCES
-                    CARGA_INTERMEDIA(AsignarAula)
+                    CARGA_INTERMEDIA(AsignarAula())
                 SINO
                     Ant_A:=P_A
                     P_A:=*P_A.prox
