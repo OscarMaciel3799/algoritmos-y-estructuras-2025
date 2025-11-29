@@ -185,36 +185,29 @@ ACCION E2(Prim: Puntero a PRESION) ES
             nya: AN(20)
             nro_cama: N(4)
             nro_hab: N(4)
-            pa_sis: ARREGLO DE [1..4] de Reales
-            pa_dias: ARREGLO DE [1..4] de Reales
+            pa_sis: ARREGLO DE [1..4] de Real
+            pa_dias: ARREGLO DE [1..4] de Real
             prox: Puntero a PRESION
         FIN_REGISTRO
 
         P,Ant: Puntero a PRESION
 
-        FUNCION PA_SIS(pos: Entero, Suma: Entero): Real ES
+        FUNCION PA(arr:ARREGLO DE [1..4] de Real, pos: Entero, Suma: Real): Real ES
             SI pos>4 ENTONCES
-                PA_SIS:=Suma DIV 4
+                PA:=Suma/4
             SINO
-                PA_SIS:=PA_SIS(pos+1, Suma + *P.pa_sis[pos])
+                PA:=PA(arr,pos+1, Suma + arr[pos])
             FIN_SI
         FIN_FUNCION
 
-        FUNCION PA_DIAS(pos: Entero, Suma: Entero): Real ES
-            SI pos>4 ENTONCES
-                PA_DIAS:=Suma/4
-            SINO
-                PA_DIAS:=PA_DIAS(pos+1, Suma + *P.pa_dias[pos])
-            FIN_SI
-        FIN_FUNCION
         prom_sis,prom_dias: Real
     PROCESO
         P:=Prim
         Ant:=NIL
 
         MIENTRAS P<>NIL HACER
-            prom_sis:=PA_SIS(1,0)
-            prom_dias:=PA_DIAS(1,0)
+            prom_sis:=PA(*P.pa_sis,1,0)
+            prom_dias:=PA(*P.pa_dias,1,0)
 
             SI prom_sis<120 y prom_dias<80 ENTONCES
                 SI P=Prim ENTONCES
@@ -231,6 +224,4 @@ ACCION E2(Prim: Puntero a PRESION) ES
                 P:=*P.prox
             FIN_SI
         FIN_MIENTRAS
-        CERRAR(arch_comp)
-        CERRAR(arch_soc)
 FIN_ACCION
