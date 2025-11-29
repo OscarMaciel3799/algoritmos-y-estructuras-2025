@@ -77,7 +77,7 @@ ACCION E1(Prim_R: Puntero a Ruleta) ES
         R: Puntero a Ruleta
         años_ad,cant_al,cant: N(2)
         
-        PROCEDIMIENTO BLACK(N: Puntero a Nodo, R: Puntero a Nodo) ES
+        PROCEDIMIENTO BLACK(N: Puntero a Nodo, R: Puntero a Ruleta) ES
             cant_al:=Tirar()
                 
             // Invento de ruleta
