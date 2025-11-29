@@ -1,0 +1,154 @@
+Ej. 1- Recuperatorio - Febrero 2020
+Se requiere un algoritmo para gestionar la torre de control de un Aeropuerto con 2 terminales.
+Se cuenta con una lista de vuelos que contiene por cada uno la siguiente información
+
+Código de vuelo [AN (8)]
+Terminal [I – Internacional     C – Cabotaje]
+Estado [A- Por aterrizar     D-Por despegar]
+Horario estimado [Hora y Minutos N(4)]
+
+Luego, el operador de la torre puede realizar dos acciones: reconocimiento y acción.
+
+1. En la etapa de reconocimiento, se verifica si hay algún nuevo avión esperando para aterrizar y/o 
+despegar (considerar que está esperando si la hora estimada está dentro de los 10 minutos de la 
+hora actual), y de ser así desde la Torre se los asigna en la fila correspondiente de acuerdo 
+al horario estimado de aterrizaje o despegue. 
+2. En la etapa de acción, se autoriza la operación de aterrizar o despegar, al primero de los aviones 
+que esté esperando (los que esperan para aterrizar tienen prioridad). Se quita ese avión de la fila y 
+se informa el éxito de la operación.
+
+Escribir un algoritmo que inicialice la torre de control, y gestione las dos operaciones Reconocimiento 
+y Acción, imprimiendo la operación tomada.
+
+Suponga que existe una función que recibe como parámetros de entrada 2 horas (hora y minutos, como 
+un dato de tipo N(4)) y devuelve la diferencia entre ambas en minutos.
+
+ACCION EJ1(Prim: Puntero a Vuelos) ES
+    AMBIENTE
+        Vuelos = REGISTRO
+            codigo: AN(8)
+            terminal: ("I","C")
+            estado: ("A","D")
+            horario: N(4)
+            procesado: LOGICO
+            prox: Puntero a Vuelos
+        FIN_REGISTRO
+
+        P,Ant: Puntero a Vuelos
+        Prim_A,P_A,N_A,Ant_A,Aux_A: Puntero a Vuelos // Lista de aterrizaje
+        Prim_D,P_D,N_D,Ant_D,Aux_D: Puntero a Vuelos // Lista de despegue
+        opcion: 0..2
+        dif_horaria, hora_actual: N(4)
+
+        PROCEDIMIENTO MENU ES
+            Escribir("Ingresé la opcion deseada")
+            Escribir("1-Reconocimiento")
+            Escribir("2-Aterrizaje o Despegue")
+            Escribir("0-Salir")
+            Leer(opcion)
+        FIN_PROCEDIMIENTO
+        PROCEDIMIENTO RECONOCIMIENTO(c:Puntero a Vuelos) ES
+            MIENTRAS c<>NIL HACER
+                dif_horaria:=HORARIO(HORA_SISTEMA,*c.horario) // HORA_SISTEMA devuelve la hora actual - HORARIO devuelve la diferencia en minutos
+                SI dif_horaria<10 ENTONCES
+                    SI *c.procesado<> VERDADERO ENTONCES
+                        *c.procesado:=VERDADERO
+                        SI *c.estado="A" ENTONCES // Inserto en lista de aterrizaje
+                            NUEVO(N_A)
+                            *N_A.codigo:=*c.codigo
+                            *N_A.terminal:=*c.terminal
+                            *N_A.estado:=*c.estado
+                            *N_A.horario:=*c.horario
+
+                            SI Prim_A=NIL ENTONCES //lista vacía
+                                *N_A.prox:=NIL
+                                Prim_A:=N_A
+                            SINO
+                                P_A:=Prim_A
+                                Ant_A:=NIL
+
+                                MIENTRAS P_A<>NIL y *P_A.horario<*N_A.horario HACER
+                                    Ant_A:=P_A
+                                    P_A:=*P_A.prox
+                                FIN_MIENTRAS
+
+                                SI P_A=Prim_A ENTONCES // antes del primero
+                                    *N_A.prox:=P_A
+                                    Prim_A:=N_A
+                                SINO
+                                    *N_A.prox:=P_A
+                                    *Ant_A.prox:=N_A
+                                FIN_SI
+                            FIN_SI
+                            Escribir("Se agrego un avion a la lista de aterrizaje")
+                        SINO // Inserto en lista de despegue
+                            NUEVO(N_D)
+                            *N_D.codigo:=*c.codigo
+                            *N_D.terminal:=*c.terminal
+                            *N_D.estado:=*c.estado
+                            *N_D.horario:=*c.horario
+
+                            SI Prim_D=NIL ENTONCES //lista vacía
+                                *N_D.prox:=NIL
+                                Prim_D:=N_D
+                            SINO
+                                P_D:=Prim_D
+                                Ant_D:=NIL
+
+                                MIENTRAS P_D<>NIL y *P_D.horario<*N_D.horario HACER
+                                    Ant_D:=P_D
+                                    P_D:=*P_D.prox
+                                FIN_MIENTRAS
+
+                                SI P_D=Prim_D ENTONCES // antes del primero
+                                    *N_D.prox:=P_D
+                                    Prim_D:=N_D
+                                SINO
+                                    *N_D.prox:=P_D
+                                    *Ant_D.prox:=N_D
+                                FIN_SI
+                            FIN_SI
+                            Escribir("Se agrego un avion a la lista de despegue")
+                        FIN_SI
+                    FIN_SI
+                FIN_SI
+                c:=*c.prox
+            FIN_MIENTRAS
+        FIN_PROCEDIMIENTO
+
+        PROCEDIMIENTO ATERRIZAR_DESPEGAR ES
+            SI Prim_A=NIL ENTONCES
+                Escribir("No hay aviones esperando para aterrizar")
+                SI Prim_D=NIL ENTONCES
+                    Escribir("No hay aviones esperando para despegar")
+                SINO
+                    Aux_D:=Prim_D
+                    Escribir("Despegó el vuelo con codigo: ",*Prim_D.codigo)
+                    Prim_D:=Prim_D.prox
+                    DISPONER(Aux_D)
+                FIN_SI
+            SINO
+                Aux_A:=Prim_A
+                Escribir("Aterrizó el vuelo con codigo: ",*Prim_A.codigo)
+                Prim_A:=Prim_A.prox
+                DISPONER(Aux_A)
+            FIN_SI
+        FIN_PROCEDIMIENTO
+    PROCESO
+
+        MENU
+        P:=Prim
+        Ant:=NIL
+        MIENTRAS opcion<>0 HACER
+            SI opcion=1 ENTONCES
+                Escribir("A elegido la opcion reconocimiento")
+                RECONOCIMIENTO(P,Ant)
+            SINO
+                Escribir("A elegido la opcion Aterrizaje o Despegue")
+                ATERRIZAR_DESPEGAR
+            FIN_SI
+            MENU
+            Ant:=P
+            P:=*P.prox
+        FIN_MIENTRAS
+FIN_ACCION
