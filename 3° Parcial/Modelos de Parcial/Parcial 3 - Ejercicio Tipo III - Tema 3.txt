@@ -1,0 +1,187 @@
+Ejercicio 1
+Una importante empresa de contenido multimedia lo acaba de contratar para desarrollar algoritmos de 
+reproducción de música para sus usuarios finales.
+
+Semanalmente, el área de datos genera una lista de reproducción con posibles recomendaciones de música. 
+Esta información se encuentra almacenada en una lista simplemente enlazada, con los siguientes datos:
+track_id | nombre_musica | genero | artista | duracion (en seg)
+
+Los géneros disponibles son: J (Jaz) | R (Rock) | C (Clasica)
+
+Se cuenta además, con un archivo indexado con la información del historial de recomendaciones.
+
+RECOMENDADOS_HISTORICOS (Indexado por track_id)
+track_id | nombre_musica | lista_recomendacion_id
+
+Se le solicita a usted generar un nueva lista doblemente enlazada, ordenada por el nombre de la música, 
+con todas las músicas que no se hayan recomendado anteriormente (no existe en el archivo). 
+Si existe un tema que ya se haya recomendado anteriormente, deberá eliminarlo de la lista original.
+La lista de reproducción creada deberá contener 30 temas,  10 por cada género.
+
+Nota: Considerar que tendrá una lista de entrada lo suficientemente grande, que podrá cargar la lista de 
+recomendaciones semanales sin problemas.
+
+ACCION E1(Prim: Puntero a CANCIONES) ES
+    AMBIENTE
+        CANCIONES = REGISTRO
+            track_id: N(5)
+            nombre_musica: AN(20)
+            genero:("J","C","R")
+            artista: AN(20)
+            duracion: N(4)
+            prox: Puntero a CANCIONES
+        FIN_REGISTRO
+        P,Ant,Aux: Puntero a CANCIONES
+        canciones: ARREGLO DE [1..3] de Entero
+        completo: LOGICO
+
+        RECOMENDADOS = REGISTRO
+            track_id: N(5)
+            nombre_musica: AN(20)
+            lista_recomendacion_id: N(4)
+        FIN_REGISTRO
+
+        SALIDA = REGISTRO
+            track_id: N(5)
+            nombre_musica: AN(20)
+            genero:("J","C","R")
+            artista: AN(20)
+            duracion: N(4)
+            prox: Puntero a SALIDA
+            ant: Puntero a SALIDA
+        FIN_REGISTRO
+        Prim_N,P_N,N_N,Ult_N: Puntero a SALIDA
+        arch_rec: Archivo de RECOMENDADOS indexado por track_id
+        reg_rec: RECOMENDADOS
+
+        nueva: LOGICO
+
+    PROCESO
+        ABRIR E/(arch_rec)
+
+        canciones[1]:=0
+        canciones[2]:=0
+        canciones[3]:=0
+        completo:=FALSO
+
+        Prim_N:=NIL
+        Ult_N:=NIL
+
+        P:=Prim
+        Ant:=NIL
+        MIENTRAS P<>NIL y completo=FALSO HACER
+            reg_rec.track_id:=*P.track_id
+            LEER(arch_rec,reg_rec)
+            SI EXISTE ENTONCES
+                Aux:=*P.prox
+                SI P=Prim ENTONCES
+                    Prim:=Aux
+                SINO
+                    *Ant.prox:=Aux
+                FIN_SI
+                DISPONER(P)
+                P:=Aux
+            SINO
+                SI (canciones[1]+canciones[2]+canciones[3])=30 ENTONCES
+                    completo:=VERDADERO
+                SINO
+                    nueva:=FALSO
+                    SEGUN *P.genero HACER
+                        "J":
+                            SI canciones[1]<10 ENTONCES
+                                nueva:=VERDADERO
+                                NUEVO(N_N)
+
+                                *N_N.track_id:= *P.track_id
+                                *N_N.nombre_musica:= *P.nombre_musica
+                                *N_N.genero:= *P.genero
+                                *N_N.artista:= *P.artista
+                                *N_N.duracion:= *P.duracion
+
+                                canciones[1]:=canciones[1]+1                            
+                            FIN_SI
+                        "C":
+                            SI canciones[2]<10 ENTONCES
+                                nueva:=VERDADERO
+                                NUEVO(N_N)
+
+                                *N_N.track_id:= *P.track_id
+                                *N_N.nombre_musica:= *P.nombre_musica
+                                *N_N.genero:= *P.genero
+                                *N_N.artista:= *P.artista
+                                *N_N.duracion:= *P.duracion
+
+                                canciones[2]:=canciones[2]+1
+                            FIN_SI
+                        "R":
+                            SI canciones[3]<10 ENTONCES
+                                nueva:=VERDADERO
+                                NUEVO(N_N)
+
+                                *N_N.track_id:= *P.track_id
+                                *N_N.nombre_musica:= *P.nombre_musica
+                                *N_N.genero:= *P.genero
+                                *N_N.artista:= *P.artista
+                                *N_N.duracion:= *P.duracion
+
+                                canciones[3]:=canciones[3]+1
+                            FIN_SI
+                    FIN_SEGUN
+                    SI nueva ENTONCES
+                        // lo ordeno
+                        SI Prim_N=NIL ENTONCES  // lista vacia
+                            *N_N.prox:=NIL
+                            *N_N.ant:=NIL
+                            Prim_N:=N_N
+                            Ult_N:=N_N
+                        SINO
+                            P_N:=Prim_N
+                            
+                            MIENTRAS P_N<>NIL y *P_N.nombre_musica<*N_N.nombre_musica HACER
+                                P_N:=*P_N.prox
+                            FIN_MIENTRAS
+
+                            SI P_N=Prim_N ENTONCES  //antes del primero
+                                *N_N.prox:=Prim_N
+                                *N_N.ant:=NIL
+                                *(*N_N.prox).ant:=N_N
+                                Prim_N:=N_N
+                            SINO
+                                SI P_N=NIL ENTONCES // despues del ultimo
+                                    *N_N.prox:=NIL
+                                    *N_N.ant:=Ult_N
+                                    *(*N_N.ant).prox:=N_N
+                                    Ult_N:=N_N
+                                SINO    // entre nodos
+                                    *N_N.prox:=P_N
+                                    *N_N.ant:=*P_N.ant
+                                    *(*N_N.ant).prox:=N_N
+                                    *(*N_N.prox).ant:=N_N
+                                FIN_SI
+                            FIN_SI
+                        FIN_SI
+                    FIN_SI
+                    Ant:=P
+                    P:=*P.prox
+                FIN_SI
+            FIN_SI
+        FIN_MIENTRAS
+        CERRAR(arch_rec)
+FIN_ACCION
+
+
+
+
+
+
+
+Ejercicio 2
+
+Dada una lista circular simplemente encadenada de números enteros positivos, se desea generar una nueva 
+lista con todos los números que contengan más de 2 dígitos pares (en cualquier posición). Elija el 
+método más conveniente de carga.
+
+Para detectar dichos números debe utilizar una función recursiva que reciba un número entero positivo, 
+por ejemplo 1234, y devuelve un número que indique la cantidad de dígitos pares que hay en el número, 
+en este caso 2.
+ 
