@@ -1,0 +1,23 @@
+Enunciado:  
+Calcular el factorial de un número positivo n. Tener en cuenta la definición matemática de n!:
+Si n=0      n!=1
+si n>0      n!=n*(n-1)
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.5.1.1 ES 
+    AMBIENTE 
+        num:Entero
+        FUNCION FACTORIAL(n:Entero):Entero ES
+            SI n=0 ENTONCES
+                FACTORIAL:=1
+            SINO
+                FACTORIAL:=n*FACTORIAL(n-1)
+            FIN_SI
+        FIN_FUNCION
+    PROCESO
+        Escribir("Ingrese un número positivo")
+        Leer(num)
+
+FIN_ACCION
+
+
