@@ -17,7 +17,7 @@ ACCION E.5.1.1 ES
     PROCESO
         Escribir("Ingrese un número positivo")
         Leer(num)
-
+        Escribir("El factorial de ",num," es: ",FACTORIAL(num))
 FIN_ACCION
 
 
