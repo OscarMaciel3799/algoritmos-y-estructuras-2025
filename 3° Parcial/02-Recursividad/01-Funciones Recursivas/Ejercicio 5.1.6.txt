@@ -1,0 +1,30 @@
+Enunciado:  
+Determine recursivamente si un número dado es par o impar, usando sólo la operación resta.
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.5.1.6 ES 
+    AMBIENTE 
+        a: Entero
+
+        FUNCION ES_PAR(n: Entero):LOGICO ES
+            SI n=1 ENTONCES
+                ES_PAR:=FALSO
+            SINO
+                SI n=0 ENTONCES
+                    ES_PAR:=VERDADERO
+                SINO
+                    ES_PAR:=ES_PAR(n-2)
+                FIN_SI
+            FIN_SI
+        FIN_FUNCION
+    PROCESO
+        Escribir("Ingrese un numero")
+        Leer(a)
+        SI ES_PAR(a)=VERDADERO ENTONCES
+            Escribir("El numero ingresado es par")
+        SINO
+            Escribir("El numero ingresado es impar")
+        FIN_SI
+FIN_ACCION
+
+
