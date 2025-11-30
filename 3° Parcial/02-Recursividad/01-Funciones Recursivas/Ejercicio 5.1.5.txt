@@ -1,0 +1,22 @@
+Enunciado:  
+Dados dos números enteros, divídalos (división entera) y muestre el resultado, 
+usando sólo la operación resta.
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.5.1.5 ES 
+    AMBIENTE 
+        a,b: Entero
+        FUNCION DIVISION_ENTERA(a: Entero, b: Entero): Entero
+            SI a<b ENTONCES
+                DIVISION_ENTERA:=0
+            SINO
+                DIVISION_ENTERA:= 1 + DIVISION_ENTERA(a-b,b)
+            FIN_SI
+        FIN_FUNCION
+    PROCESO
+        Escribir("Ingrese dos valores a y b")
+        Leer(a,b)
+        Escribir("La division entera de a DIV b es: ",DIVISION_ENTERA(a,b))
+FIN_ACCION
+
+
