@@ -1,0 +1,30 @@
+Enunciado:  
+Dado un vector de 10 números enteros, calcular la suma de sus elementos
+
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.5.1.8 ES 
+    AMBIENTE 
+        num: ARREGLO de [1..10] de Entero
+        total,i: Entero
+
+        FUNCION SUMA(v: ARREGLO de [1..10] de Entero, i: Entero): Entero
+            SI i > 10 ENTONCES
+                SUMA := 0
+            SINO
+                SUMA := v[i] + SUMA(v, i + 1)
+            FINSI
+        FIN_FUNCION
+
+    PROCESO
+        PARA i=1 HASTA 10 HACER
+            Escribir("Ingrese el número de la posicion: ",i)
+            Leer(num[i])
+        FIN_PARA
+        
+        Escribir("La suma de sus elementos es: ", SUMA(num,1))
+
+FIN_ACCION
+
+
