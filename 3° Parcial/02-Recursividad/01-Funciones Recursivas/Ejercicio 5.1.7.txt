@@ -25,7 +25,7 @@ ACCION E.5.1.7 ES
     AMBIENTE 
         m,n: Entero
 
-        FUNCION MCD(m,n: Entero): Entero
+        FUNCION MCD(m,n: Entero): Entero ES
             SI n=0 ENTONCES
                 MCD:=m
             SINO
