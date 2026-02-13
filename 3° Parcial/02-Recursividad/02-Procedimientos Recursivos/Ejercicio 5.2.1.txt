@@ -1,0 +1,25 @@
+Enunciado:  
+Imprimir las cifras de un número n (siendo n ≥ 0) en orden inverso al original. 
+Por ej.: el inverso de 254 es 452.
+
+
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.5.2.1 ES 
+    AMBIENTE 
+        num: Entero
+
+        PROCEDIMIENTO INVERTIR(n: Entero) ES
+            SI n<>0 ENTONCES
+                Escribir(n MOD 10)
+                INVERTIR(n DIV 10)
+            FIN_SI
+        FIN_PROCEDIMIENTO
+    PROCESO
+        Escribir("Ingrese un numero mayor o igual a 0:")
+        Leer(num)
+
+        INVERTIR(num)
+FIN_ACCION
+
+
