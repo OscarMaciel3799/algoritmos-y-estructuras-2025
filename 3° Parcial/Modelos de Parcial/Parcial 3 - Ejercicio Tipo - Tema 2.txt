@@ -3,15 +3,15 @@ Ejercicio 1:
 La información de las compras se encuentra en un archivo secuencial, ordenado por fecha_compra:
 fecha_compra | dni_cliente | cantidad_articulos | Importe_total
 
-Además, cuenta con una programa de fidelización de clientes. La información de los socios adheridos 
-al programa, se encuentra dentro de un archivo indexado por dni del cliente:
+Además, cuenta con una programa de fidelización de clientes. La información de los socios adheridos
+ al programa, se encuentra dentro de un archivo indexado por dni del cliente:
 Dni del cliente | Apellido y Nombre | Fecha adhesión | Categoría
 
-a. Se le solicita crear una lista simplemente enlazada con información solo de las personas que 
+a) Se le solicita crear un lista simplemente enlazada con información solo de las personas que 
 NO forman parte del programa de socios, ordenada por dni_cliente, con la siguiente información: 
 dni_cliente, cantidad_compras_realizadas, importe_total
 
-b. Por cada compra: emitir una orden de descuento (mostrar por pantalla) la cual se determina 
+b) Por cada compra: emitir una orden de descuento (mostrar por pantalla) la cual se determina 
 teniendo en cuenta el importe total de la compra. La información de los descuentos se encuentra 
 almacenada en una lista doblemente enlazada ordenada por importe_mínimo: 
 importe_mínimo | importe_maximo | descuento (0,01 a 0,99) | cupo_disponible | rubro_descuento 1...9
@@ -20,212 +20,16 @@ Consideraciones para aplicar el descuento:
 Para determinar el porcentaje de descuento deberá buscar en la lista el primer rango que incluya 
 el importe total de la compra. En caso que no exista ninguno, no le corresponde descuento.
 Por ejemplo: si importe total= 10000
-nodo 1: importe_minimo=1000, importe maximo=5000, no lo contiene→ pasa al nodo2
-nodo2:  importe_minimo=5001, importe_maximo=15000, lo contiene, entonces se toma el descuento 
-indicado en el nodo 2.
-En caso de encontrar el rango, solo se generará un cupón de descuento en el caso de que se 
-cuente con cupos disponibles.
+
+nodo 1: importe_minimo=1000, importe maximo=5000, no lo contiene→ pasa al nodo2:  importe_minimo=5001, importe_maximo=15000, lo contiene, entonces se toma el descuento indicado en el nodo 2.
+En caso de encontrar el rango, solo se generará un cupón de descuento en el caso de que se cuente con cupos disponibles.
+ 	
 Se deberá mostrar el porcentaje de descuento y el rubro al que corresponde el mismo.
-
-
-ACCION E1(Prim_D: Puntero a DESCUENTOS) ES
-    AMBIENTE
-        FECHA = REGISTRO
-            año: 1990..2100
-            mes: 1..12
-            dia: 1..31
-        FIN_REGISTRO
-        COMPRAS = REGISTRO
-            fecha: FECHA
-            dni: N(8)
-            cant_art: N(4)
-            Importe: N(8,2)
-        FIN_REGISTRO
-
-        arch_comp: Archivo de COMPRAS ordenado por fecha
-        reg_comp: COMPRAS
-
-        SOCIOS = REGISTRO
-            dni: N(8)
-            ayn: AN(20)
-            Fecha_ad: FECHA
-            Categoría: AN(20)
-        FIN_REGISTRO
-        arch_soc: Archivo de SOCIOS indexado por dni
-        reg_soc: SOCIOS
-
-        NO_SOCIOS = REGISTRO
-            dni: N(8)
-            cant_comp: N(4)
-            total: N(8,2)
-            prox: Puntero a NO_SOCIOS
-        FIN_REGISTRO
-
-        Prim,P,Q,Ant: Puntero a NO_SOCIOS
-
-        DESCUENTOS = REGISTRO
-            mínimo: N(8,2)
-            maximo: N(8,2)
-            descuento: 0,01 .. 0,99
-            cupo_disponible: N(4)
-            rubro_descuento: 1..9
-            prox: Puntero a DESCUENTOS
-        FIN_REGISTRO
-
-        Prim_D,P_D: Puntero a DESCUENTOS
-        FUNCION NO_SOCIO(comp: COMPRAS):LOGICO ES
-            reg_soc.dni:=comp.dni
-            LEER(arch_soc, reg_soc)
-            SI EXISTE ENTONCES
-                NO_SOCIO:=FALSO
-            SINO
-                NO_SOCIO:=VERDADERO
-            FIN_SI
-            
-        FIN_FUNCION
-
-        PROCEDIMIENTO CARGA_ACTUALIZACION ES
-    
-            SI Prim = NIL ENTONCES
-                NUEVO(Q)
-                *Q.dni:=reg_comp.dni
-                *Q.cant_comp:=1
-                *Q.total:=reg_comp.importe
-                *Q.prox:=NIL
-                Prim:=Q
-            SINO
-                P:=Prim
-                Ant:=NIL
-                MIENTRAS P<>NIL y *P.dni<reg_comp.dni HACER
-                    Ant:=P
-                    P:=*P.prox
-                FIN_MIENTRAS
-                
-                SI P=NIL ENTONCES
-                    NUEVO(Q)
-                    *Q.dni:=reg_comp.dni
-                    *Q.cant_comp:=1
-                    *Q.total:=reg_comp.importe
-                    *Ant.prox:=Q
-                    *Q.prox:=NIL
-                SINO
-                    SI *P.dni=reg_comp.dni ENTONCES
-                        *P.cant_comp:=*P.cant_comp + 1
-                        *P.total:=*P.total + reg_comp.importe
-                    SINO
-                        NUEVO(Q)
-                        *Q.dni:=reg_comp.dni
-                        *Q.cant_comp:=1
-                        *Q.total:=reg_comp.importe
-
-                        SI P=Prim ENTONCES
-                            *Q.prox:=P
-                            Prim:=Q
-                        SINO
-                            *Q.prox:=P
-                            *Ant.prox:=Q
-                        FIN_SI
-                    FIN_SI
-                FIN_SI
-            FIN_SI
-        FIN_PROCEDIMIENTO
-
-        PROCEDIMIENTO ORDEN_DESCUENTO ES
-            P_D:=Prim_D
-
-            //Busco el primer rango posible
-            MIENTRAS (P_D<>NIL y *P_D.minimo>reg_comp.importe) HACER
-                P_D:=*P_D.prox
-            FIN_MIENTRAS
-            SI P_D = NIL ENTONCES
-                Escribir("No hay descuento disponible")
-            SINO
-                MIENTRAS (P_D<>NIL y *P_D.minimo<=reg_comp.importe y *P_D.maximo>=reg_comp.importe y *P_D.cupo_disponible=0) HACER
-                    P_D:=*P_D.prox
-                FIN_MIENTRAS
-                SI P_D = NIL ENTONCES
-                    Escribir("No hay descuento disponible")
-                SINO
-                    Escribir("El cupon de descuento es de: ",*P_D.descuento,"pertenciente al rubro: ",*P_D.rubro_descuento)
-                    *P_D.cupo_disponible:=*P_D.cupo_disponible-1
-                FIN_SI
-            FIN_SI
-        FIN_PROCEDIMIENTO
-    PROCESO
-        ABRIR E/(arch_comp); LEER(arch_comp,reg_comp)
-        ABRIR E/(arch_soc)
-        Prim:=NIL
-
-        MIENTRAS NFDA(arch_comp) HACER
-            SI NO_SOCIO(reg_comp) ENTONCES
-                CARGA_ACTUALIZACION
-            FIN_SI
-            ORDEN_DESCUENTO
-            LEER(arch_comp,reg_comp)
-        FIN_MIENTRAS
-        CERRAR(arch_comp)
-        CERRAR(arch_soc)
-FIN_ACCION
-
-
-
 Ejercicio 2:
-Una clínica dispone de un sistema informático para monitorear la temperatura de sus pacientes de 
-forma automatizada, rápida y segura. La información se almacena en una lista simplemente encadenada 
-con los siguientes datos:
+Una clínica dispone de un sistema informático para monitorear la temperatura de sus pacientes de forma automatizada, rápida y segura. La información se almacena en una lista simplemente encadenada con los siguientes datos:
 Dni paciente | nombre y apellido | edad | nro de cama | nro habitación | temperaturas
 El campo temperaturas contiene un arreglo de 4 mediciones.
-
-Se pide mostrar el nombre y apellido y luego eliminar de la lista los pacientes que no hayan 
-registrado temperaturas mayores a 36.5°C.
-
-Escriba un algoritmo que resuelva la consigna. Para determinar si el paciente cumple la condición 
-mencionada anteriormente, se debe desarrollar y utilizar una función recursiva.
+Se pide mostrar el nombre y apellido y luego eliminar de la lista los pacientes que no hayan registrado temperaturas mayores a 36.5°C.
+Escriba un algoritmo que resuelva la consigna. Para determinar si el paciente cumple la condición mencionada anteriormente, se debe desarrollar y utilizar una función recursiva.
 
 
-ACCION E2(Prim: Puntero a PACIENTES) ES
-    AMBIENTE
-        PACIENTES = REGISTRO
-            dni: N(8)
-            nom_ap: AN(20)
-            edad: N(2)
-            nro_cama: (4)
-            nro_hab: (4)
-            temp: ARREGLO DE [1..4] de REAL
-            prox: Puntero a PACIENTES
-        FIN_REGISTRO
-        P,Ant,Aux: Puntero a PACIENTES
-
-        FUNCION NO_TEMP_ALTA(T:ARREGLO DE [1..4] de REAL, pos:Entero):LOGICO ES
-            SI pos>4 ENTONCES
-                NO_TEMP_ALTA:=VERDADERO
-            SINO
-                SI T[pos]>36,5 ENTONCES
-                    NO_TEMP_ALTA:=FALSO
-                SINO
-                    NO_TEMP_ALTA:=NO_TEMP_ALTA(T,pos+1)
-                FIN_SI
-        FIN_FUNCION
-        PROCEDIMIENTO ELIMINAR ES 
-            SI P=Prim ENTONCES
-                Prim:=*P.prox
-            SINO
-                *Ant.prox:=*P.prox
-            FIN_SI
-            Aux:=*P.prox
-            DISPONER(P)
-            P:=Aux
-        FIN_PROCEDIMIENTO
-    PROCESO
-        P:=Prim
-        Ant:=NIL
-        MIENTRAS P<>NIL HACER
-            Escribir("El nombre y apellido del paciente es:",*P.nom_ap)
-            SI NO_TEMP_ALTA(*P.temp,1) ENTONCES
-                ELIMINAR
-            SINO
-                Ant:=P
-                P:=*P.prox
-            FIN_SI
-        FIN_MIENTRAS
-FIN_ACCION
