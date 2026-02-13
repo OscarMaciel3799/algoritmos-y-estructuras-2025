@@ -1,0 +1,32 @@
+Enunciado:  
+Dada una lista de nombres ordenada en forma ascendente, construir un procedimiento recursivo que 
+imprima como salida la misma lista, pero en orden descendente, sin modificar la lista original.
+
+// Asumo que es una lista circular y conozco el puntero a primera posicion
+RESOLUCION EN PSEUDOCODIGO
+
+ACCION E.5.2.3(Prim: Puntero a Nodo) ES 
+    AMBIENTE 
+        Nodo = REGISTRO
+            ant: Puntero a Nodo
+            nombre : AN(60)
+            prox : Puntero a Nodo
+        FIN_REGISTRO
+
+        P: Puntero a Nodo
+
+        PROCEDIMIENTO DESCENDENTE(D:Puntero a Nodo) ES
+            SI D<>Prim ENTONCES
+                Escribir(D.nombre)
+                DESCENDENTE(D.ant)
+            SINO
+                Escribir(D.nombre)
+            FIN_SI
+        FIN_PROCEDIMIENTO
+    PROCESO
+        P:=Prim.ant
+        Escribir("Lista descendente:")
+        DESCENDENTE(P)
+FIN_ACCION
+
+
