@@ -9,7 +9,7 @@ ACCION E.5.1.8 ES
         num: ARREGLO de [1..10] de Entero
         total,i: Entero
 
-        FUNCION SUMA(v: ARREGLO de [1..10] de Entero, i: Entero): Entero
+        FUNCION SUMA(v: ARREGLO de [1..10] de Entero, i: Entero): Entero ES
             SI i > 10 ENTONCES
                 SUMA := 0
             SINO
